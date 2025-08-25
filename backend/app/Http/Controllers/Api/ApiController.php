@@ -16,17 +16,88 @@ use Illuminate\Support\Facades\DB;
 /**
  * @OA\Info(
  *      version="1.0.0",
- *      title="API de Autenticação",
- *      description="Documentação da API de autenticação",
+ *      title="API de Sistema de Condomínio",
+ *      description="Documentação completa da API para gerenciamento de condomínios, incluindo blocos, unidades, vagas de garagem e depósitos.",
  *      @OA\Contact(
- *          email="gabriel.gomes@outlook.com"
+ *          email="admin@condominio.com",
+ *          name="Suporte Sistema de Condomínio"
+ *      ),
+ *      @OA\License(
+ *          name="MIT",
+ *          url="https://opensource.org/licenses/MIT"
  *      )
- *      
+ * )
+ * 
+ * @OA\Server(
+ *     url=L5_SWAGGER_CONST_HOST,
+ *     description="Servidor de Desenvolvimento"
+ * )
+ * 
+ * @OA\SecurityScheme(
+ *     securityScheme="sanctum",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     description="Token de autenticação via Laravel Sanctum"
+ * )
+ * 
+ * @OA\Tag(
+ *     name="Condomínios",
+ *     description="Endpoints para gerenciamento completo de condomínios"
+ * )
+ * 
+ * @OA\Tag(
+ *     name="Autenticação",
+ *     description="Endpoints para autenticação e gerenciamento de usuários"
  * )
  */
 
 class ApiController extends Controller
 {
+    /**
+     * @OA\Schema(
+     *     schema="Condominium",
+     *     title="Condomínio",
+     *     description="Modelo de dados para condomínio",
+     *     @OA\Property(property="id", type="integer", example=1, description="ID único do condomínio"),
+     *     @OA\Property(property="name", type="string", example="Residencial Jardim das Flores", description="Nome do condomínio"),
+     *     @OA\Property(property="address", type="string", example="Rua das Flores, 123 - Jardim Botânico", description="Endereço completo"),
+     *     @OA\Property(property="city", type="string", example="São Paulo", description="Cidade"),
+     *     @OA\Property(property="state", type="string", example="SP", description="Estado"),
+     *     @OA\Property(property="zip_code", type="string", example="01234-567", description="CEP"),
+     *     @OA\Property(property="phone", type="string", example="(11) 1234-5678", description="Telefone"),
+     *     @OA\Property(property="email", type="string", example="admin@jardimflores.com", description="Email"),
+     *     @OA\Property(property="description", type="string", example="Condomínio residencial com área de lazer", description="Descrição"),
+     *     @OA\Property(property="active", type="boolean", example=true, description="Status ativo/inativo"),
+     *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-01-01T10:00:00.000000Z"),
+     *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-01-01T10:00:00.000000Z")
+     * )
+     */
+    
+    /**
+     * @OA\Schema(
+     *     schema="Pagination",
+     *     title="Paginação",
+     *     description="Informações de paginação",
+     *     @OA\Property(property="current_page", type="integer", example=1, description="Página atual"),
+     *     @OA\Property(property="last_page", type="integer", example=5, description="Última página"),
+     *     @OA\Property(property="per_page", type="integer", example=15, description="Itens por página"),
+     *     @OA\Property(property="total", type="integer", example=75, description="Total de itens"),
+     *     @OA\Property(property="from", type="integer", example=1, description="Primeiro item da página"),
+     *     @OA\Property(property="to", type="integer", example=15, description="Último item da página")
+     * )
+     */
+    
+    /**
+     * @OA\Schema(
+     *     schema="ErrorResponse",
+     *     title="Resposta de Erro",
+     *     description="Modelo padrão para respostas de erro",
+     *     @OA\Property(property="status", type="string", example="error", description="Status da resposta"),
+     *     @OA\Property(property="message", type="string", example="Mensagem de erro", description="Descrição do erro"),
+     *     @OA\Property(property="errors", type="object", description="Detalhes dos erros de validação")
+     * )
+     */
     /**
      * @OA\Post(
      *     path="/api/register",

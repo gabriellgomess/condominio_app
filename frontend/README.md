@@ -1,248 +1,225 @@
-# Frontend de Autenticação - Sistema de Condomínio
+# Sistema de Condomínio - Frontend React
 
-Este é um frontend provisório desenvolvido para testar as rotas de autenticação da API Laravel. Ele foi construído com HTML, CSS, JavaScript e Tailwind CSS.
+## Visão Geral
 
-## 🚀 Funcionalidades
+Sistema de gestão de condomínios desenvolvido em React com Vite, JavaScript e Tailwind CSS. O sistema implementa um controle de acesso baseado em papéis (RBAC) que direciona usuários para áreas específicas baseadas em seu nível de acesso.
 
-### ✅ Autenticação Completa
-- **Login**: Autenticação de usuários existentes
-- **Registro**: Cadastro de novos usuários com níveis de acesso
-- **Reset de Senha**: Sistema completo de recuperação de senha
-- **Perfil**: Visualização e gerenciamento do perfil do usuário
-- **Logout**: Encerramento seguro da sessão
+## Paleta de Cores
 
-### 🎯 **Sistema de Redirecionamento por Papéis**
-- **Redirecionamento Automático**: Cada usuário é direcionado para sua área específica
-- **Dashboards Personalizados**: Interface adaptada ao nível de acesso
-- **Menu Dinâmico**: Itens de menu baseados em permissões
-- **Controle de Acesso**: Validação server-side de permissões
+O sistema utiliza uma paleta de cores escura personalizável através de variáveis CSS:
 
-### 🎨 Interface Moderna
-- Design responsivo com Tailwind CSS
-- Animações suaves e transições
-- Suporte a modo escuro automático
-- Ícones intuitivos e feedback visual
-- Mensagens de status em tempo real
+- **Primary**: `#080d08` - Fundo principal escuro
+- **Secondary**: `#04d404` - Verde para destaque e ações
+- **Light**: `#f3f7f1` - Texto e elementos claros
+- **White**: `#fff` - Branco puro para contrastes
 
-### 🔧 Recursos Técnicos
-- Gerenciamento de estado com JavaScript ES6+
-- Armazenamento local de tokens (localStorage)
-- Validação de formulários em tempo real
-- Tratamento de erros robusto
-- Teste automático de conexão com a API
+As cores estão definidas em variáveis CSS para fácil personalização conforme necessidade do cliente.
 
-## 📁 Estrutura de Arquivos
+## Tecnologias Utilizadas
+
+- **React 19** - Framework principal
+- **Vite** - Build tool e dev server
+- **JavaScript** - Linguagem de programação
+- **Tailwind CSS** - Framework de CSS utilitário
+- **React Router DOM** - Roteamento da aplicação
+
+## Estrutura do Projeto
 
 ```
-frontend/
-├── index.html          # Página principal
-├── styles.css          # Estilos personalizados
-├── script.js           # Lógica da aplicação
-├── config.js           # Configurações centralizadas
-├── email-config.md     # Configurações específicas de email
-└── README.md           # Esta documentação
+src/
+├── components/          # Componentes reutilizáveis
+│   ├── ProtectedRoute.jsx      # Rota protegida com verificação de acesso
+│   └── UserAreaRouter.jsx      # Roteador para áreas específicas dos usuários
+├── contexts/           # Contextos React
+│   └── AuthContext.jsx         # Contexto de autenticação
+├── pages/              # Páginas da aplicação
+│   ├── Home.jsx                # Página inicial
+│   ├── Login.jsx               # Página de login
+│   ├── AdminDashboard.jsx      # Dashboard do administrador
+│   ├── SyndicDashboard.jsx     # Dashboard do síndico
+│   ├── ResidentDashboard.jsx   # Dashboard do morador
+│   └── EmployeeDashboard.jsx   # Dashboard do funcionário
+├── App.jsx             # Componente principal com rotas
+├── main.jsx            # Ponto de entrada da aplicação
+└── index.css           # Estilos globais e variáveis CSS
 ```
 
-## 🛠️ Como Usar
+## Sistema de Autenticação
 
-### 1. Pré-requisitos
-- Backend Laravel rodando em `http://localhost:8000`
-- Navegador moderno com suporte a ES6+
-- Conexão com a internet (para carregar Tailwind CSS)
+### Níveis de Acesso
 
-### 2. Execução
-1. Abra o arquivo `index.html` em qualquer navegador
-2. Ou use um servidor local:
-   ```bash
-   # Python 3
-   python -m http.server 8001
-   
-   # Node.js
-   npx serve .
-   
-   # PHP
-   php -S localhost:8001
-   ```
+1. **Administrador** (`administrador`)
+   - Acesso completo ao sistema
+   - Gestão de condomínios, usuários e configurações
+   - Relatórios e analytics
 
-### 3. Acesso
-- **URL Local**: `http://localhost:8001` (ou porta escolhida)
-- **URL Direta**: Abrir `index.html` diretamente no navegador
+2. **Síndico** (`sindico`)
+   - Gestão de unidades e moradores
+   - Controle de vagas de garagem
+   - Comunicação com moradores
+   - Relatórios de ocupação
 
-## 👥 Usuários de Teste
+3. **Morador** (`morador`)
+   - Visualização de informações da unidade
+   - Solicitações de manutenção
+   - Acesso a avisos e comunicados
+   - Documentos e contratos
 
-O sistema inclui usuários pré-cadastrados para testes:
+4. **Funcionário** (`funcionario`)
+   - Gestão de tarefas operacionais
+   - Manutenção e limpeza
+   - Segurança e rondas
+   - Relatórios de performance
 
-| Email | Senha | Nível | Descrição |
-|-------|-------|-------|-----------|
-| `admin@condominio.com` | `123456` | Administrador | Acesso total |
-| `sindico@condominio.com` | `123456` | Síndico | Gerenciamento |
-| `morador@condominio.com` | `123456` | Morador | Acesso básico |
-| `funcionario@condominio.com` | `123456` | Funcionário | Acesso limitado |
+### Fluxo de Autenticação
 
-## 🔑 Fluxo de Reset de Senha
+1. Usuário acessa a página de login
+2. Credenciais são validadas no backend
+3. Backend retorna token e informações de redirecionamento
+4. Frontend redireciona para área apropriada baseada no `access_level`
+5. Acesso é controlado por rotas protegidas
 
-### Passo 1: Solicitar Reset
-1. Acesse a aba "Reset de Senha"
-2. Digite seu e-mail
-3. Clique em "Solicitar Reset"
-4. **IMPORTANTE**: Verifique sua caixa de entrada (e pasta spam)
-5. **Desenvolvimento**: Token também é exibido no console para testes
+## Rotas da Aplicação
 
-### Passo 2: Redefinir Senha
-1. O sistema automaticamente preenche o token
-2. Digite sua nova senha (mínimo 6 caracteres)
-3. Confirme a nova senha
-4. Clique em "Redefinir Senha"
+- `/` - Página inicial (pública)
+- `/login` - Página de login (pública)
+- `/admin/*` - Área do administrador (protegida)
+- `/syndic/*` - Área do síndico (protegida)
+- `/resident/*` - Área do morador (protegida)
+- `/employee/*` - Área do funcionário (protegida)
+- `/dashboard` - Rota padrão que redireciona para área apropriada
 
-### ⚠️ Nota sobre Tokens
-- **Sistema de Email Ativo**: Tokens são enviados por email via SMTP (Hostinger)
-- **Verificação**: Tokens expiram em 60 minutos
-- **Desenvolvimento**: Tokens também são exibidos no console para facilitar testes
-- **Produção**: Apenas emails são enviados, sem exibição no console
+## Usuários de Teste
 
-## 🎯 Endpoints Testados
+Para testar o sistema, utilize as seguintes credenciais:
 
-O frontend testa todos os endpoints de autenticação:
+- **Síndico**: `sindico@condominio.com` / `123456`
+- **Morador**: `morador@condominio.com` / `123456`
+- **Funcionário**: `funcionario@condominio.com` / `123456`
 
-- `POST /api/register` - Registro de usuário
-- `POST /api/login` - Login de usuário (com redirecionamento automático)
-- `POST /api/forgot-password` - Solicitar reset de senha
-- `POST /api/verify-reset-token` - Verificar token (não implementado na UI)
-- `POST /api/reset-password` - Redefinir senha
-- `GET /api/profile` - Perfil do usuário
-- `POST /api/logout` - Logout do usuário
-- `GET /api/access-levels` - Níveis de acesso disponíveis
-- `GET /api/redirect-info` - Informações de redirecionamento do usuário atual
+## Executando o Projeto
 
-## ⌨️ Atalhos de Teclado
+### Pré-requisitos
 
-- **Ctrl + K**: Ir direto para a tela de login
-- **Tab**: Navegar entre campos de formulário
-- **Enter**: Submeter formulários
+- Node.js (versão 18 ou superior)
+- npm ou yarn
 
-## 🐛 Debug e Desenvolvimento
+### Instalação
 
-### Console do Navegador
-- Abra as ferramentas de desenvolvedor (F12)
-- Verifique a aba "Console" para logs detalhados
-- Tokens de reset são exibidos no console
+```bash
+# Instalar dependências
+npm install
 
-### Variável Global
-- Acesse `window.authSystem` no console para debug
-- Útil para testar métodos e verificar estado
+# Executar em modo de desenvolvimento
+npm run dev
 
-### Logs Automáticos
-- Conexão com a API é testada automaticamente
-- Erros são exibidos em tempo real
-- Status de todas as operações é logado
+# Build para produção
+npm run build
 
-## 🎨 Personalização
+# Preview da build
+npm run preview
+```
 
-### Cores e Temas
-- Edite `styles.css` para alterar cores
-- Modifique classes Tailwind no HTML
-- Suporte automático a modo escuro
+### Configuração do Backend
 
-### Validações
-- Validações básicas estão em `script.js`
-- Adicione validações customizadas conforme necessário
-- Mensagens de erro são personalizáveis
+Certifique-se de que o backend Laravel esteja rodando na porta 8000:
 
-### Responsividade
-- Layout responsivo com Tailwind CSS
-- Breakpoints configurados para mobile
-- Teste em diferentes tamanhos de tela
+```bash
+# No diretório backend
+php artisan serve
+```
 
-## 🔒 Segurança
+## Personalização
 
-### Tokens
-- Tokens são armazenados no localStorage
-- Logout remove tokens automaticamente
-- Validação de tokens em cada requisição
+### Cores
 
-### Sistema de Email
-- **SMTP Configurado**: Hostinger com SSL (porta 465)
-- **Remetente**: suporte@nexustech.net.br
-- **Expiração**: Tokens expiram em 60 minutos
-- **Segurança**: Emails são enviados via conexão criptografada SSL
-- **Documentação**: Consulte `email-config.md` para detalhes completos
+Para alterar as cores do sistema, edite as variáveis CSS em `src/index.css`:
 
-### Validação
-- Validação client-side para melhor UX
-- Validação server-side para segurança
-- Sanitização de inputs básica
+```css
+:root {
+  --color-primary: #080d08;      /* Fundo principal */
+  --color-secondary: #04d404;    /* Cor de destaque */
+  --color-light: #f3f7f1;       /* Texto claro */
+  --color-white: #fff;           /* Branco */
+}
+```
 
-### CORS
-- Configure CORS no backend Laravel se necessário
-- Frontend faz requisições para `http://localhost:8000`
+### Tailwind CSS
 
-## 🚨 Troubleshooting
+As cores personalizadas estão configuradas no `tailwind.config.js` e podem ser utilizadas com as classes:
 
-### Problemas Comuns
+- `bg-primary`, `text-primary`, `border-primary`
+- `bg-secondary`, `text-secondary`, `border-secondary`
+- `bg-light`, `text-light`, `border-light`
+- `bg-white`, `text-white`, `border-white`
 
-1. **API não conecta**
-   - Verifique se o backend está rodando
-   - Confirme a URL em `script.js` (linha 3)
-   - Verifique logs no console do navegador
+## Funcionalidades Principais
 
-2. **Token não funciona**
-   - Tokens expiram em 60 minutos
-   - Verifique se o email foi recebido (caixa de entrada e spam)
-   - Copie o token completo do email ou console (desenvolvimento)
-   - Verifique se o e-mail está correto
+### Dashboard do Administrador
+- Visão geral do sistema
+- Gestão de condomínios
+- Gestão de usuários
+- Relatórios e analytics
+- Configurações do sistema
 
-3. **Formulário não submete**
-   - Verifique se todos os campos obrigatórios estão preenchidos
-   - Confirme se a senha tem pelo menos 6 caracteres
-   - Verifique logs de erro no console
+### Dashboard do Síndico
+- Gestão de unidades
+- Controle de moradores
+- Gestão de vagas
+- Comunicação
+- Relatórios de ocupação
 
-4. **Interface não carrega**
-   - Verifique se todos os arquivos estão na mesma pasta
-   - Confirme se o Tailwind CSS está carregando
-   - Teste em navegador diferente
+### Dashboard do Morador
+- Informações da unidade
+- Avisos e comunicados
+- Solicitações de manutenção
+- Documentos e contratos
+- Contato e suporte
 
-### Logs Úteis
-- Console do navegador (F12)
-- Network tab para ver requisições
-- Application tab para verificar localStorage
+### Dashboard do Funcionário
+- Tarefas operacionais
+- Manutenção
+- Limpeza e conservação
+- Segurança
+- Relatórios de performance
 
-### Problemas com Email
-- **Email não recebido**: Verifique pasta spam e configurações de filtro
-- **Erro SMTP**: Verifique logs do Laravel em `storage/logs/laravel.log`
-- **Timeout**: Verifique configurações de rede e firewall
-- **Autenticação**: Confirme credenciais SMTP no arquivo `.env`
+## Segurança
 
-## 🔮 Próximos Passos
+- Rotas protegidas com verificação de autenticação
+- Controle de acesso baseado em papéis
+- Tokens JWT para autenticação
+- Redirecionamento automático para áreas apropriadas
+- Proteção contra acesso não autorizado
 
-### Melhorias Sugeridas
-- [x] ✅ Sistema de redirecionamento por papéis implementado
-- [ ] Implementar verificação de token na UI
-- [ ] Adicionar validação de força de senha
-- [ ] Implementar refresh automático de tokens
-- [ ] Adicionar testes automatizados
-- [ ] Implementar PWA (Progressive Web App)
+## Desenvolvimento
 
-### 🚀 **Funcionalidades Implementadas**
-- [x] ✅ Redirecionamento automático baseado em nível de acesso
-- [x] ✅ Dashboards personalizados por papel
-- [x] ✅ Menu dinâmico baseado em permissões
-- [x] ✅ Controle de acesso server-side
-- [x] ✅ Interface adaptativa por usuário
+### Estrutura de Componentes
 
-### Integração
-- [ ] Conectar com sistema de notificações
-- [ ] Integrar com dashboard principal
-- [ ] Adicionar autenticação social
-- [ ] Implementar 2FA (Two-Factor Authentication)
+O sistema utiliza uma arquitetura baseada em componentes com:
 
-## 📞 Suporte
+- **Contextos** para gerenciamento de estado global
+- **Componentes reutilizáveis** para funcionalidades comuns
+- **Páginas** específicas para cada tipo de usuário
+- **Rotas protegidas** para controle de acesso
 
-Para dúvidas ou problemas:
-1. Verifique esta documentação
-2. Consulte os logs no console
-3. Teste com usuários de exemplo
-4. Verifique se o backend está funcionando
+### Padrões Utilizados
 
----
+- **Hooks personalizados** para lógica de negócio
+- **Context API** para gerenciamento de estado
+- **Componentes funcionais** com hooks
+- **CSS-in-JS** com Tailwind CSS
+- **Roteamento declarativo** com React Router
 
-**Desenvolvido para testes de API - Sistema de Condomínio** 🏢
+## Contribuição
+
+Para contribuir com o projeto:
+
+1. Faça um fork do repositório
+2. Crie uma branch para sua feature
+3. Implemente as mudanças
+4. Teste localmente
+5. Envie um pull request
+
+## Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.

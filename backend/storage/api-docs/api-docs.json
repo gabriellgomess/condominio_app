@@ -1,13 +1,24 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API de Autenticação",
-        "description": "Documentação da API de autenticação",
+        "title": "API de Sistema de Condomínio",
+        "description": "Documentação completa da API para gerenciamento de condomínios, incluindo blocos, unidades, vagas de garagem e depósitos.",
         "contact": {
-            "email": "gabriel.gomes@outlook.com"
+            "name": "Suporte Sistema de Condomínio",
+            "email": "admin@condominio.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
         },
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Servidor de Desenvolvimento"
+        }
+    ],
     "paths": {
         "/api/register": {
             "post": {
@@ -857,14 +868,685 @@
                     }
                 ]
             }
+        },
+        "/api/condominiums": {
+            "get": {
+                "tags": [
+                    "Condomínios"
+                ],
+                "summary": "Listar condomínios",
+                "description": "Retorna lista de condomínios com paginação",
+                "operationId": "1fe16b15e994033de9c50dd0af4c894f",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número da página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Termo de busca",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "description": "Filtrar por cidade",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "description": "Filtrar por estado",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de condomínios",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Condomínios listados com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Residencial Jardim das Flores"
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "Rua das Flores, 123"
+                                                    },
+                                                    "city": {
+                                                        "type": "string",
+                                                        "example": "São Paulo"
+                                                    },
+                                                    "state": {
+                                                        "type": "string",
+                                                        "example": "SP"
+                                                    },
+                                                    "zip_code": {
+                                                        "type": "string",
+                                                        "example": "01234-567"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string",
+                                                        "example": "(11) 1234-5678"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "admin@jardimflores.com"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Condomínio residencial"
+                                                    },
+                                                    "active": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 75
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Condomínios"
+                ],
+                "summary": "Criar condomínio",
+                "description": "Cria um novo condomínio",
+                "operationId": "7877ec9b3ff5a85e37a9747fde29a94b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "address",
+                                    "city",
+                                    "state",
+                                    "zip_code"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Nome do condomínio",
+                                        "type": "string",
+                                        "example": "Residencial Jardim das Flores"
+                                    },
+                                    "address": {
+                                        "description": "Endereço completo",
+                                        "type": "string",
+                                        "example": "Rua das Flores, 123 - Jardim Botânico"
+                                    },
+                                    "city": {
+                                        "description": "Cidade",
+                                        "type": "string",
+                                        "example": "São Paulo"
+                                    },
+                                    "state": {
+                                        "description": "Estado",
+                                        "type": "string",
+                                        "example": "SP"
+                                    },
+                                    "zip_code": {
+                                        "description": "CEP",
+                                        "type": "string",
+                                        "example": "01234-567"
+                                    },
+                                    "phone": {
+                                        "description": "Telefone",
+                                        "type": "string",
+                                        "example": "(11) 1234-5678"
+                                    },
+                                    "email": {
+                                        "description": "Email",
+                                        "type": "string",
+                                        "example": "admin@jardimflores.com"
+                                    },
+                                    "description": {
+                                        "description": "Descrição",
+                                        "type": "string",
+                                        "example": "Condomínio residencial com área de lazer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Condomínio criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Condomínio criado com sucesso"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Residencial Jardim das Flores"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "Rua das Flores, 123"
+                                                },
+                                                "city": {
+                                                    "type": "string",
+                                                    "example": "São Paulo"
+                                                },
+                                                "state": {
+                                                    "type": "string",
+                                                    "example": "SP"
+                                                },
+                                                "zip_code": {
+                                                    "type": "string",
+                                                    "example": "01234-567"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "(11) 1234-5678"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "admin@jardimflores.com"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Condomínio residencial"
+                                                },
+                                                "active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erro de validação"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/condominiums/{id}": {
+            "get": {
+                "tags": [
+                    "Condomínios"
+                ],
+                "summary": "Obter condomínio",
+                "description": "Retorna detalhes de um condomínio específico",
+                "operationId": "f9149dae3ae863a53c4e7809a460ffd8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do condomínio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Condomínio encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Condomínio encontrado"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Residencial Jardim das Flores"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "Rua das Flores, 123"
+                                                },
+                                                "city": {
+                                                    "type": "string",
+                                                    "example": "São Paulo"
+                                                },
+                                                "state": {
+                                                    "type": "string",
+                                                    "example": "SP"
+                                                },
+                                                "zip_code": {
+                                                    "type": "string",
+                                                    "example": "01234-567"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "(11) 1234-5678"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "admin@jardimflores.com"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Condomínio residencial"
+                                                },
+                                                "active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "blocks": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "units": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "parking_spaces": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "storage_units": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Condomínio não encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Condomínios"
+                ],
+                "summary": "Atualizar condomínio",
+                "description": "Atualiza um condomínio existente",
+                "operationId": "5d5a94bbf8e96451d5f30cb74a705479",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do condomínio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Nome do condomínio",
+                                        "type": "string",
+                                        "example": "Residencial Jardim das Flores"
+                                    },
+                                    "address": {
+                                        "description": "Endereço completo",
+                                        "type": "string",
+                                        "example": "Rua das Flores, 123 - Jardim Botânico"
+                                    },
+                                    "city": {
+                                        "description": "Cidade",
+                                        "type": "string",
+                                        "example": "São Paulo"
+                                    },
+                                    "state": {
+                                        "description": "Estado",
+                                        "type": "string",
+                                        "example": "SP"
+                                    },
+                                    "zip_code": {
+                                        "description": "CEP",
+                                        "type": "string",
+                                        "example": "01234-567"
+                                    },
+                                    "phone": {
+                                        "description": "Telefone",
+                                        "type": "string",
+                                        "example": "(11) 1234-5678"
+                                    },
+                                    "email": {
+                                        "description": "Email",
+                                        "type": "string",
+                                        "example": "admin@jardimflores.com"
+                                    },
+                                    "description": {
+                                        "description": "Descrição",
+                                        "type": "string",
+                                        "example": "Condomínio residencial com área de lazer"
+                                    },
+                                    "active": {
+                                        "description": "Status ativo/inativo",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Condomínio atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Condomínio atualizado com sucesso"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Residencial Jardim das Flores"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "Rua das Flores, 123"
+                                                },
+                                                "city": {
+                                                    "type": "string",
+                                                    "example": "São Paulo"
+                                                },
+                                                "state": {
+                                                    "type": "string",
+                                                    "example": "SP"
+                                                },
+                                                "zip_code": {
+                                                    "type": "string",
+                                                    "example": "01234-567"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "(11) 1234-5678"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "admin@jardimflores.com"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Condomínio residencial"
+                                                },
+                                                "active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Condomínio não encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Condomínios"
+                ],
+                "summary": "Excluir condomínio",
+                "description": "Exclui um condomínio (soft delete)",
+                "operationId": "82fd61503d9bb0af6190b665441031f6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do condomínio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Condomínio excluído com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Condomínio excluído com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Condomínio não encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
-    "tags": [
-        {
-            "name": "Autenticação",
-            "description": "Autenticação"
-        }
-    ],
     "components": {
         "securitySchemes": {
             "sanctum": {
@@ -875,6 +1557,16 @@
             }
         }
     },
+    "tags": [
+        {
+            "name": "Condomínios",
+            "description": "Endpoints para gerenciamento de condomínios"
+        },
+        {
+            "name": "Autenticação",
+            "description": "Endpoints para autenticação e gerenciamento de usuários"
+        }
+    ],
     "security": [
         {
             "sanctum": []

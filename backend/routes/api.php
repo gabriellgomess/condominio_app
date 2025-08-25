@@ -13,6 +13,9 @@ use App\Http\Controllers\Checkout\CheckoutController;
 use App\Http\Controllers\Checkout\CheckoutWebhookController;
 use App\Http\Controllers\Checkout\CheckoutQueryController;
 
+// Controllers do Sistema de Condomínio
+use App\Http\Controllers\Condominium\CondominiumController;
+
 
 // Rotas públicas - não precisam de autenticação
 // Register
@@ -42,4 +45,7 @@ Route::group([
 
     // Logout
     Route::post("logout", [ApiController::class, "logout"]);
+
+    // Sistema de Condomínio
+    Route::apiResource('condominiums', CondominiumController::class);
 });
