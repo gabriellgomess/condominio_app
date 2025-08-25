@@ -122,6 +122,101 @@ class ApiController extends Controller
         }
     }
 
+    /**
+     * Determina as informações de redirecionamento baseadas no nível de acesso
+     * 
+     * @param string $accessLevel
+     * @return array
+     */
+    private function getRedirectInfo($accessLevel)
+    {
+        switch ($accessLevel) {
+            case 'administrador':
+                return [
+                    'access_level' => 'administrador',
+                    'redirect_to' => '/admin/dashboard',
+                    'area_name' => 'Painel Administrativo'
+                ];
+
+            case 'sindico':
+                return [
+                    'access_level' => 'sindico',
+                    'redirect_to' => '/sindico/dashboard',
+                    'area_name' => 'Painel do Síndico'
+                ];
+
+            case 'morador':
+                return [
+                    'access_level' => 'morador',
+                    'redirect_to' => '/morador/dashboard',
+                    'area_name' => 'Área do Morador'
+                ];
+
+            case 'funcionario':
+                return [
+                    'access_level' => 'funcionario',
+                    'redirect_to' => '/funcionario/dashboard',
+                    'area_name' => 'Área do Funcionário'
+                ];
+
+            default:
+                return [
+                    'access_level' => 'default',
+                    'redirect_to' => '/dashboard',
+                    'area_name' => 'Dashboard'
+                ];
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/redirect-info",
+     *     summary="Obter informações de redirecionamento do usuário atual",
+     *     description="Retorna as informações de redirecionamento baseadas no nível de acesso do usuário autenticado.",
+     *     tags={"Autenticação"},
+     *     security={{ "sanctum": {} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Informações de redirecionamento recuperadas com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Informações de redirecionamento"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="access_level", type="string", example="morador"),
+     *                 @OA\Property(property="redirect_to", type="string", example="/morador/dashboard"),
+     *                 @OA\Property(property="area_name", type="string", example="Área do Morador")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Não autenticado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Não autenticado.")
+     *         )
+     *     )
+     * )
+     */
+    public function getCurrentUserRedirectInfo()
+    {
+        try {
+            $user = Auth::user();
+            $redirectInfo = $this->getRedirectInfo($user->access_level);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Informações de redirecionamento',
+                'data' => $redirectInfo
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Erro interno do servidor',
+                'error' => $th->getMessage()
+            ], 500);
+        }
+    }
+
 
     /**
      * @OA\Post(
@@ -148,9 +243,15 @@ class ApiController extends Controller
      *                 @OA\Property(property="id", type="integer", example=1),
      *                 @OA\Property(property="name", type="string", example="Nome Usuário"),
      *                 @OA\Property(property="email", type="string", example="usuario@email.com"),
+     *                 @OA\Property(property="access_level", type="string", example="morador"),
      *                 @OA\Property(property="email_verified_at", type="string", nullable=true, example=null),
      *                 @OA\Property(property="created_at", type="string", example="2024-10-03T15:51:05.000000Z"),
      *                 @OA\Property(property="updated_at", type="string", example="2024-10-03T15:51:05.000000Z")
+     *             ),
+     *             @OA\Property(property="redirect_info", type="object",
+     *                 @OA\Property(property="access_level", type="string", example="morador"),
+     *                 @OA\Property(property="redirect_to", type="string", example="/morador/dashboard"),
+     *                 @OA\Property(property="area_name", type="string", example="Área do Morador")
      *             )
      *         )
      *     ),
@@ -192,11 +293,15 @@ class ApiController extends Controller
 
             $user = User::where('email', $request->email)->first();
 
+            // Determinar área de redirecionamento baseada no nível de acesso
+            $redirectInfo = $this->getRedirectInfo($user->access_level);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Usuário logado com sucesso',
                 'token' => $user->createToken('token')->plainTextToken,
-                'data' => $user
+                'data' => $user,
+                'redirect_info' => $redirectInfo
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

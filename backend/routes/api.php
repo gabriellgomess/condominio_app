@@ -24,6 +24,9 @@ Route::post("login", [ApiController::class, "login"]);
 // Obter níveis de acesso disponíveis
 Route::get("access-levels", [ApiController::class, "getAccessLevels"]);
 
+// Obter informações de redirecionamento para o usuário atual
+Route::get("redirect-info", [ApiController::class, "getCurrentUserRedirectInfo"]);
+
 // Reset de senha
 Route::post("forgot-password", [ApiController::class, "forgotPassword"]);
 Route::post("reset-password", [ApiController::class, "resetPassword"]);

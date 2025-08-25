@@ -210,10 +210,15 @@ class AuthSystem {
                 // Limpar formulário
                 form.reset();
                 
-                // Mostrar perfil
-                setTimeout(() => {
-                    this.showSection('profile');
-                }, 1000);
+                // Processar informações de redirecionamento
+                if (response.redirect_info) {
+                    this.processRedirectInfo(response.redirect_info);
+                } else {
+                    // Fallback: mostrar perfil
+                    setTimeout(() => {
+                        this.showSection('profile');
+                    }, 1000);
+                }
             }
         } catch (error) {
             this.showStatus(error.message || 'Erro ao fazer login', 'error');
@@ -408,6 +413,43 @@ class AuthSystem {
         }
     }
 
+    // Processar informações de redirecionamento
+    processRedirectInfo(redirectInfo) {
+        console.log('🔄 Processando redirecionamento:', redirectInfo);
+        
+        // Salvar informações de redirecionamento no localStorage
+        localStorage.setItem('redirectInfo', JSON.stringify(redirectInfo));
+        
+        // Mostrar mensagem de redirecionamento
+        this.showStatus(`Redirecionando para ${redirectInfo.area_name}...`, 'info');
+        
+        // Redirecionar para a rota específica após 2 segundos
+        setTimeout(() => {
+            this.redirectToUserArea(redirectInfo.redirect_to);
+        }, 2000);
+    }
+
+    // Redirecionar para área específica do usuário
+    redirectToUserArea(route) {
+        console.log('🚀 Redirecionando para:', route);
+        
+        // Em produção, você pode usar:
+        // window.location.href = route;
+        
+        // Para demonstração, vamos mostrar uma mensagem e simular o redirecionamento
+        this.showStatus(`Redirecionado para ${route}`, 'success');
+        
+        // Simular redirecionamento (em produção seria real)
+        setTimeout(() => {
+            // Aqui você implementaria a lógica para ir para a rota específica
+            // Por exemplo, usando um router SPA ou redirecionamento real
+            console.log(`📍 Usuário redirecionado para: ${route}`);
+            
+            // Mostrar perfil como fallback
+            this.showSection('profile');
+        }, 1000);
+    }
+
     // Exibir perfil do usuário
     displayUserProfile(user) {
         const profileInfo = document.getElementById('profileInfo');
@@ -469,6 +511,7 @@ class AuthSystem {
             this.authToken = null;
             this.currentUser = null;
             localStorage.removeItem('authToken');
+            localStorage.removeItem('redirectInfo');
             
             // Mostrar mensagem
             this.showStatus('Logout realizado com sucesso!', 'success');

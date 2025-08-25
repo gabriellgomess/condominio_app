@@ -148,6 +148,76 @@
                 }
             }
         },
+        "/api/redirect-info": {
+            "get": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Obter informações de redirecionamento do usuário atual",
+                "description": "Retorna as informações de redirecionamento baseadas no nível de acesso do usuário autenticado.",
+                "operationId": "e4d8de4ef8952573b4e82d1d207e552a",
+                "responses": {
+                    "200": {
+                        "description": "Informações de redirecionamento recuperadas com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Informações de redirecionamento"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "access_level": {
+                                                    "type": "string",
+                                                    "example": "morador"
+                                                },
+                                                "redirect_to": {
+                                                    "type": "string",
+                                                    "example": "/morador/dashboard"
+                                                },
+                                                "area_name": {
+                                                    "type": "string",
+                                                    "example": "Área do Morador"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Não autenticado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [
@@ -215,6 +285,10 @@
                                                     "type": "string",
                                                     "example": "usuario@email.com"
                                                 },
+                                                "access_level": {
+                                                    "type": "string",
+                                                    "example": "morador"
+                                                },
                                                 "email_verified_at": {
                                                     "type": "string",
                                                     "example": null,
@@ -227,6 +301,23 @@
                                                 "updated_at": {
                                                     "type": "string",
                                                     "example": "2024-10-03T15:51:05.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "redirect_info": {
+                                            "properties": {
+                                                "access_level": {
+                                                    "type": "string",
+                                                    "example": "morador"
+                                                },
+                                                "redirect_to": {
+                                                    "type": "string",
+                                                    "example": "/morador/dashboard"
+                                                },
+                                                "area_name": {
+                                                    "type": "string",
+                                                    "example": "Área do Morador"
                                                 }
                                             },
                                             "type": "object"
