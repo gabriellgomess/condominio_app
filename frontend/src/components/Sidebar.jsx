@@ -65,6 +65,12 @@ const Sidebar = () => {
       ]
     },
     {
+      title: 'Estrutura',
+      icon: <Building className="w-5 h-5" />,
+      path: '/admin/structure',
+      submenu: []
+    },
+    {
       title: 'Reservas',
       icon: <Calendar className="w-5 h-5" />,
       path: '/reservas',

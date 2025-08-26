@@ -96,6 +96,9 @@ class CondominiumController extends Controller
         try {
             $query = Condominium::query();
 
+            // Incluir contadores de blocos e unidades
+            $query->withCount(['blocks', 'units']);
+
             // Filtros
             if ($request->filled('search')) {
                 $search = $request->search;
@@ -203,9 +206,24 @@ class CondominiumController extends Controller
     public function store(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
+            // Debug: Log dos dados recebidos
+            
+            
+            // Mapear 'cep' para 'zip_code' se necessário
+            $data = $request->all();
+            if (isset($data['cep']) && !isset($data['zip_code'])) {
+                $data['zip_code'] = $data['cep'];
+                unset($data['cep']);
+            }
+            
+            // Debug: Log dos dados após mapeamento
+            
+
+            $validator = Validator::make($data, [
                 'name' => 'required|string|max:255',
                 'address' => 'required|string|max:500',
+                'number' => 'nullable|string|max:50',
+                'district' => 'nullable|string|max:100',
                 'city' => 'required|string|max:100',
                 'state' => 'required|string|max:2',
                 'zip_code' => 'required|string|max:10',
@@ -229,7 +247,7 @@ class CondominiumController extends Controller
                 ], 422);
             }
 
-            $condominium = Condominium::create($request->all());
+            $condominium = Condominium::create($data);
 
             return response()->json([
                 'status' => 'success',
@@ -389,7 +407,14 @@ class CondominiumController extends Controller
                 ], 404);
             }
 
-            $validator = Validator::make($request->all(), [
+            // Mapear 'cep' para 'zip_code' se necessário
+            $data = $request->all();
+            if (isset($data['cep']) && !isset($data['zip_code'])) {
+                $data['zip_code'] = $data['cep'];
+                unset($data['cep']);
+            }
+
+            $validator = Validator::make($data, [
                 'name' => 'sometimes|required|string|max:255',
                 'address' => 'sometimes|required|string|max:500',
                 'city' => 'sometimes|required|string|max:100',
@@ -409,7 +434,7 @@ class CondominiumController extends Controller
                 ], 422);
             }
 
-            $condominium->update($request->all());
+            $condominium->update($data);
 
             return response()->json([
                 'status' => 'success',

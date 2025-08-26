@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import UserAreaRouter from './components/UserAreaRouter';
 import ProtectedRoute from './components/ProtectedRoute';
 import CondominiumsPage from './pages/admin/CondominiumsPage';
+import StructureManagementPage from './pages/admin/StructureManagementPage';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                   <Routes>
                     <Route path="dashboard" element={<UserAreaRouter />} />
                     <Route path="condominiums" element={<CondominiumsPage />} />
+                    <Route path="structure" element={<StructureManagementPage />} />
                     <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                   </Routes>
                 </ProtectedRoute>

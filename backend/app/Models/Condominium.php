@@ -15,6 +15,8 @@ class Condominium extends Model
     protected $fillable = [
         'name',
         'address',
+        'number',
+        'district',
         'city',
         'state',
         'zip_code',
