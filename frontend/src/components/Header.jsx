@@ -1,53 +1,270 @@
 import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { User, Bell, ChevronRight } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import {
+  Menu,
+  Bell,
+  User,
+  LogOut,
+  Sun,
+  Moon,
+  ChevronDown
+} from 'lucide-react';
+import { useLayout } from './Layout';
+import { useTheme } from '../contexts/ThemeContext';
 
-const Header = ({ title, breadcrumbs = [] }) => {
-  const { user } = useAuth();
+const Header = () => {
+  const {
+    isSidebarOpen,
+    isMobile,
+    showProfileDropdown,
+    showNotifications,
+    user,
+    notifications,
+    unreadCount,
+    toggleSidebar,
+    setShowProfileDropdown,
+    setShowNotifications,
+    getInitials,
+    handleLogout,
+    profileRef,
+    notificationRef
+  } = useLayout();
+  
+  const { isDarkMode, toggleTheme } = useTheme();
+
+  const location = useLocation();
+
+  // Função para gerar breadcrumb baseado na rota atual
+  const getBreadcrumb = () => {
+    const pathSegments = location.pathname.split('/').filter(segment => segment);
+    if (pathSegments.length === 0) return 'Dashboard';
+    
+    const lastSegment = pathSegments[pathSegments.length - 1];
+    
+    // Mapeamento de rotas para nomes amigáveis
+    const routeNames = {
+      'dashboard': 'Dashboard',
+      'moradores': 'Moradores',
+      'unidades': 'Unidades',
+      'reservas': 'Reservas',
+      'comunicados': 'Comunicados',
+      'ocorrencias': 'Ocorrências',
+      'financeiro': 'Financeiro',
+      'documentos': 'Documentos',
+      'portaria': 'Portaria',
+      'configuracoes': 'Configurações',
+      'lista': 'Lista',
+      'cadastrar': 'Cadastrar',
+      'historico': 'Histórico',
+      'apartamentos': 'Apartamentos',
+      'vagas': 'Vagas',
+      'depositos': 'Depósitos',
+      'minhas': 'Minhas',
+      'nova': 'Nova',
+      'areas': 'Áreas Comuns',
+      'todos': 'Todos',
+      'criar': 'Criar',
+      'rascunhos': 'Rascunhos',
+      'cobrancas': 'Cobranças',
+      'pagamentos': 'Pagamentos',
+      'relatorios': 'Relatórios',
+      'atas': 'Atas',
+      'regimento': 'Regimento',
+      'contratos': 'Contratos',
+      'visitantes': 'Visitantes',
+      'entregas': 'Entregas',
+      'registro': 'Registro de Entrada'
+    };
+    
+    return routeNames[lastSegment] || lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1);
+  };
 
   return (
-    <header className="glass-header sticky top-0 z-30 px-4 md:px-6 py-4">
-      <div className="flex items-center justify-between">
-        <div className="animate-slide-down">
-          <h1 className="text-2xl md:text-3xl font-bold mb-1">
-            <span className="bg-gradient-to-r from-[#f3f7f1] to-[#e0e4de] bg-clip-text text-transparent">
-              {title}
-            </span>
-          </h1>
-          {breadcrumbs.length > 0 && (
-            <nav className="flex items-center space-x-2">
-              {breadcrumbs.map((crumb, index) => (
-                <React.Fragment key={index}>
-                  {index > 0 && (
-                    <ChevronRight className="w-3 h-3 text-[#3dc43d]/40" />
-                  )}
-                  <span className={`text-sm font-medium transition-colors duration-300 ${
-                    index === breadcrumbs.length - 1 
-                      ? 'text-[#3dc43d]' 
-                      : 'text-[#f3f7f1]/70 hover:text-[#3dc43d]'
-                  }`}>
-                    {crumb}
+    <header className={`${
+      isDarkMode
+        ? 'bg-gray-800 border-gray-700'
+        : 'bg-white border-gray-200'
+    } shadow-sm border-b h-16 flex-shrink-0 z-10`}>
+      <div className="px-4 sm:px-6 lg:px-8 h-full">
+        <div className="flex justify-between items-center h-full">
+          {/* Left Side */}
+          <div className="flex items-center space-x-4">
+            {/* Toggle Sidebar Button */}
+            <button
+              onClick={() => toggleSidebar()}
+              className={`
+                p-2 rounded-xl transition-all duration-200 hover:scale-105
+                ${isDarkMode
+                  ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
+                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                }
+                lg:hidden
+              `}
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+            
+            {/* Breadcrumb */}
+            <div className="hidden sm:flex items-center space-x-2">
+              <h1 className={`text-lg font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                Sistema Condomínio
+              </h1>
+              <span className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                • {getBreadcrumb()}
+              </span>
+            </div>
+          </div>
+
+          {/* Right Side */}
+          <div className="flex items-center space-x-3">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className={`
+                p-2 rounded-xl transition-all duration-200 hover:scale-105
+                ${isDarkMode
+                  ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
+                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                }
+              `}
+            >
+              {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </button>
+
+            {/* Notifications */}
+            <div className="relative" ref={notificationRef}>
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className={`
+                  relative p-2 rounded-xl transition-all duration-200 hover:scale-105
+                  ${isDarkMode
+                    ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
+                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                  }
+                `}
+              >
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center animate-pulse">
+                    {unreadCount}
                   </span>
-                </React.Fragment>
-              ))}
-            </nav>
-          )}
-        </div>
-        
-        <div className="flex items-center space-x-4 animate-slide-down" style={{ animationDelay: '0.1s' }}>
-          <div className="hidden md:block text-right">
-            <div className="text-[#f3f7f1]/80 text-sm font-light">Bem-vindo,</div>
-            <div className="text-[#3dc43d] font-semibold">{user?.name}</div>
-          </div>
-          
-          <div className="glass-icon-large w-12 h-12 hover:scale-105 transition-transform duration-300">
-            <User className="w-6 h-6 text-[#3dc43d]" />
-          </div>
-          
-          {/* Notification Bell */}
-          <div className="glass-icon p-2 hover:scale-105 transition-transform duration-300 relative group">
-            <Bell className="w-5 h-5 text-[#3dc43d]" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#3dc43d] rounded-full animate-pulse"></div>
+                )}
+              </button>
+
+              {/* Notifications Dropdown */}
+              {showNotifications && (
+                <div className={`
+                  absolute right-0 mt-2 w-80 rounded-xl shadow-lg py-2 z-50 border
+                  ${isDarkMode
+                    ? 'bg-gray-800 border-gray-700'
+                    : 'bg-white border-gray-200'
+                  }
+                `}>
+                  <div className={`px-4 py-2 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-100'}`}>
+                    <p className={`font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                      Notificações
+                    </p>
+                  </div>
+                  <div className="max-h-64 overflow-y-auto">
+                    {notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className={`
+                          px-4 py-3 hover:bg-opacity-50 cursor-pointer transition-colors
+                          ${notification.unread
+                            ? isDarkMode ? 'bg-gray-700/50' : 'bg-blue-50'
+                            : ''
+                          }
+                          ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}
+                        `}
+                      >
+                        <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                          {notification.title}
+                        </p>
+                        <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                          {notification.time}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Profile Dropdown */}
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                className="flex items-center space-x-3 p-1 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#31a196] transition-all duration-200 hover:scale-105"
+              >
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#31a196] to-[#2d8f85] flex items-center justify-center shadow-lg">
+                  <span className="text-white font-medium text-sm">
+                    {getInitials(user?.name)}
+                  </span>
+                </div>
+                <div className="hidden md:block text-left">
+                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                    {user?.name || 'Usuário'}
+                  </p>
+                  <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {user?.access_level || 'Morador'}
+                  </p>
+                </div>
+                <ChevronDown className={`
+                  h-4 w-4 transition-transform duration-200
+                  ${showProfileDropdown ? 'rotate-180' : ''}
+                  ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}
+                `} />
+              </button>
+
+              {/* Profile Dropdown Menu */}
+              {showProfileDropdown && (
+                <div className={`
+                  absolute right-0 mt-2 w-80 rounded-xl shadow-lg py-2 z-50 border
+                  ${isDarkMode
+                    ? 'bg-gray-800 border-gray-700'
+                    : 'bg-white border-gray-200'
+                  }
+                `}>
+                  <div className={`px-4 py-3 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-100'}`}>
+                    <p className={`font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                      {user?.name}
+                    </p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      {user?.email}
+                    </p>
+                    <span className="inline-block mt-1 px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                      {user?.access_level || 'Morador'}
+                    </span>
+                  </div>
+                  
+                  <button className={`
+                    flex items-center w-full px-4 py-2 text-sm transition-colors duration-200
+                    ${isDarkMode
+                      ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                      : 'text-gray-700 hover:bg-gray-100'
+                    }
+                  `}>
+                    <User className="w-4 h-4 mr-3" />
+                    Meu Perfil
+                  </button>
+                  
+                  <button
+                    onClick={handleLogout}
+                    className={`
+                      flex items-center w-full px-4 py-2 text-sm transition-colors duration-200
+                      ${isDarkMode
+                        ? 'text-red-400 hover:bg-red-900/20'
+                        : 'text-red-600 hover:bg-red-50'
+                      }
+                    `}
+                  >
+                    <LogOut className="w-4 h-4 mr-3" />
+                    Sair
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

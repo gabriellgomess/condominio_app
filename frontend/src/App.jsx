@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import UserAreaRouter from './components/UserAreaRouter';
@@ -8,8 +9,9 @@ import CondominiumsPage from './pages/admin/CondominiumsPage';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
         <div className="App">
           <Routes>
             {/* Rota pública - Página inicial */}
@@ -83,8 +85,9 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
-      </Router>
-    </AuthProvider>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
