@@ -64,29 +64,29 @@ const Sidebar = () => {
     } fixed left-0 top-0 z-50 shadow-2xl`}>
       
       {/* Header do Sidebar */}
-      <div className="p-4 border-b border-[#04d404]/20">
+      <div className="p-4 border-b border-[#3dc43d]/20">
         <div className="flex items-center justify-between">
           {!isCollapsed && (
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-[#04d404] to-green-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-[#3dc43d] to-green-500 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
               </div>
-              <span className="text-[#04d404] font-bold text-lg">Sistema</span>
+              <span className="text-[#3dc43d] font-bold text-lg">Sistema</span>
             </div>
           )}
           
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-lg hover:bg-[#04d404]/20 transition-colors duration-200"
+            className="p-2 rounded-lg hover:bg-[#3dc43d]/20 transition-colors duration-200"
           >
             {isCollapsed ? (
-              <svg className="w-5 h-5 text-[#04d404]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-[#3dc43d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
               </svg>
             ) : (
-              <svg className="w-5 h-5 text-[#04d404]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-[#3dc43d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
               </svg>
             )}
@@ -105,8 +105,8 @@ const Sidebar = () => {
                   to={item.path}
                   className={`flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? 'bg-[#04d404] text-white shadow-lg'
-                      : 'text-[#f3f7f1] hover:bg-[#04d404]/20 hover:text-[#04d404]'
+                      ? 'bg-[#3dc43d] text-white shadow-lg'
+                      : 'text-[#f3f7f1] hover:bg-[#3dc43d]/20 hover:text-[#3dc43d]'
                   }`}
                 >
                   <span className="text-xl">{item.icon}</span>
@@ -121,10 +121,10 @@ const Sidebar = () => {
       </nav>
 
       {/* User Info e Logout */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#04d404]/20">
+      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#3dc43d]/20">
         {!isCollapsed && (
           <div className="mb-4">
-            <div className="text-sm text-[#04d404] font-medium mb-1">
+            <div className="text-sm text-[#3dc43d] font-medium mb-1">
               {user?.area_name}
             </div>
             <div className="text-xs text-[#f3f7f1]/70">
