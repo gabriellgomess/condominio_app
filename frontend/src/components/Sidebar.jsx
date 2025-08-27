@@ -47,23 +47,10 @@ const Sidebar = () => {
     {
       title: 'Moradores',
       icon: <Users className="w-5 h-5" />,
-      path: '/moradores',
-      submenu: [
-        { title: 'Lista de Moradores', path: '/moradores/lista' },
-        { title: 'Cadastrar Morador', path: '/moradores/cadastrar' },
-        { title: 'Histórico', path: '/moradores/historico' }
-      ]
+      path: '/admin/residents',
+      submenu: []
     },
-    {
-      title: 'Unidades',
-      icon: <Building className="w-5 h-5" />,
-      path: '/unidades',
-      submenu: [
-        { title: 'Apartamentos', path: '/unidades/apartamentos' },
-        { title: 'Vagas', path: '/unidades/vagas' },
-        { title: 'Depósitos', path: '/unidades/depositos' }
-      ]
-    },
+
     {
       title: 'Estrutura',
       icon: <Building className="w-5 h-5" />,

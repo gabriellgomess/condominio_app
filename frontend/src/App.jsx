@@ -8,6 +8,7 @@ import UserAreaRouter from './components/UserAreaRouter';
 import ProtectedRoute from './components/ProtectedRoute';
 import CondominiumsPage from './pages/admin/CondominiumsPage';
 import StructureManagementPage from './pages/admin/StructureManagementPage';
+import ResidentsManagementPage from './pages/admin/ResidentsManagementPage';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
                     <Route path="dashboard" element={<UserAreaRouter />} />
                     <Route path="condominiums" element={<CondominiumsPage />} />
                     <Route path="structure" element={<StructureManagementPage />} />
+                    <Route path="residents" element={<ResidentsManagementPage />} />
                     <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                   </Routes>
                 </ProtectedRoute>

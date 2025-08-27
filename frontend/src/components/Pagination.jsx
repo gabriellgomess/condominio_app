@@ -85,7 +85,7 @@ const Pagination = ({
   }
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-[#1a1a1a] border-t border-[#31a196]/20">
+    <div className="flex items-center justify-between px-4 py-3 bg-[#151515] border-t border-[#31a196]/20">
       {/* Informações de itens */}
       <div className="flex items-center space-x-4">
         <div className="text-sm text-[#f3f7f1]">
