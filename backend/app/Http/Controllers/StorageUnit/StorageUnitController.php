@@ -69,7 +69,7 @@ class StorageUnitController extends Controller
             $condominium = Condominium::findOrFail($condominium_id);
 
             $query = StorageUnit::where('condominium_id', $condominium_id)
-                               ->with(['condominium', 'unit']);
+                ->with(['condominium', 'unit']);
 
             // Filtrar por unidade se fornecido
             if ($request->has('unit_id') && !empty($request->unit_id)) {
@@ -79,11 +79,11 @@ class StorageUnitController extends Controller
             // Aplicar filtro de busca se fornecido
             if ($request->has('search') && !empty($request->search)) {
                 $search = $request->search;
-                $query->where(function($q) use ($search) {
+                $query->where(function ($q) use ($search) {
                     $q->where('number', 'LIKE', "%{$search}%")
-                      ->orWhere('description', 'LIKE', "%{$search}%")
-                      ->orWhere('size', 'LIKE', "%{$search}%")
-                      ->orWhere('location', 'LIKE', "%{$search}%");
+                        ->orWhere('description', 'LIKE', "%{$search}%")
+                        ->orWhere('type', 'LIKE', "%{$search}%")
+                        ->orWhere('location', 'LIKE', "%{$search}%");
                 });
             }
 
@@ -94,7 +94,6 @@ class StorageUnitController extends Controller
                 'message' => 'Depósitos encontrados',
                 'data' => $storageUnits
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -148,11 +147,15 @@ class StorageUnitController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'number' => 'required|string|max:50',
-                'size' => 'required|in:small,medium,large,extra_large',
-                'location' => 'required|string|max:100',
+                'type' => 'required|in:storage,box,cellar,attic',
+                'location' => 'nullable|string|max:100',
+                'area' => 'nullable|numeric|min:1',
+                'height' => 'nullable|numeric|min:0.5',
                 'unit_id' => 'nullable|exists:units,id',
                 'description' => 'nullable|string',
-                'status' => 'required|in:available,occupied,reserved,maintenance'
+                'status' => 'required|in:available,occupied,reserved,maintenance',
+                'climate_controlled' => 'boolean',
+                'active' => 'boolean'
             ]);
 
             if ($validator->fails()) {
@@ -169,8 +172,8 @@ class StorageUnitController extends Controller
             // Verificar se a unidade pertence ao condomínio
             if (isset($storageData['unit_id'])) {
                 $unit = Unit::where('id', $storageData['unit_id'])
-                           ->where('condominium_id', $condominium_id)
-                           ->first();
+                    ->where('condominium_id', $condominium_id)
+                    ->first();
                 if (!$unit) {
                     return response()->json([
                         'status' => 'error',
@@ -181,8 +184,8 @@ class StorageUnitController extends Controller
 
             // Verificar se já existe depósito com o mesmo número no condomínio
             $existingStorageUnit = StorageUnit::where('condominium_id', $condominium_id)
-                                             ->where('number', $storageData['number'])
-                                             ->first();
+                ->where('number', $storageData['number'])
+                ->first();
 
             if ($existingStorageUnit) {
                 return response()->json([
@@ -199,7 +202,6 @@ class StorageUnitController extends Controller
                 'message' => 'Depósito criado com sucesso',
                 'data' => $storageUnit
             ], 201);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -244,7 +246,6 @@ class StorageUnitController extends Controller
                 'message' => 'Depósito encontrado',
                 'data' => $storageUnit
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -297,11 +298,15 @@ class StorageUnitController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'number' => 'required|string|max:50',
-                'size' => 'required|in:small,medium,large,extra_large',
-                'location' => 'required|string|max:100',
+                'type' => 'required|in:storage,box,cellar,attic',
+                'location' => 'nullable|string|max:100',
+                'area' => 'nullable|numeric|min:1',
+                'height' => 'nullable|numeric|min:0.5',
                 'unit_id' => 'nullable|exists:units,id',
                 'description' => 'nullable|string',
-                'status' => 'required|in:available,occupied,reserved,maintenance'
+                'status' => 'required|in:available,occupied,reserved,maintenance',
+                'climate_controlled' => 'boolean',
+                'active' => 'boolean'
             ]);
 
             if ($validator->fails()) {
@@ -317,8 +322,8 @@ class StorageUnitController extends Controller
             // Verificar se a unidade pertence ao condomínio
             if (isset($storageData['unit_id'])) {
                 $unit = Unit::where('id', $storageData['unit_id'])
-                           ->where('condominium_id', $storageUnit->condominium_id)
-                           ->first();
+                    ->where('condominium_id', $storageUnit->condominium_id)
+                    ->first();
                 if (!$unit) {
                     return response()->json([
                         'status' => 'error',
@@ -329,9 +334,9 @@ class StorageUnitController extends Controller
 
             // Verificar se já existe depósito com o mesmo número (exceto o atual)
             $existingStorageUnit = StorageUnit::where('condominium_id', $storageUnit->condominium_id)
-                                             ->where('number', $storageData['number'])
-                                             ->where('id', '!=', $id)
-                                             ->first();
+                ->where('number', $storageData['number'])
+                ->where('id', '!=', $id)
+                ->first();
 
             if ($existingStorageUnit) {
                 return response()->json([
@@ -348,7 +353,6 @@ class StorageUnitController extends Controller
                 'message' => 'Depósito atualizado com sucesso',
                 'data' => $storageUnit
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -392,7 +396,6 @@ class StorageUnitController extends Controller
                 'status' => 'success',
                 'message' => 'Depósito excluído com sucesso'
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -452,7 +455,6 @@ class StorageUnitController extends Controller
                 'message' => 'Estatísticas dos depósitos',
                 'data' => $stats
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',

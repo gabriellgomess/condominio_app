@@ -17,6 +17,7 @@ class ParkingSpace extends Model
         'unit_id',
         'number',
         'type',
+        'size',
         'location',
         'area',
         'status',

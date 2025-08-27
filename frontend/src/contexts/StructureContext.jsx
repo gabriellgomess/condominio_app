@@ -154,11 +154,11 @@ export const StructureProvider = ({ children }) => {
         // Carregar dados do cache
         const cachedData = cacheService.getStoredStructureData();
         if (cachedData) {
-          setCondominiums(cachedData.condominiums);
-          setBlocks(cachedData.blocks);
-          setUnits(cachedData.units);
-          setParkingSpaces(cachedData.parkingSpaces);
-          setStorageUnits(cachedData.storageUnits);
+          setCondominiums(cachedData.condominiums || []);
+          setBlocks(cachedData.blocks || []);
+          setUnits(cachedData.units || []);
+          setParkingSpaces(cachedData.parkingSpaces || []);
+          setStorageUnits(cachedData.storageUnits || []);
           setLastUpdate(cachedData.lastUpdate);
           return;
         }
@@ -172,21 +172,14 @@ export const StructureProvider = ({ children }) => {
   }, [loadAllStructureData]);
 
   // Efeito para definir condomínio selecionado após dados carregados
-  // Prioriza condomínios que tenham dados estruturais (blocos, unidades, etc.)
+  // Por padrão, começar com "Todos" (vazio) para mostrar todos os dados
   useEffect(() => {
-    if (condominiums.length > 0 && !selectedCondominium) {
-      // Encontrar um condomínio que tenha dados estruturais
-      const condominiumWithData = condominiums.find(cond => {
-        const hasBlocks = blocks.some(block => block.condominium_id === cond.id);
-        const hasUnits = units.some(unit => unit.condominium_id === cond.id);
-        return hasBlocks || hasUnits;
-      });
-      
-      // Se encontrou um condomínio com dados, usar ele. Caso contrário, usar o primeiro
-      const selectedId = condominiumWithData ? condominiumWithData.id.toString() : condominiums[0].id.toString();
-      setSelectedCondominium(selectedId);
+    if (condominiums.length > 0 && selectedCondominium === '') {
+      // Iniciar com "Todos" selecionado (selectedCondominium vazio)
+      // O usuário pode escolher um condomínio específico se quiser
+      console.log('Iniciando com "Todos os condomínios" selecionado');
     }
-  }, [condominiums, blocks, units, selectedCondominium]);
+  }, [condominiums, selectedCondominium]);
 
   const value = {
     // Estados

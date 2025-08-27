@@ -69,7 +69,7 @@ class ParkingSpaceController extends Controller
             $condominium = Condominium::findOrFail($condominium_id);
 
             $query = ParkingSpace::where('condominium_id', $condominium_id)
-                                 ->with(['condominium', 'unit']);
+                ->with(['condominium', 'unit']);
 
             // Filtrar por unidade se fornecido
             if ($request->has('unit_id') && !empty($request->unit_id)) {
@@ -79,11 +79,11 @@ class ParkingSpaceController extends Controller
             // Aplicar filtro de busca se fornecido
             if ($request->has('search') && !empty($request->search)) {
                 $search = $request->search;
-                $query->where(function($q) use ($search) {
+                $query->where(function ($q) use ($search) {
                     $q->where('number', 'LIKE', "%{$search}%")
-                      ->orWhere('description', 'LIKE', "%{$search}%")
-                      ->orWhere('type', 'LIKE', "%{$search}%")
-                      ->orWhere('size', 'LIKE', "%{$search}%");
+                        ->orWhere('description', 'LIKE', "%{$search}%")
+                        ->orWhere('type', 'LIKE', "%{$search}%")
+                        ->orWhere('size', 'LIKE', "%{$search}%");
                 });
             }
 
@@ -94,7 +94,6 @@ class ParkingSpaceController extends Controller
                 'message' => 'Vagas de garagem encontradas',
                 'data' => $parkingSpaces
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -149,10 +148,11 @@ class ParkingSpaceController extends Controller
             $validator = Validator::make($request->all(), [
                 'number' => 'required|string|max:50',
                 'type' => 'required|in:covered,uncovered,garage,motorcycle',
-                'size' => 'required|in:compact,standard,large,motorcycle',
+                'size' => 'nullable|in:compact,standard,large,motorcycle',
                 'unit_id' => 'nullable|exists:units,id',
                 'description' => 'nullable|string',
-                'status' => 'required|in:available,occupied,reserved,maintenance'
+                'status' => 'required|in:available,occupied,reserved,maintenance',
+                'active' => 'boolean'
             ]);
 
             if ($validator->fails()) {
@@ -169,8 +169,8 @@ class ParkingSpaceController extends Controller
             // Verificar se a unidade pertence ao condomínio
             if (isset($parkingData['unit_id'])) {
                 $unit = Unit::where('id', $parkingData['unit_id'])
-                           ->where('condominium_id', $condominium_id)
-                           ->first();
+                    ->where('condominium_id', $condominium_id)
+                    ->first();
                 if (!$unit) {
                     return response()->json([
                         'status' => 'error',
@@ -181,8 +181,8 @@ class ParkingSpaceController extends Controller
 
             // Verificar se já existe vaga com o mesmo número no condomínio
             $existingParkingSpace = ParkingSpace::where('condominium_id', $condominium_id)
-                                                ->where('number', $parkingData['number'])
-                                                ->first();
+                ->where('number', $parkingData['number'])
+                ->first();
 
             if ($existingParkingSpace) {
                 return response()->json([
@@ -199,7 +199,6 @@ class ParkingSpaceController extends Controller
                 'message' => 'Vaga de garagem criada com sucesso',
                 'data' => $parkingSpace
             ], 201);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -244,7 +243,6 @@ class ParkingSpaceController extends Controller
                 'message' => 'Vaga de garagem encontrada',
                 'data' => $parkingSpace
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -298,10 +296,11 @@ class ParkingSpaceController extends Controller
             $validator = Validator::make($request->all(), [
                 'number' => 'required|string|max:50',
                 'type' => 'required|in:covered,uncovered,garage,motorcycle',
-                'size' => 'required|in:compact,standard,large,motorcycle',
+                'size' => 'nullable|in:compact,standard,large,motorcycle',
                 'unit_id' => 'nullable|exists:units,id',
                 'description' => 'nullable|string',
-                'status' => 'required|in:available,occupied,reserved,maintenance'
+                'status' => 'required|in:available,occupied,reserved,maintenance',
+                'active' => 'boolean'
             ]);
 
             if ($validator->fails()) {
@@ -317,8 +316,8 @@ class ParkingSpaceController extends Controller
             // Verificar se a unidade pertence ao condomínio
             if (isset($parkingData['unit_id'])) {
                 $unit = Unit::where('id', $parkingData['unit_id'])
-                           ->where('condominium_id', $parkingSpace->condominium_id)
-                           ->first();
+                    ->where('condominium_id', $parkingSpace->condominium_id)
+                    ->first();
                 if (!$unit) {
                     return response()->json([
                         'status' => 'error',
@@ -329,9 +328,9 @@ class ParkingSpaceController extends Controller
 
             // Verificar se já existe vaga com o mesmo número (exceto a atual)
             $existingParkingSpace = ParkingSpace::where('condominium_id', $parkingSpace->condominium_id)
-                                                ->where('number', $parkingData['number'])
-                                                ->where('id', '!=', $id)
-                                                ->first();
+                ->where('number', $parkingData['number'])
+                ->where('id', '!=', $id)
+                ->first();
 
             if ($existingParkingSpace) {
                 return response()->json([
@@ -348,7 +347,6 @@ class ParkingSpaceController extends Controller
                 'message' => 'Vaga de garagem atualizada com sucesso',
                 'data' => $parkingSpace
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -392,7 +390,6 @@ class ParkingSpaceController extends Controller
                 'status' => 'success',
                 'message' => 'Vaga de garagem excluída com sucesso'
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -452,7 +449,6 @@ class ParkingSpaceController extends Controller
                 'message' => 'Estatísticas das vagas de garagem',
                 'data' => $stats
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
