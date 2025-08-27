@@ -48,7 +48,7 @@ Route::group([
 ], function () {
     // Profile
     Route::get("profile", [ApiController::class, "profile"]);
-    
+
     // Obter informações de redirecionamento para o usuário atual
     Route::get("redirect-info", [ApiController::class, "getCurrentUserRedirectInfo"]);
 
@@ -57,21 +57,24 @@ Route::group([
 
     // Sistema de Condomínio
     Route::apiResource('condominiums', CondominiumController::class);
-    
+
+    // Endpoint unificado para carregar toda a estrutura
+    Route::get('structure/complete', [CondominiumController::class, 'getCompleteStructure']);
+
     // Blocos/Torres
     Route::apiResource('condominiums.blocks', BlockController::class)->except(['show', 'update', 'destroy']);
     Route::apiResource('blocks', BlockController::class)->only(['show', 'update', 'destroy']);
     Route::get('condominiums/{condominium_id}/blocks/stats', [BlockController::class, 'stats']);
-    
+
     // Unidades
     Route::apiResource('condominiums.units', UnitController::class)->except(['show', 'update', 'destroy']);
     Route::apiResource('units', UnitController::class)->only(['show', 'update', 'destroy']);
-    
+
     // Vagas de Garagem
     Route::apiResource('condominiums.parking-spaces', ParkingSpaceController::class)->except(['show', 'update', 'destroy']);
     Route::apiResource('parking-spaces', ParkingSpaceController::class)->only(['show', 'update', 'destroy']);
     Route::get('condominiums/{condominium_id}/parking-spaces/stats', [ParkingSpaceController::class, 'stats']);
-    
+
     // Depósitos
     Route::apiResource('condominiums.storage-units', StorageUnitController::class)->except(['show', 'update', 'destroy']);
     Route::apiResource('storage-units', StorageUnitController::class)->only(['show', 'update', 'destroy']);

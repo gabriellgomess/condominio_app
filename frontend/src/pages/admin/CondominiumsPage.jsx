@@ -54,23 +54,23 @@ const CondominiumsPage = () => {
       {/* Stats Cards */}
       <div className="grid md:grid-cols-4 gap-6 mb-8">
         <div className="card p-6 text-center">
-          <div className="text-3xl font-bold text-[#3dc43d] mb-2">{condominiums.length}</div>
+          <div className="text-3xl font-bold text-[#31a196] mb-2">{condominiums.length}</div>
           <div className="text-[#f3f7f1]">Total</div>
         </div>
         <div className="card p-6 text-center">
-          <div className="text-3xl font-bold text-[#3dc43d] mb-2">
+          <div className="text-3xl font-bold text-[#31a196] mb-2">
             {condominiums.filter(c => c.status === 'Ativo').length}
           </div>
           <div className="text-[#f3f7f1]">Ativos</div>
         </div>
         <div className="card p-6 text-center">
-          <div className="text-3xl font-bold text-[#3dc43d] mb-2">
+          <div className="text-3xl font-bold text-[#31a196] mb-2">
             {condominiums.reduce((sum, c) => sum + c.units, 0)}
           </div>
           <div className="text-[#f3f7f1]">Unidades</div>
         </div>
         <div className="card p-6 text-center">
-          <div className="text-3xl font-bold text-[#3dc43d] mb-2">
+          <div className="text-3xl font-bold text-[#31a196] mb-2">
             {condominiums.reduce((sum, c) => sum + c.blocks, 0)}
           </div>
           <div className="text-[#f3f7f1]">Blocos</div>
@@ -86,9 +86,9 @@ const CondominiumsPage = () => {
               <input
                 type="text"
                 placeholder="Buscar condomínio..."
-                className="px-4 py-2 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent"
+                className="px-4 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
               />
-              <select className="px-4 py-2 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent">
+              <select className="px-4 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent">
                 <option value="">Todos os status</option>
                 <option value="Ativo">Ativo</option>
                 <option value="Em construção">Em construção</option>
@@ -100,19 +100,19 @@ const CondominiumsPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#3dc43d]/20">
-                  <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Nome</th>
-                  <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Endereço</th>
-                  <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Unidades</th>
-                  <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Blocos</th>
-                  <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Status</th>
-                  <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Criado em</th>
-                  <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Ações</th>
+                <tr className="border-b border-[#31a196]/20">
+                  <th className="text-left py-3 px-4 text-[#31a196] font-medium">Nome</th>
+                  <th className="text-left py-3 px-4 text-[#31a196] font-medium">Endereço</th>
+                  <th className="text-left py-3 px-4 text-[#31a196] font-medium">Unidades</th>
+                  <th className="text-left py-3 px-4 text-[#31a196] font-medium">Blocos</th>
+                  <th className="text-left py-3 px-4 text-[#31a196] font-medium">Status</th>
+                  <th className="text-left py-3 px-4 text-[#31a196] font-medium">Criado em</th>
+                  <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {condominiums.map((condominium) => (
-                  <tr key={condominium.id} className="border-b border-[#3dc43d]/10 hover:bg-[#3dc43d]/5 transition-colors">
+                  <tr key={condominium.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
                     <td className="py-4 px-4 text-white font-medium">{condominium.name}</td>
                     <td className="py-4 px-4 text-[#f3f7f1]">{condominium.address}</td>
                     <td className="py-4 px-4 text-[#f3f7f1]">{condominium.units}</td>
@@ -131,12 +131,12 @@ const CondominiumsPage = () => {
                     </td>
                     <td className="py-4 px-4">
                       <div className="flex space-x-2">
-                        <button className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors">
+                        <button className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                           </svg>
                         </button>
-                        <button className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors">
+                        <button className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />

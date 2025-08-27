@@ -9,7 +9,7 @@ Sistema de gestão de condomínios desenvolvido em React com Vite, JavaScript e 
 O sistema utiliza uma paleta de cores escura personalizável através de variáveis CSS:
 
 - **Primary**: `#080d08` - Fundo principal escuro
-- **Secondary**: `#3dc43d` - Verde para destaque e ações
+- **Secondary**: `#31a196` - Verde para destaque e ações
 - **Light**: `#f3f7f1` - Texto e elementos claros
 - **White**: `#fff` - Branco puro para contrastes
 
@@ -138,7 +138,7 @@ Para alterar as cores do sistema, edite as variáveis CSS em `src/index.css`:
 ```css
 :root {
   --color-primary: #080d08;      /* Fundo principal */
-  --color-secondary: #3dc43d;    /* Cor de destaque */
+  --color-secondary: #31a196;    /* Cor de destaque */
   --color-light: #f3f7f1;       /* Texto claro */
   --color-white: #fff;           /* Branco */
 }

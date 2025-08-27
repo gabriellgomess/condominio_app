@@ -1,260 +1,64 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Layout from '../../components/Layout';
-import structureService from '../../services/structureService';
-import { Building, Home, Car, Package, Plus, Edit, Eye, Trash2, Search, Filter } from 'lucide-react';
+import { useStructure } from '../../contexts/StructureContext';
+import { Building, Home, Car, Package, Plus, Edit, Eye, Trash2, Search } from 'lucide-react';
 import CondominiumModal from '../../components/modals/CondominiumModal';
 import BlockModal from '../../components/modals/BlockModal';
+import UnitModal from '../../components/modals/UnitModal';
+import structureService from '../../services/structureService';
 
 const StructureManagementPage = () => {
-  const [activeTab, setActiveTab] = useState('condominiums');
-  const [condominiums, setCondominiums] = useState([]);
-  const [blocks, setBlocks] = useState([]);
-  const [units, setUnits] = useState([]);
-  const [parkingSpaces, setParkingSpaces] = useState([]);
-  const [storageUnits, setStorageUnits] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCondominium, setSelectedCondominium] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState('create'); // create, edit, view
-  const [modalEntity, setModalEntity] = useState('condominium'); // condominium, block, unit, parking, storage
-  const [selectedItem, setSelectedItem] = useState(null);
+  // Usar dados do contexto ao invés de estados locais
+  const {
+    condominiums,
+    blocks,
+    units,
+    parkingSpaces,
+    storageUnits,
+    loading,
+    selectedCondominium,
+    setSelectedCondominium,
+    refreshCondominiumData,
+    handleCrudOperation
+  } = useStructure();
   
-  // Modal states
+  const [activeTab, setActiveTab] = useState('condominiums');
+
+
+  const [searchTerm, setSearchTerm] = useState('');
+  
+    // Modal states
   const [condominiumModal, setCondominiumModal] = useState({
     isOpen: false,
     mode: 'create', // 'create', 'edit', 'view'
     data: null
   });
-  
+
   const [blockModal, setBlockModal] = useState({
     isOpen: false,
     mode: 'create', // 'create', 'edit', 'view'
     data: null
   });
 
-  // Dados de exemplo para demonstração
-  const mockData = {
-    condominiums: [
-      {
-        id: 1,
-        name: 'Residencial Verde',
-        address: 'Rua das Flores, 123',
-        cep: '12345-678',
-        city: 'São Paulo',
-        state: 'SP',
-        total_units: 48,
-        total_blocks: 4,
-        status: 'active',
-        created_at: '2025-01-15'
-      },
-      {
-        id: 2,
-        name: 'Condomínio Solar',
-        address: 'Av. do Sol, 456',
-        cep: '87654-321',
-        city: 'Rio de Janeiro',
-        state: 'RJ',
-        total_units: 32,
-        total_blocks: 2,
-        status: 'active',
-        created_at: '2025-02-20'
-      }
-    ],
-    blocks: [
-      {
-        id: 1,
-        condominium_id: 1,
-        name: 'Bloco A',
-        description: 'Bloco principal com 12 apartamentos',
-        floors: 4,
-        units_per_floor: 3,
-        total_units: 12,
-        status: 'active'
-      },
-      {
-        id: 2,
-        condominium_id: 1,
-        name: 'Bloco B',
-        description: 'Bloco secundário com 12 apartamentos',
-        floors: 4,
-        units_per_floor: 3,
-        total_units: 12,
-        status: 'active'
-      }
-    ],
-    units: [
-      {
-        id: 1,
-        condominium_id: 1,
-        block_id: 1,
-        number: '101',
-        floor: 1,
-        type: 'apartment',
-        bedrooms: 2,
-        bathrooms: 2,
-        area: 65.5,
-        status: 'occupied'
-      },
-      {
-        id: 2,
-        condominium_id: 1,
-        block_id: 1,
-        number: '102',
-        floor: 1,
-        type: 'apartment',
-        bedrooms: 3,
-        bathrooms: 2,
-        area: 85.0,
-        status: 'vacant'
-      }
-    ],
-    parkingSpaces: [
-      {
-        id: 1,
-        condominium_id: 1,
-        unit_id: 1,
-        number: 'G01',
-        type: 'covered',
-        status: 'occupied'
-      },
-      {
-        id: 2,
-        condominium_id: 1,
-        unit_id: null,
-        number: 'G02',
-        type: 'uncovered',
-        status: 'available'
-      }
-    ],
-    storageUnits: [
-      {
-        id: 1,
-        condominium_id: 1,
-        unit_id: 1,
-        number: 'D01',
-        area: 5.0,
-        status: 'occupied'
-      },
-      {
-        id: 2,
-        condominium_id: 1,
-        unit_id: null,
-        number: 'D02',
-        area: 3.5,
-        status: 'available'
-      }
-    ]
-  };
+  const [unitModal, setUnitModal] = useState({
+    isOpen: false,
+    mode: 'create', // 'create', 'edit', 'view'
+    data: null
+  });
 
-  useEffect(() => {
-    loadData();
-  }, [activeTab, selectedCondominium]);
+  // Dados já são carregados pelo contexto
 
-  // Função para carregar dados específicos de um condomínio
-  const loadCondominiumData = async (condominiumId) => {
-    setLoading(true);
-    try {
-      const condominiumIdInt = parseInt(condominiumId);
-      
-      const [blocksResponse, unitsResponse, parkingResponse, storageResponse] = await Promise.allSettled([
-        structureService.block.getByCondominium(condominiumIdInt),
-        structureService.unit.getByCondominium(condominiumIdInt),
-        structureService.parking.getByCondominium(condominiumIdInt),
-        structureService.storage.getByCondominium(condominiumIdInt)
-      ]);
+  // Dados já são carregados pelo contexto
 
-      setBlocks(blocksResponse.status === 'fulfilled' ? (blocksResponse.value.data || []) : []);
-      setUnits(unitsResponse.status === 'fulfilled' ? (unitsResponse.value.data || []) : []);
-      setParkingSpaces(parkingResponse.status === 'fulfilled' ? (parkingResponse.value.data || []) : []);
-      setStorageUnits(storageResponse.status === 'fulfilled' ? (storageResponse.value.data || []) : []);
-      
-    } catch (error) {
-      console.error('Erro ao carregar dados do condomínio:', error);
-      // Em caso de erro, usar dados filtrados como fallback
-      const condominiumIdInt = parseInt(condominiumId);
-      setBlocks(mockData.blocks.filter(b => b.condominium_id === condominiumIdInt));
-      setUnits(mockData.units.filter(u => u.condominium_id === condominiumIdInt));
-      setParkingSpaces(mockData.parkingSpaces.filter(p => p.condominium_id === condominiumIdInt));
-      setStorageUnits(mockData.storageUnits.filter(s => s.condominium_id === condominiumIdInt));
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Função removida - dados são gerenciados pelo contexto
 
-  // Recarregar dados quando o condomínio selecionado mudar
-  useEffect(() => {
-    if (selectedCondominium && activeTab !== 'condominiums') {
-      loadCondominiumData(selectedCondominium);
-    } else if (!selectedCondominium && activeTab !== 'condominiums') {
-      // Limpar dados quando nenhum condomínio estiver selecionado
-      setBlocks([]);
-      setUnits([]);
-      setParkingSpaces([]);
-      setStorageUnits([]);
-    }
-  }, [selectedCondominium, activeTab]);
+  // Dados são automaticamente filtrados pelo contexto baseado no selectedCondominium
 
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      // Carregar condomínios
-      const condominiumsResponse = await structureService.condominium.getAll();
-      const condominiumsData = condominiumsResponse.data || [];
-      setCondominiums(condominiumsData);
+  // Função removida - dados são carregados pelo contexto
 
-      // Se não há condomínio selecionado e há condomínios disponíveis, selecionar o primeiro
-      let condominiumToLoad = selectedCondominium;
-      if (!selectedCondominium && condominiumsData.length > 0) {
-        condominiumToLoad = condominiumsData[0].id.toString();
-        setSelectedCondominium(condominiumToLoad);
-      }
+  // Função removida - dados são carregados pelo contexto
 
-      // Carregar dados do condomínio selecionado (se houver)
-      if (condominiumToLoad) {
-        await loadCondominiumDataSync(condominiumToLoad);
-      }
-      
-    } catch (error) {
-      console.error('Erro ao carregar dados:', error);
-      // Em caso de erro, usar dados fictícios como fallback
-      setCondominiums(mockData.condominiums);
-      setBlocks(mockData.blocks);
-      setUnits(mockData.units);
-      setParkingSpaces(mockData.parkingSpaces);
-      setStorageUnits(mockData.storageUnits);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Função síncrona para carregar dados do condomínio (sem setLoading)
-  const loadCondominiumDataSync = async (condominiumId) => {
-    try {
-      const condominiumIdInt = parseInt(condominiumId);
-      
-      const [blocksResponse, unitsResponse, parkingResponse, storageResponse] = await Promise.allSettled([
-        structureService.block.getByCondominium(condominiumIdInt),
-        structureService.unit.getByCondominium(condominiumIdInt),
-        structureService.parking.getByCondominium(condominiumIdInt),
-        structureService.storage.getByCondominium(condominiumIdInt)
-      ]);
-
-      setBlocks(blocksResponse.status === 'fulfilled' ? (blocksResponse.value.data || []) : []);
-      setUnits(unitsResponse.status === 'fulfilled' ? (unitsResponse.value.data || []) : []);
-      setParkingSpaces(parkingResponse.status === 'fulfilled' ? (parkingResponse.value.data || []) : []);
-      setStorageUnits(storageResponse.status === 'fulfilled' ? (storageResponse.value.data || []) : []);
-      
-    } catch (error) {
-      console.error('Erro ao carregar dados do condomínio:', error);
-      // Em caso de erro, usar dados filtrados como fallback
-      const condominiumIdInt = parseInt(condominiumId);
-      setBlocks(mockData.blocks.filter(b => b.condominium_id === condominiumIdInt));
-      setUnits(mockData.units.filter(u => u.condominium_id === condominiumIdInt));
-      setParkingSpaces(mockData.parkingSpaces.filter(p => p.condominium_id === condominiumIdInt));
-      setStorageUnits(mockData.storageUnits.filter(s => s.condominium_id === condominiumIdInt));
-    }
-  };
+  // Função removida - dados são gerenciados pelo contexto
 
   // Funções do modal de condomínio
   const openCondominiumModal = (mode, data = null) => {
@@ -273,25 +77,14 @@ const StructureManagementPage = () => {
     });
   };
 
-  const handleCondominiumSave = async (savedCondominium) => {
+  const handleCondominiumSave = async () => {
     try {
-      let response;
-      if (condominiumModal.mode === 'create') {
-        response = await structureService.condominium.create(savedCondominium);
-        setCondominiums(prev => [...prev, response.data]);
-      } else if (condominiumModal.mode === 'edit') {
-        response = await structureService.condominium.update(savedCondominium.id, savedCondominium);
-        setCondominiums(prev => 
-          prev.map(item => 
-            item.id === savedCondominium.id ? response.data : item
-          )
-        );
-      }
+      // Dados serão atualizados automaticamente pelo contexto após operação CRUD
       closeCondominiumModal();
-      // Recarregar dados para garantir sincronização
-      loadData();
+      // Usar o sistema centralizado de atualização
+      await handleCrudOperation(condominiumModal.mode, 'condominium');
     } catch (error) {
-      console.error('Erro ao salvar condomínio:', error);
+      console.error('Erro ao processar condomínio salvo:', error);
       // Aqui você pode adicionar uma notificação de erro para o usuário
     }
   };
@@ -300,8 +93,7 @@ const StructureManagementPage = () => {
     if (window.confirm('Tem certeza que deseja excluir este condomínio?')) {
       try {
         await structureService.condominium.delete(id);
-        setCondominiums(prev => prev.filter(item => item.id !== id));
-        loadData(); // Recarregar dados
+        await handleCrudOperation('delete', 'condominium');
       } catch (error) {
         console.error('Erro ao excluir condomínio:', error);
         alert('Erro ao excluir condomínio. Tente novamente.');
@@ -328,24 +120,12 @@ const StructureManagementPage = () => {
 
   const handleBlockSave = async (savedBlock) => {
     try {
-      let response;
-      if (blockModal.mode === 'create') {
-        response = await structureService.block.create(savedBlock.condominium_id, savedBlock);
-        setBlocks(prev => [...prev, response.data]);
-      } else if (blockModal.mode === 'edit') {
-        response = await structureService.block.update(savedBlock.id, savedBlock);
-        setBlocks(prev => 
-          prev.map(item => 
-            item.id === savedBlock.id ? response.data : item
-          )
-        );
-      }
+      // O modal já fez a chamada da API, apenas fechamos e atualizamos o contexto
       closeBlockModal();
-      // Recarregar dados para garantir sincronização
-      loadData();
+      // Usar o sistema centralizado de atualização
+      await handleCrudOperation(blockModal.mode, 'block', savedBlock.condominium_id || parseInt(selectedCondominium));
     } catch (error) {
-      console.error('Erro ao salvar bloco:', error);
-      // Aqui você pode adicionar uma notificação de erro para o usuário
+      console.error('Erro ao atualizar contexto após salvar bloco:', error);
     }
   };
 
@@ -353,8 +133,7 @@ const StructureManagementPage = () => {
     if (window.confirm('Tem certeza que deseja excluir este bloco?')) {
       try {
         await structureService.block.delete(id);
-        setBlocks(prev => prev.filter(item => item.id !== id));
-        loadData(); // Recarregar dados
+        await handleCrudOperation('delete', 'block', parseInt(selectedCondominium));
       } catch (error) {
         console.error('Erro ao excluir bloco:', error);
         alert('Erro ao excluir bloco. Tente novamente.');
@@ -362,34 +141,68 @@ const StructureManagementPage = () => {
     }
   };
 
+  // Funções do modal de unidades
+  const openUnitModal = (mode, data = null) => {
+    setUnitModal({
+      isOpen: true,
+      mode,
+      data
+    });
+  };
+
+  const closeUnitModal = () => {
+    setUnitModal({
+      isOpen: false,
+      mode: 'create',
+      data: null
+    });
+  };
+
+  const handleUnitSave = async (savedUnit) => {
+    try {
+      // O modal já fez a chamada da API, apenas fechamos e atualizamos o contexto
+      closeUnitModal();
+      // Usar o sistema centralizado de atualização
+      await handleCrudOperation(unitModal.mode, 'unit', savedUnit.condominium_id || parseInt(selectedCondominium));
+    } catch (error) {
+      console.error('Erro ao atualizar contexto após salvar unidade:', error);
+    }
+  };
+
+  const handleDeleteUnit = async (id) => {
+    if (window.confirm('Tem certeza que deseja excluir esta unidade?')) {
+      try {
+        await structureService.unit.delete(id);
+        await handleCrudOperation('delete', 'unit', parseInt(selectedCondominium));
+      } catch (error) {
+        console.error('Erro ao excluir unidade:', error);
+        alert('Erro ao excluir unidade. Tente novamente.');
+      }
+    }
+  };
+
+  // Calcular contadores baseados no filtro de condomínio selecionado
+  const getFilteredCount = (items, entityType) => {
+    if (entityType === 'condominiums') {
+      return condominiums.length;
+    }
+    
+    if (!selectedCondominium) {
+      return items.length;
+    }
+    
+    return items.filter(item => item.condominium_id.toString() === selectedCondominium).length;
+  };
+
   const tabs = [
-    { id: 'condominiums', label: 'Condomínios', icon: Building, count: condominiums.length },
-    { id: 'blocks', label: 'Blocos', icon: Building, count: blocks.length },
-    { id: 'units', label: 'Unidades', icon: Home, count: units.length },
-    { id: 'parking', label: 'Garagens', icon: Car, count: parkingSpaces.length },
-    { id: 'storage', label: 'Depósitos', icon: Package, count: storageUnits.length }
+    { id: 'condominiums', label: 'Condomínios', icon: Building, count: getFilteredCount([], 'condominiums') },
+    { id: 'blocks', label: 'Blocos', icon: Building, count: getFilteredCount(blocks, 'blocks') },
+    { id: 'units', label: 'Unidades', icon: Home, count: getFilteredCount(units, 'units') },
+    { id: 'parking', label: 'Garagens', icon: Car, count: getFilteredCount(parkingSpaces, 'parking') },
+    { id: 'storage', label: 'Depósitos', icon: Package, count: getFilteredCount(storageUnits, 'storage') }
   ];
 
-  const handleCreate = (entityType) => {
-    setModalType('create');
-    setModalEntity(entityType);
-    setSelectedItem(null);
-    setShowModal(true);
-  };
 
-  const handleEdit = (item, entityType) => {
-    setModalType('edit');
-    setModalEntity(entityType);
-    setSelectedItem(item);
-    setShowModal(true);
-  };
-
-  const handleView = (item, entityType) => {
-    setModalType('view');
-    setModalEntity(entityType);
-    setSelectedItem(item);
-    setShowModal(true);
-  };
 
   const handleDelete = async (id, entityType) => {
     if (window.confirm('Tem certeza que deseja excluir este item?')) {
@@ -397,29 +210,24 @@ const StructureManagementPage = () => {
         switch (entityType) {
           case 'condominium':
             await structureService.condominium.delete(id);
-            setCondominiums(prev => prev.filter(item => item.id !== id));
             break;
           case 'block':
             await structureService.block.delete(id);
-            setBlocks(prev => prev.filter(item => item.id !== id));
             break;
           case 'unit':
             await structureService.unit.delete(id);
-            setUnits(prev => prev.filter(item => item.id !== id));
             break;
           case 'parking':
             await structureService.parking.delete(id);
-            setParkingSpaces(prev => prev.filter(item => item.id !== id));
             break;
           case 'storage':
             await structureService.storage.delete(id);
-            setStorageUnits(prev => prev.filter(item => item.id !== id));
             break;
           default:
             console.log(`Excluindo ${entityType} com ID: ${id}`);
         }
         // Recarregar dados para garantir sincronização
-        loadData();
+        refreshCondominiumData(parseInt(selectedCondominium));
       } catch (error) {
         console.error('Erro ao excluir:', error);
         // Aqui você pode adicionar uma notificação de erro para o usuário
@@ -453,6 +261,7 @@ const StructureManagementPage = () => {
       available: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Disponível' },
       maintenance: { bg: 'bg-orange-500/20', text: 'text-orange-400', border: 'border-orange-500/30', label: 'Manutenção' },
       rented: { bg: 'bg-purple-500/20', text: 'text-purple-400', border: 'border-purple-500/30', label: 'Alugada' },
+      reserved: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30', label: 'Reservada' },
       free: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Livre' }
     };
 
@@ -464,54 +273,28 @@ const StructureManagementPage = () => {
     );
   };
 
-  const getUnitStatusBadge = (unit) => {
-    // Primeiro verifica se a unidade está ativa
-    if (unit.active === 0 || unit.active === false) {
-      return (
-        <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">
-          Inativa
-        </span>
-      );
-    }
 
-    // Se está ativa, verifica o status de ocupação
-    const statusConfig = {
-      occupied: { bg: 'bg-blue-500/20', text: 'text-blue-400', border: 'border-blue-500/30', label: 'Ocupada' },
-      vacant: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30', label: 'Vaga' },
-      available: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Disponível' },
-      maintenance: { bg: 'bg-orange-500/20', text: 'text-orange-400', border: 'border-orange-500/30', label: 'Manutenção' },
-      rented: { bg: 'bg-purple-500/20', text: 'text-purple-400', border: 'border-purple-500/30', label: 'Alugada' }
-    };
-
-    const config = statusConfig[unit.status] || statusConfig.available;
-    return (
-      <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text} border ${config.border}`}>
-        {config.label}
-      </span>
-    );
-  };
 
   const renderCondominiumsTable = () => (
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-[#3dc43d]/20">
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Nome</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Endereço</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Cidade/UF</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Unidades</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Blocos</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Status</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Ações</th>
+          <tr className="border-b border-[#31a196]/20">
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Nome</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Endereço</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Cidade/UF</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Unidades</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Blocos</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Status</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
           </tr>
         </thead>
         <tbody>
-          {console.log('condominio', condominiums)}
           {condominiums.filter(item =>
             item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item.address.toLowerCase().includes(searchTerm.toLowerCase())
           ).map((condominium) => (
-            <tr key={condominium.id} className="border-b border-[#3dc43d]/10 hover:bg-[#3dc43d]/5 transition-colors">
+            <tr key={condominium.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
               <td className="py-4 px-4 text-white font-medium">{condominium.name}</td>
               <td className="py-4 px-4 text-[#f3f7f1]">{condominium.address}</td>
               <td className="py-4 px-4 text-[#f3f7f1]">{condominium.city}/{condominium.state}</td>
@@ -522,14 +305,14 @@ const StructureManagementPage = () => {
                 <div className="flex space-x-2">
                   <button 
                     onClick={() => openCondominiumModal('view', condominium)}
-                    className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+                    className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
                     title="Visualizar"
                   >
                     <Eye className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => openCondominiumModal('edit', condominium)}
-                    className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+                    className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
                     title="Editar"
                   >
                     <Edit className="w-4 h-4" />
@@ -554,14 +337,14 @@ const StructureManagementPage = () => {
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-[#3dc43d]/20">
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Nome</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Condomínio</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Andares</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Unid./Andar</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Total Unidades</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Status</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Ações</th>
+          <tr className="border-b border-[#31a196]/20">
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Nome</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Condomínio</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Andares</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Unid./Andar</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Total Unidades</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Status</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -572,7 +355,7 @@ const StructureManagementPage = () => {
           ).map((block) => {
             const totalUnits = block.floors * block.units_per_floor;
             return (
-              <tr key={block.id} className="border-b border-[#3dc43d]/10 hover:bg-[#3dc43d]/5 transition-colors">
+              <tr key={block.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
                 <td className="py-4 px-4 text-white font-medium">{block.name}</td>
                 <td className="py-4 px-4 text-[#f3f7f1]">{block.condominium?.name || 'N/A'}</td>
                 <td className="py-4 px-4 text-[#f3f7f1]">{block.floors}</td>
@@ -583,14 +366,14 @@ const StructureManagementPage = () => {
                   <div className="flex space-x-2">
                    <button 
                      onClick={() => openBlockModal('view', block)}
-                     className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+                     className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
                      title="Visualizar"
                    >
                      <Eye className="w-4 h-4" />
                    </button>
                    <button 
                      onClick={() => openBlockModal('edit', block)}
-                     className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+                     className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
                      title="Editar"
                    >
                      <Edit className="w-4 h-4" />
@@ -616,16 +399,16 @@ const StructureManagementPage = () => {
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-[#3dc43d]/20">
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Número</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Bloco</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Andar</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Tipo</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Quartos</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Área (m²)</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Ativo</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Ocupação</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Ações</th>
+          <tr className="border-b border-[#31a196]/20">
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Número</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Bloco</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Andar</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Tipo</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Quartos</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Área (m²)</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ativo</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ocupação</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -635,7 +418,7 @@ const StructureManagementPage = () => {
             item.number.toLowerCase().includes(searchTerm.toLowerCase())
           ).map((unit) => {
             return (
-              <tr key={unit.id} className="border-b border-[#3dc43d]/10 hover:bg-[#3dc43d]/5 transition-colors">
+              <tr key={unit.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
                 <td className="py-4 px-4 text-white font-medium">{unit.number}</td>
                 <td className="py-4 px-4 text-[#f3f7f1]">{unit.block?.name || 'N/A'}</td>
                 <td className="py-4 px-4 text-[#f3f7f1]">{unit.floor}º</td>
@@ -654,21 +437,21 @@ const StructureManagementPage = () => {
                 <td className="py-4 px-4">
                   <div className="flex space-x-2">
                     <button 
-                      onClick={() => handleView(unit, 'unit')}
-                      className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+                      onClick={() => openUnitModal('view', unit)}
+                      className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
                       title="Visualizar"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
                     <button 
-                      onClick={() => handleEdit(unit, 'unit')}
-                      className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+                      onClick={() => openUnitModal('edit', unit)}
+                      className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
                       title="Editar"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                     <button 
-                      onClick={() => handleDelete(unit.id, 'unit')}
+                      onClick={() => handleDeleteUnit(unit.id)}
                       className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                       title="Excluir"
                     >
@@ -688,12 +471,12 @@ const StructureManagementPage = () => {
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-[#3dc43d]/20">
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Número</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Tipo</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Unidade Vinculada</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Status</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Ações</th>
+          <tr className="border-b border-[#31a196]/20">
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Número</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Tipo</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Unidade Vinculada</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Status</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -704,7 +487,7 @@ const StructureManagementPage = () => {
           ).map((parking) => {
             const unit = units.find(u => u.id === parking.unit_id);
             return (
-              <tr key={parking.id} className="border-b border-[#3dc43d]/10 hover:bg-[#3dc43d]/5 transition-colors">
+              <tr key={parking.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
                 <td className="py-4 px-4 text-white font-medium">{parking.number}</td>
                 <td className="py-4 px-4 text-[#f3f7f1]">
                   {parking.type === 'covered' ? 'Coberta' : 'Descoberta'}
@@ -714,15 +497,15 @@ const StructureManagementPage = () => {
                 <td className="py-4 px-4">
                   <div className="flex space-x-2">
                     <button 
-                      onClick={() => handleView(parking, 'parking')}
-                      className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+                      onClick={() => console.log('View parking:', parking)}
+                      className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
                       title="Visualizar"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
                     <button 
-                      onClick={() => handleEdit(parking, 'parking')}
-                      className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+                      onClick={() => console.log('Edit parking:', parking)}
+                      className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
                       title="Editar"
                     >
                       <Edit className="w-4 h-4" />
@@ -748,12 +531,12 @@ const StructureManagementPage = () => {
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-[#3dc43d]/20">
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Número</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Área (m²)</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Unidade Vinculada</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Status</th>
-            <th className="text-left py-3 px-4 text-[#3dc43d] font-medium">Ações</th>
+          <tr className="border-b border-[#31a196]/20">
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Número</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Área (m²)</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Unidade Vinculada</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Status</th>
+            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -764,7 +547,7 @@ const StructureManagementPage = () => {
           ).map((storage) => {
             const unit = units.find(u => u.id === storage.unit_id);
             return (
-              <tr key={storage.id} className="border-b border-[#3dc43d]/10 hover:bg-[#3dc43d]/5 transition-colors">
+              <tr key={storage.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
                 <td className="py-4 px-4 text-white font-medium">{storage.number}</td>
                 <td className="py-4 px-4 text-[#f3f7f1]">{storage.area}</td>
                 <td className="py-4 px-4 text-[#f3f7f1]">{unit?.number || 'Não vinculado'}</td>
@@ -772,15 +555,15 @@ const StructureManagementPage = () => {
                 <td className="py-4 px-4">
                   <div className="flex space-x-2">
                     <button 
-                      onClick={() => handleView(storage, 'storage')}
-                      className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+                      onClick={() => console.log('View storage:', storage)}
+                      className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
                       title="Visualizar"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
                     <button 
-                      onClick={() => handleEdit(storage, 'storage')}
-                      className="p-2 text-[#3dc43d] hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+                      onClick={() => console.log('Edit storage:', storage)}
+                      className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
                       title="Editar"
                     >
                       <Edit className="w-4 h-4" />
@@ -846,9 +629,11 @@ const StructureManagementPage = () => {
              if (activeTab === 'condominiums') {
                openCondominiumModal('create');
              } else if (activeTab === 'blocks') {
-               openBlockModal('create');
+               openBlockModal('create', { condominium_id: selectedCondominium });
+             } else if (activeTab === 'units') {
+               openUnitModal('create', { condominium_id: selectedCondominium });
              } else {
-               handleCreate(activeTab.slice(0, -1));
+               console.log('Create', activeTab.slice(0, -1));
              }
            }}
           className="btn-primary"
@@ -868,8 +653,8 @@ const StructureManagementPage = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
                 activeTab === tab.id
-                  ? 'bg-[#3dc43d] text-white'
-                  : 'bg-[#080d08]/80 text-[#f3f7f1] hover:bg-[#3dc43d]/20'
+                  ? 'bg-[#31a196] text-white'
+                  : 'bg-[#080d08]/80 text-[#f3f7f1] hover:bg-[#31a196]/20'
               }`}
             >
               <Icon className="w-4 h-4 mr-2" />
@@ -888,13 +673,13 @@ const StructureManagementPage = () => {
           <div className="flex flex-wrap gap-4">
             <div className="flex-1 min-w-[200px]">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#3dc43d]/60 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#31a196]/60 w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Buscar..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
                 />
               </div>
             </div>
@@ -903,9 +688,9 @@ const StructureManagementPage = () => {
                 <select
                   value={selectedCondominium}
                   onChange={(e) => setSelectedCondominium(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent"
+                  className="w-full px-4 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
                 >
-                  <option value="">Todos os condomínios</option>
+                  
                   {condominiums.map((cond) => (
                     <option key={cond.id} value={cond.id.toString()}>
                       {cond.name}
@@ -923,10 +708,45 @@ const StructureManagementPage = () => {
         <div className="p-6">
           {loading ? (
             <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#3dc43d]"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#31a196]"></div>
             </div>
           ) : (
-            renderTable()
+            <>
+              {renderTable()}
+              {/* Mensagem quando não há dados para o condomínio selecionado */}
+              {selectedCondominium && activeTab !== 'condominiums' && (
+                (() => {
+                  const selectedCondominiumName = condominiums.find(c => c.id.toString() === selectedCondominium)?.name;
+                  const hasData = 
+                    (activeTab === 'blocks' && blocks.some(b => b.condominium_id.toString() === selectedCondominium)) ||
+                    (activeTab === 'units' && units.some(u => u.condominium_id.toString() === selectedCondominium)) ||
+                    (activeTab === 'parking' && parkingSpaces.some(p => p.condominium_id.toString() === selectedCondominium)) ||
+                    (activeTab === 'storage' && storageUnits.some(s => s.condominium_id.toString() === selectedCondominium));
+                  
+                  if (!hasData) {
+                    const entityLabels = {
+                      blocks: 'blocos',
+                      units: 'unidades', 
+                      parking: 'vagas de garagem',
+                      storage: 'depósitos'
+                    };
+                    
+                    return (
+                      <div className="text-center py-12">
+                        <Package className="w-12 h-12 text-[#31a196]/40 mx-auto mb-4" />
+                        <p className="text-[#f3f7f1]/60 mb-2">
+                          Nenhum(a) {entityLabels[activeTab]} cadastrado(a) para o condomínio
+                        </p>
+                        <p className="text-white font-medium">
+                          {selectedCondominiumName}
+                        </p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()
+              )}
+            </>
           )}
         </div>
       </div>
@@ -940,36 +760,26 @@ const StructureManagementPage = () => {
          onSave={handleCondominiumSave}
        />
        
-       <BlockModal
-         isOpen={blockModal.isOpen}
-         onClose={closeBlockModal}
-         mode={blockModal.mode}
-         block={blockModal.data}
-         condominiums={condominiums}
-         onSave={handleBlockSave}
+              <BlockModal
+        isOpen={blockModal.isOpen}
+        onClose={closeBlockModal}
+        mode={blockModal.mode}
+        block={blockModal.data}
+        condominiums={condominiums}
+        onSave={handleBlockSave}
+       />
+
+       <UnitModal
+        isOpen={unitModal.isOpen}
+        onClose={closeUnitModal}
+        mode={unitModal.mode}
+        unit={unitModal.data}
+        condominiums={condominiums}
+        blocks={blocks}
+        onSave={handleUnitSave}
        />
       
-      {/* Modal placeholder para outras entidades */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[#0a0f0a] border border-[#3dc43d]/30 rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-xl font-bold text-white mb-4">
-              {modalType === 'create' ? 'Criar' : modalType === 'edit' ? 'Editar' : 'Visualizar'} {modalEntity}
-            </h3>
-            <p className="text-[#f3f7f1] mb-4">
-              Modal de {modalType} para {modalEntity} será implementado na próxima etapa.
-            </p>
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Outros modais serão implementados conforme necessário */}
     </Layout>
   );
 };

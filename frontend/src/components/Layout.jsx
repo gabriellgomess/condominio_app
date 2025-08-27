@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
@@ -31,9 +32,11 @@ const Layout = ({ children }) => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
+  const { logout } = useAuth();
   const [isMobile, setIsMobile] = useState(false);
   
   const location = useLocation();
+  const navigate = useNavigate();
   const sidebarRef = useRef(null);
   const profileRef = useRef(null);
   const notificationRef = useRef(null);
@@ -96,8 +99,8 @@ const Layout = ({ children }) => {
   // Logout
   const handleLogout = async () => {
     try {
-      // Implementar logout real aqui
-      console.log('Logout realizado');
+      logout();
+      navigate('/login', { replace: true });
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     }

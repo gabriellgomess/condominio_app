@@ -207,18 +207,18 @@ const CondominiumModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#0a0f0a] border border-[#3dc43d]/30 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
+      <div className="bg-[#0a0f0a] border border-[#31a196]/30 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#3dc43d]/20">
+        <div className="flex items-center justify-between p-6 border-b border-[#31a196]/20">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-[#3dc43d]/20 rounded-lg text-[#3dc43d]">
+            <div className="p-2 bg-[#31a196]/20 rounded-lg text-[#31a196]">
               {getModalIcon()}
             </div>
             <h3 className="text-xl font-bold text-white">{getModalTitle()}</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-white hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-white hover:bg-[#31a196]/20 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -230,7 +230,7 @@ const CondominiumModal = ({
 
             {/* Nome */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Nome do Condomínio *
               </label>
               <input
@@ -239,8 +239,8 @@ const CondominiumModal = ({
                 value={formData.name}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                  errors.name ? 'border-red-500' : 'border-[#3dc43d]/30'
+                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                  errors.name ? 'border-red-500' : 'border-[#31a196]/30'
                 } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                 placeholder="Ex: Residencial Verde"
               />
@@ -251,7 +251,7 @@ const CondominiumModal = ({
 
             {/* CEP */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 CEP *
               </label>
               <div className="relative">
@@ -262,14 +262,14 @@ const CondominiumModal = ({
                   onChange={handleCEPChange}
                   disabled={mode === 'view' || loadingCep}
                   maxLength={9}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.cep ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.cep ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' || loadingCep ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="12345-678"
                 />
                 {loadingCep && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <Loader2 className="w-5 h-5 text-[#3dc43d] animate-spin" />
+                    <Loader2 className="w-5 h-5 text-[#31a196] animate-spin" />
                   </div>
                 )}
               </div>
@@ -277,13 +277,13 @@ const CondominiumModal = ({
                 <p className="mt-1 text-sm text-red-400">{errors.cep}</p>
               )}
               {loadingCep && (
-                <p className="mt-1 text-sm text-[#3dc43d]/80">Buscando endereço...</p>
+                <p className="mt-1 text-sm text-[#31a196]/80">Buscando endereço...</p>
               )}
             </div>
 
             {/* Endereço */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Endereço *
               </label>
               <input
@@ -292,8 +292,8 @@ const CondominiumModal = ({
                 value={formData.address}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                  errors.address ? 'border-red-500' : 'border-[#3dc43d]/30'
+                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                  errors.address ? 'border-red-500' : 'border-[#31a196]/30'
                 } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                 placeholder="Ex: Rua das Flores, 123"
               />
@@ -304,7 +304,7 @@ const CondominiumModal = ({
 
             {/* Número */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Número
               </label>
               <input
@@ -313,8 +313,8 @@ const CondominiumModal = ({
                 value={formData.number}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                  errors.number ? 'border-red-500' : 'border-[#3dc43d]/30'
+                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                  errors.number ? 'border-red-500' : 'border-[#31a196]/30'
                 } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                 placeholder="Ex: 123, 456-A"
               />
@@ -326,7 +326,7 @@ const CondominiumModal = ({
             {/* Bairro, Cidade e Estado */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Bairro
                 </label>
                 <input
@@ -335,8 +335,8 @@ const CondominiumModal = ({
                   value={formData.district}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.district ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.district ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Centro"
                 />
@@ -345,7 +345,7 @@ const CondominiumModal = ({
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Cidade *
                 </label>
                 <input
@@ -354,8 +354,8 @@ const CondominiumModal = ({
                   value={formData.city}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.city ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.city ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="São Paulo"
                 />
@@ -365,7 +365,7 @@ const CondominiumModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Estado *
                 </label>
                 <input
@@ -375,8 +375,8 @@ const CondominiumModal = ({
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
                   maxLength={2}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.state ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.state ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="SP"
                   style={{ textTransform: 'uppercase' }}
@@ -389,7 +389,7 @@ const CondominiumModal = ({
 
             {/* Descrição */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Descrição
               </label>
               <textarea
@@ -398,7 +398,7 @@ const CondominiumModal = ({
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
                 rows={3}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors resize-none ${
+                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors resize-none ${
                   mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
                 }`}
                 placeholder="Descrição opcional do condomínio..."
@@ -407,7 +407,7 @@ const CondominiumModal = ({
 
             {/* Status */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Status
               </label>
               <select
@@ -415,7 +415,7 @@ const CondominiumModal = ({
                 value={formData.status}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
+                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
                   mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
                 }`}
               >
@@ -429,7 +429,7 @@ const CondominiumModal = ({
 
         {/* Footer */}
         {mode !== 'view' && (
-          <div className="flex justify-end space-x-3 p-6 border-t border-[#3dc43d]/20">
+          <div className="flex justify-end space-x-3 p-6 border-t border-[#31a196]/20">
             <button
               type="button"
               onClick={onClose}
@@ -440,7 +440,7 @@ const CondominiumModal = ({
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="px-6 py-2 bg-[#3dc43d] text-white rounded-lg hover:bg-[#3dc43d]/80 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -453,7 +453,7 @@ const CondominiumModal = ({
         )}
 
         {mode === 'view' && (
-          <div className="flex justify-end p-6 border-t border-[#3dc43d]/20">
+          <div className="flex justify-end p-6 border-t border-[#31a196]/20">
             <button
               onClick={onClose}
               className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"

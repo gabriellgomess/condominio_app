@@ -49,7 +49,7 @@ const UnitModal = ({
         bedrooms: '',
         bathrooms: '',
         area: '',
-        condominium_id: '',
+        condominium_id: unit?.condominium_id || '', // Usar condominium_id se fornecido
         block_id: '',
         description: '',
         status: 'available'
@@ -143,9 +143,9 @@ const UnitModal = ({
       };
       
       if (mode === 'create') {
-        result = await structureService.createUnit(submitData);
+        result = await structureService.unit.create(submitData.condominium_id, submitData);
       } else if (mode === 'edit') {
-        result = await structureService.updateUnit(unit.id, submitData);
+        result = await structureService.unit.update(unit.id, submitData);
       }
       
       if (onSave) {
@@ -201,18 +201,18 @@ const UnitModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#0a0f0a] border border-[#3dc43d]/30 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+      <div className="bg-[#0a0f0a] border border-[#31a196]/30 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#3dc43d]/20">
+        <div className="flex items-center justify-between p-6 border-b border-[#31a196]/20">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-[#3dc43d]/20 rounded-lg text-[#3dc43d]">
+            <div className="p-2 bg-[#31a196]/20 rounded-lg text-[#31a196]">
               {getModalIcon()}
             </div>
             <h3 className="text-xl font-bold text-white">{getModalTitle()}</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-white hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-white hover:bg-[#31a196]/20 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -224,11 +224,11 @@ const UnitModal = ({
             {/* Condomínio e Bloco */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Condomínio *
                 </label>
                 {mode === 'view' ? (
-                  <div className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white">
+                  <div className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white">
                     {getSelectedCondominiumName()}
                   </div>
                 ) : (
@@ -236,8 +236,8 @@ const UnitModal = ({
                     name="condominium_id"
                     value={formData.condominium_id}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                      errors.condominium_id ? 'border-red-500' : 'border-[#3dc43d]/30'
+                    className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                      errors.condominium_id ? 'border-red-500' : 'border-[#31a196]/30'
                     }`}
                   >
                     <option value="">Selecione um condomínio</option>
@@ -254,11 +254,11 @@ const UnitModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Bloco/Torre
                 </label>
                 {mode === 'view' ? (
-                  <div className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white">
+                  <div className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white">
                     {getSelectedBlockName()}
                   </div>
                 ) : (
@@ -267,7 +267,7 @@ const UnitModal = ({
                     value={formData.block_id}
                     onChange={handleInputChange}
                     disabled={!formData.condominium_id}
-                    className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option value="">Sem bloco (casa/térrea)</option>
                     {filteredBlocks.map(block => (
@@ -283,7 +283,7 @@ const UnitModal = ({
             {/* Número e Andar */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Número da Unidade *
                 </label>
                 <input
@@ -292,8 +292,8 @@ const UnitModal = ({
                   value={formData.number}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.number ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.number ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Ex: 101, A, Casa 1"
                 />
@@ -303,7 +303,7 @@ const UnitModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Andar *
                 </label>
                 <input
@@ -313,8 +313,8 @@ const UnitModal = ({
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
                   min="0"
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.floor ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.floor ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Ex: 0 (térreo), 1, 2..."
                 />
@@ -327,7 +327,7 @@ const UnitModal = ({
             {/* Tipo e Área */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Tipo de Unidade
                 </label>
                 <select
@@ -335,7 +335,7 @@ const UnitModal = ({
                   value={formData.type}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
                     mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
                   }`}
                 >
@@ -348,7 +348,7 @@ const UnitModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Área (m²)
                 </label>
                 <input
@@ -359,8 +359,8 @@ const UnitModal = ({
                   disabled={mode === 'view'}
                   min="0"
                   step="0.01"
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.area ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.area ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Ex: 85.50"
                 />
@@ -373,7 +373,7 @@ const UnitModal = ({
             {/* Quartos e Banheiros */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Quartos
                 </label>
                 <input
@@ -383,8 +383,8 @@ const UnitModal = ({
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
                   min="0"
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.bedrooms ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.bedrooms ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Ex: 3"
                 />
@@ -394,7 +394,7 @@ const UnitModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Banheiros
                 </label>
                 <input
@@ -404,8 +404,8 @@ const UnitModal = ({
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
                   min="0"
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.bathrooms ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.bathrooms ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Ex: 2"
                 />
@@ -417,7 +417,7 @@ const UnitModal = ({
 
             {/* Descrição */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Descrição
               </label>
               <textarea
@@ -426,7 +426,7 @@ const UnitModal = ({
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
                 rows={3}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors resize-none ${
+                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors resize-none ${
                   mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
                 }`}
                 placeholder="Descrição opcional da unidade..."
@@ -435,7 +435,7 @@ const UnitModal = ({
 
             {/* Status */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Status
               </label>
               <select
@@ -443,7 +443,7 @@ const UnitModal = ({
                 value={formData.status}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
+                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
                   mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
                 }`}
               >
@@ -459,7 +459,7 @@ const UnitModal = ({
 
         {/* Footer */}
         {mode !== 'view' && (
-          <div className="flex justify-end space-x-3 p-6 border-t border-[#3dc43d]/20">
+          <div className="flex justify-end space-x-3 p-6 border-t border-[#31a196]/20">
             <button
               type="button"
               onClick={onClose}
@@ -470,7 +470,7 @@ const UnitModal = ({
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="px-6 py-2 bg-[#3dc43d] text-white rounded-lg hover:bg-[#3dc43d]/80 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -483,7 +483,7 @@ const UnitModal = ({
         )}
 
         {mode === 'view' && (
-          <div className="flex justify-end p-6 border-t border-[#3dc43d]/20">
+          <div className="flex justify-end p-6 border-t border-[#31a196]/20">
             <button
               onClick={onClose}
               className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"

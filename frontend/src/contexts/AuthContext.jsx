@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import structureService from '../services/structureService';
+import cacheService from '../services/cacheService';
 
 const AuthContext = createContext();
 
@@ -85,6 +87,9 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(userData));
         
+        // Carregar dados estruturais após login bem-sucedido
+        await loadStructureData();
+        
         return { success: true, data: userData };
       } else {
         return { success: false, message: data.message || 'Erro no login' };
@@ -95,11 +100,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loadStructureData = async () => {
+    try {
+      // Usar a nova API unificada para carregar todos os dados estruturais de uma vez
+      const response = await structureService.structure.getCompleteStructure();
+      const structureData = response.data;
+      
+      // Usar o serviço de cache para armazenar os dados
+      cacheService.storeStructureData(structureData);
+      
+      console.log('Dados estruturais carregados com sucesso via API unificada no login');
+    } catch (error) {
+      console.error('Erro ao carregar dados estruturais no login:', error);
+    }
+  };
+
   const logout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    
+    // Limpar cache de dados estruturais usando o serviço
+    cacheService.clearCache();
   };
 
   const value = {

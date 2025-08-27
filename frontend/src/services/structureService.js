@@ -204,8 +204,18 @@ export const storageService = {
 
 // Serviço combinado para estrutura completa
 export const structureService = {
-  // Obter estrutura completa de um condomínio
-  getCompleteStructure: async (condominiumId) => {
+  // Obter estrutura completa de todos os condomínios (nova API unificada)
+  getCompleteStructure: async () => {
+    try {
+      return await api.get('/structure/complete');
+    } catch (error) {
+      console.error('Erro ao carregar estrutura completa:', error);
+      throw error;
+    }
+  },
+
+  // Obter estrutura completa de um condomínio específico (mantido para compatibilidade)
+  getCondominiumStructure: async (condominiumId) => {
     try {
       const [condominium, blocks, units, parkingSpaces, storageUnits] = await Promise.all([
         condominiumService.getById(condominiumId),
@@ -223,7 +233,7 @@ export const structureService = {
         storageUnits: storageUnits.data || [],
       };
     } catch (error) {
-      console.error('Erro ao carregar estrutura completa:', error);
+      console.error('Erro ao carregar estrutura do condomínio:', error);
       throw error;
     }
   },

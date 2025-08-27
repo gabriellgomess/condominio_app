@@ -63,14 +63,14 @@ class BlockController extends Controller
             $condominium = Condominium::findOrFail($condominium_id);
 
             $query = Block::where('condominium_id', $condominium_id)
-                          ->with('condominium');
+                ->with('condominium');
 
             // Aplicar filtro de busca se fornecido
             if ($request->has('search') && !empty($request->search)) {
                 $search = $request->search;
-                $query->where(function($q) use ($search) {
+                $query->where(function ($q) use ($search) {
                     $q->where('name', 'LIKE', "%{$search}%")
-                      ->orWhere('description', 'LIKE', "%{$search}%");
+                        ->orWhere('description', 'LIKE', "%{$search}%");
                 });
             }
 
@@ -81,7 +81,6 @@ class BlockController extends Controller
                 'message' => 'Blocos encontrados',
                 'data' => $blocks
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -153,14 +152,23 @@ class BlockController extends Controller
             $blockData['active'] = $blockData['active'] ?? true;
 
             $block = Block::create($blockData);
-            $block->load('condominium');
 
+            // Retornar apenas os dados essenciais do bloco
             return response()->json([
                 'status' => 'success',
                 'message' => 'Bloco criado com sucesso',
-                'data' => $block
+                'data' => [
+                    'id' => $block->id,
+                    'name' => $block->name,
+                    'description' => $block->description,
+                    'floors' => $block->floors,
+                    'units_per_floor' => $block->units_per_floor,
+                    'active' => $block->active,
+                    'condominium_id' => $block->condominium_id,
+                    'created_at' => $block->created_at,
+                    'updated_at' => $block->updated_at
+                ]
             ], 201);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -205,7 +213,6 @@ class BlockController extends Controller
                 'message' => 'Bloco encontrado',
                 'data' => $block
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -272,14 +279,22 @@ class BlockController extends Controller
             }
 
             $block->update($validator->validated());
-            $block->load('condominium');
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Bloco atualizado com sucesso',
-                'data' => $block
+                'data' => [
+                    'id' => $block->id,
+                    'name' => $block->name,
+                    'description' => $block->description,
+                    'floors' => $block->floors,
+                    'units_per_floor' => $block->units_per_floor,
+                    'active' => $block->active,
+                    'condominium_id' => $block->condominium_id,
+                    'created_at' => $block->created_at,
+                    'updated_at' => $block->updated_at
+                ]
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -317,7 +332,7 @@ class BlockController extends Controller
     {
         try {
             $block = Block::findOrFail($id);
-            
+
             // Verificar se há unidades vinculadas
             if ($block->units()->count() > 0) {
                 return response()->json([
@@ -332,7 +347,6 @@ class BlockController extends Controller
                 'status' => 'success',
                 'message' => 'Bloco excluído com sucesso'
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -383,7 +397,6 @@ class BlockController extends Controller
                 'message' => 'Estatísticas do bloco',
                 'data' => $stats
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',

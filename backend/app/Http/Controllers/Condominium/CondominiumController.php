@@ -207,17 +207,17 @@ class CondominiumController extends Controller
     {
         try {
             // Debug: Log dos dados recebidos
-            
-            
+
+
             // Mapear 'cep' para 'zip_code' se necessário
             $data = $request->all();
             if (isset($data['cep']) && !isset($data['zip_code'])) {
                 $data['zip_code'] = $data['cep'];
                 unset($data['cep']);
             }
-            
+
             // Debug: Log dos dados após mapeamento
-            
+
 
             $validator = Validator::make($data, [
                 'name' => 'required|string|max:255',
@@ -501,6 +501,102 @@ class CondominiumController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Erro ao excluir condomínio',
+                'error' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/structure/complete",
+     *     summary="Obter estrutura completa",
+     *     description="Retorna todos os dados estruturais (condomínios, blocos, unidades, garagens e depósitos) em uma única chamada",
+     *     tags={"Condomínios"},
+     *     security={{ "sanctum": {} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Estrutura completa carregada com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Estrutura completa carregada com sucesso"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="condominiums", type="array", @OA\Items(ref="#/components/schemas/Condominium")),
+     *                 @OA\Property(property="blocks", type="array", @OA\Items(ref="#/components/schemas/Block")),
+     *                 @OA\Property(property="units", type="array", @OA\Items(ref="#/components/schemas/Unit")),
+     *                 @OA\Property(property="parking_spaces", type="array", @OA\Items(ref="#/components/schemas/ParkingSpace")),
+     *                 @OA\Property(property="storage_units", type="array", @OA\Items(ref="#/components/schemas/StorageUnit"))
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function getCompleteStructure()
+    {
+        try {
+            // Carregar todos os condomínios ativos
+            $condominiums = Condominium::active()
+                ->withCount(['blocks', 'units', 'parkingSpaces', 'storageUnits'])
+                ->orderBy('name')
+                ->get();
+
+            // Carregar todos os dados estruturais de uma vez usando relacionamentos
+            $allBlocks = [];
+            $allUnits = [];
+            $allParkingSpaces = [];
+            $allStorageUnits = [];
+
+            if ($condominiums->isNotEmpty()) {
+                $condominiumIds = $condominiums->pluck('id');
+
+                // Carregar todos os blocos
+                $allBlocks = \App\Models\Block::whereIn('condominium_id', $condominiumIds)
+                    ->active()
+                    ->with('condominium:id,name')
+                    ->orderBy('condominium_id')
+                    ->orderBy('name')
+                    ->get();
+
+                // Carregar todas as unidades
+                $allUnits = \App\Models\Unit::whereIn('condominium_id', $condominiumIds)
+                    ->active()
+                    ->with(['condominium:id,name', 'block:id,name'])
+                    ->orderBy('condominium_id')
+                    ->orderBy('block_id')
+                    ->orderBy('number')
+                    ->get();
+
+                // Carregar todas as vagas de garagem
+                $allParkingSpaces = \App\Models\ParkingSpace::whereIn('condominium_id', $condominiumIds)
+                    ->active()
+                    ->with(['condominium:id,name', 'unit:id,number'])
+                    ->orderBy('condominium_id')
+                    ->orderBy('number')
+                    ->get();
+
+                // Carregar todos os depósitos
+                $allStorageUnits = \App\Models\StorageUnit::whereIn('condominium_id', $condominiumIds)
+                    ->active()
+                    ->with(['condominium:id,name', 'unit:id,number'])
+                    ->orderBy('condominium_id')
+                    ->orderBy('number')
+                    ->get();
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Estrutura completa carregada com sucesso',
+                'data' => [
+                    'condominiums' => $condominiums,
+                    'blocks' => $allBlocks,
+                    'units' => $allUnits,
+                    'parking_spaces' => $allParkingSpaces,
+                    'storage_units' => $allStorageUnits,
+                ]
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Erro ao carregar estrutura completa',
                 'error' => $th->getMessage()
             ], 500);
         }

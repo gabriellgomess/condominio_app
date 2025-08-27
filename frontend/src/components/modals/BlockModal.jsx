@@ -35,7 +35,7 @@ const BlockModal = ({
       setFormData({
         name: '',
         description: '',
-        condominium_id: '',
+        condominium_id: block?.condominium_id || '', // Usar condominium_id se fornecido
         floors: '',
         units_per_floor: '',
         status: 'active'
@@ -100,9 +100,9 @@ const BlockModal = ({
       };
       
       if (mode === 'create') {
-        result = await structureService.createBlock(submitData);
+        result = await structureService.block.create(submitData.condominium_id, submitData);
       } else if (mode === 'edit') {
-        result = await structureService.updateBlock(block.id, submitData);
+        result = await structureService.block.update(block.id, submitData);
       }
       
       if (onSave) {
@@ -153,18 +153,18 @@ const BlockModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#0a0f0a] border border-[#3dc43d]/30 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
+      <div className="bg-[#0a0f0a] border border-[#31a196]/30 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#3dc43d]/20">
+        <div className="flex items-center justify-between p-6 border-b border-[#31a196]/20">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-[#3dc43d]/20 rounded-lg text-[#3dc43d]">
+            <div className="p-2 bg-[#31a196]/20 rounded-lg text-[#31a196]">
               {getModalIcon()}
             </div>
             <h3 className="text-xl font-bold text-white">{getModalTitle()}</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-white hover:bg-[#3dc43d]/20 rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-white hover:bg-[#31a196]/20 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -175,11 +175,11 @@ const BlockModal = ({
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Condomínio */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Condomínio *
               </label>
               {mode === 'view' ? (
-                <div className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white">
+                <div className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white">
                   {getSelectedCondominiumName()}
                 </div>
               ) : (
@@ -187,8 +187,8 @@ const BlockModal = ({
                   name="condominium_id"
                   value={formData.condominium_id}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.condominium_id ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.condominium_id ? 'border-red-500' : 'border-[#31a196]/30'
                   }`}
                 >
                   <option value="">Selecione um condomínio</option>
@@ -206,7 +206,7 @@ const BlockModal = ({
 
             {/* Nome */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Nome do Bloco/Torre *
               </label>
               <input
@@ -215,8 +215,8 @@ const BlockModal = ({
                 value={formData.name}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                  errors.name ? 'border-red-500' : 'border-[#3dc43d]/30'
+                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                  errors.name ? 'border-red-500' : 'border-[#31a196]/30'
                 } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                 placeholder="Ex: Bloco A, Torre 1"
               />
@@ -228,7 +228,7 @@ const BlockModal = ({
             {/* Andares e Unidades por Andar */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Número de Andares *
                 </label>
                 <input
@@ -238,8 +238,8 @@ const BlockModal = ({
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
                   min="1"
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.floors ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.floors ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Ex: 10"
                 />
@@ -249,7 +249,7 @@ const BlockModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Unidades por Andar *
                 </label>
                 <input
@@ -259,8 +259,8 @@ const BlockModal = ({
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
                   min="1"
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
-                    errors.units_per_floor ? 'border-red-500' : 'border-[#3dc43d]/30'
+                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
+                    errors.units_per_floor ? 'border-red-500' : 'border-[#31a196]/30'
                   } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Ex: 4"
                 />
@@ -273,10 +273,10 @@ const BlockModal = ({
             {/* Total de Unidades (calculado) */}
             {(formData.floors && formData.units_per_floor) && (
               <div>
-                <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+                <label className="block text-sm font-medium text-[#31a196] mb-2">
                   Total de Unidades (calculado)
                 </label>
-                <div className="w-full px-4 py-3 bg-[#080d08]/50 border border-[#3dc43d]/20 rounded-lg text-[#3dc43d] font-medium">
+                <div className="w-full px-4 py-3 bg-[#080d08]/50 border border-[#31a196]/20 rounded-lg text-[#31a196] font-medium">
                   {parseInt(formData.floors) * parseInt(formData.units_per_floor)} unidades
                 </div>
               </div>
@@ -284,7 +284,7 @@ const BlockModal = ({
 
             {/* Descrição */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Descrição
               </label>
               <textarea
@@ -293,7 +293,7 @@ const BlockModal = ({
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
                 rows={3}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white placeholder-[#3dc43d]/60 focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors resize-none ${
+                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors resize-none ${
                   mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
                 }`}
                 placeholder="Descrição opcional do bloco/torre..."
@@ -302,7 +302,7 @@ const BlockModal = ({
 
             {/* Status */}
             <div>
-              <label className="block text-sm font-medium text-[#3dc43d] mb-2">
+              <label className="block text-sm font-medium text-[#31a196] mb-2">
                 Status
               </label>
               <select
@@ -310,7 +310,7 @@ const BlockModal = ({
                 value={formData.status}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#3dc43d]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#3dc43d] focus:border-transparent transition-colors ${
+                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
                   mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
                 }`}
               >
@@ -325,7 +325,7 @@ const BlockModal = ({
 
         {/* Footer */}
         {mode !== 'view' && (
-          <div className="flex justify-end space-x-3 p-6 border-t border-[#3dc43d]/20">
+          <div className="flex justify-end space-x-3 p-6 border-t border-[#31a196]/20">
             <button
               type="button"
               onClick={onClose}
@@ -336,7 +336,7 @@ const BlockModal = ({
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="px-6 py-2 bg-[#3dc43d] text-white rounded-lg hover:bg-[#3dc43d]/80 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -349,7 +349,7 @@ const BlockModal = ({
         )}
 
         {mode === 'view' && (
-          <div className="flex justify-end p-6 border-t border-[#3dc43d]/20">
+          <div className="flex justify-end p-6 border-t border-[#31a196]/20">
             <button
               onClick={onClose}
               className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"

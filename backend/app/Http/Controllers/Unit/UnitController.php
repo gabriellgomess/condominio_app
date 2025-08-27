@@ -154,9 +154,9 @@ class UnitController extends Controller
                 'number' => 'required|string|max:50',
                 'floor' => 'required|integer|min:0',
                 'type' => 'required|in:apartment,house,commercial,studio,penthouse',
-                'bedrooms' => 'required|integer|min:0',
-                'bathrooms' => 'required|integer|min:1',
-                'area' => 'required|numeric|min:1',
+                'bedrooms' => 'nullable|integer|min:0',
+                'bathrooms' => 'nullable|integer|min:0',
+                'area' => 'nullable|numeric|min:1',
                 'block_id' => 'nullable|exists:blocks,id',
                 'description' => 'nullable|string',
                 'status' => 'required|in:available,occupied,maintenance,reserved'
@@ -200,12 +200,26 @@ class UnitController extends Controller
             }
 
             $unit = Unit::create($unitData);
-            $unit->load(['condominium', 'block']);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Unidade criada com sucesso',
-                'data' => $unit
+                'data' => [
+                    'id' => $unit->id,
+                    'number' => $unit->number,
+                    'floor' => $unit->floor,
+                    'type' => $unit->type,
+                    'bedrooms' => $unit->bedrooms,
+                    'bathrooms' => $unit->bathrooms,
+                    'area' => $unit->area,
+                    'condominium_id' => $unit->condominium_id,
+                    'block_id' => $unit->block_id,
+                    'description' => $unit->description,
+                    'status' => $unit->status,
+                    'active' => $unit->active,
+                    'created_at' => $unit->created_at,
+                    'updated_at' => $unit->updated_at
+                ]
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([

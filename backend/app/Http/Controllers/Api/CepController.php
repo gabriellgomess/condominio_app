@@ -116,7 +116,6 @@ class CepController extends Controller
                 'message' => 'Endereço encontrado',
                 'data' => $addressData
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
