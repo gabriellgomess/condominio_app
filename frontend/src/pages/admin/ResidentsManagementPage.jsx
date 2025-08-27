@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import { useStructure } from '../../contexts/StructureContext';
+import { useResidents } from '../../contexts/ResidentsContext';
+import { residentService } from '../../services/api';
 import { Users, Plus, Edit, Eye, Trash2, Search, User, Phone, Mail, Home, Building } from 'lucide-react';
 import Pagination from '../../components/Pagination';
 import ResidentModal from '../../components/modals/ResidentModal';
 
 const ResidentsManagementPage = () => {
   const { condominiums, units, loading } = useStructure();
+  const { 
+    loading: loadingResidents, 
+    selectedCondominium: contextSelectedCondominium,
+    setSelectedCondominium: setContextSelectedCondominium,
+    handleCrudOperation,
+    getResidentsByCondominium 
+  } = useResidents();
   
-  // Estados locais
-  const [residents, setResidents] = useState([]);
-  const [selectedCondominium, setSelectedCondominium] = useState('');
+  // Estados locais  
   const [searchTerm, setSearchTerm] = useState('');
-  const [loadingResidents, setLoadingResidents] = useState(false);
+  const [filters, setFilters] = useState({
+    condominium: '',
+    block: '',
+    unit: '',
+    residentType: '' // owner, tenant, both
+  });
   
   // Estados de paginação
   const [pagination, setPagination] = useState({
@@ -27,76 +39,91 @@ const ResidentsManagementPage = () => {
     data: null
   });
 
-  // Mock data para moradores (substituir por API real)
+  // Sincronizar condomínio selecionado com o contexto
   useEffect(() => {
-    // Simular carregamento de moradores
-    const mockResidents = [
-      {
-        id: 1,
-        unit_id: 1,
-        unit: { number: '101', block: { name: 'Torre A' } },
-        condominium_id: 1,
-        condominium: { name: 'Condomínio Verdes Mares' },
-        unit_status: 'occupied',
-        owner: {
-          name: 'João Silva',
-          email: 'joao.silva@email.com',
-          phone: '(11) 99999-9999',
-          cpf: '123.456.789-00',
-          status: 'active'
-        },
-        tenant: {
-          has_tenant: true,
-          name: 'Maria Santos',
-          email: 'maria.santos@email.com',
-          phone: '(11) 88888-8888',
-          cpf: '987.654.321-00',
-          status: 'active',
-          lease_start: '2024-01-01',
-          lease_end: '2024-12-31'
-        },
-        has_tenant: true,
-        total_residents: 2,
-        created_at: '2024-01-15'
-      },
-      {
-        id: 2,
-        unit_id: 2,
-        unit: { number: '102', block: { name: 'Torre A' } },
-        condominium_id: 1,
-        condominium: { name: 'Condomínio Verdes Mares' },
-        unit_status: 'occupied',
-        owner: {
-          name: 'Pedro Oliveira',
-          email: 'pedro.oliveira@email.com',
-          phone: '(11) 77777-7777',
-          cpf: '111.222.333-44',
-          status: 'active'
-        },
-        tenant: {
-          has_tenant: false,
-          name: '',
-          email: '',
-          phone: '',
-          cpf: '',
-          status: 'inactive'
-        },
-        has_tenant: false,
-        total_residents: 1,
-        created_at: '2024-01-20'
-      }
-    ];
+    setContextSelectedCondominium(contextSelectedCondominium);
+  }, [contextSelectedCondominium, setContextSelectedCondominium]);
+
+  // Obter blocos do condomínio selecionado
+  const getAvailableBlocks = () => {
+    const condominiumId = filters.condominium || contextSelectedCondominium;
+    if (!condominiumId) return [];
     
-    setResidents(mockResidents);
-  }, []);
+    const condominiumUnits = units.filter(unit => 
+      unit.condominium_id?.toString() === condominiumId.toString()
+    );
+    
+    const uniqueBlocks = condominiumUnits
+      .filter(unit => unit.block)
+      .reduce((acc, unit) => {
+        if (!acc.find(block => block.id === unit.block.id)) {
+          acc.push(unit.block);
+        }
+        return acc;
+      }, []);
+    
+    return uniqueBlocks;
+  };
+
+  // Obter unidades do bloco selecionado
+  const getAvailableUnits = () => {
+    const condominiumId = filters.condominium || contextSelectedCondominium;
+    let filteredUnits = units.filter(unit => 
+      unit.condominium_id?.toString() === condominiumId.toString()
+    );
+    
+    if (filters.block) {
+      filteredUnits = filteredUnits.filter(unit => 
+        unit.block?.id?.toString() === filters.block.toString()
+      );
+    }
+    
+    return filteredUnits;
+  };
+
+  // Função para atualizar filtros
+  const handleFilterChange = (filterName, value) => {
+    setFilters(prev => {
+      const newFilters = { ...prev, [filterName]: value };
+      
+      // Se mudou o condomínio, limpar bloco e unidade
+      if (filterName === 'condominium') {
+        newFilters.block = '';
+        newFilters.unit = '';
+      }
+      
+      // Se mudou o bloco, limpar unidade
+      if (filterName === 'block') {
+        newFilters.unit = '';
+      }
+      
+      return newFilters;
+    });
+
+    // Resetar paginação quando filtrar
+    setPagination(current => ({ ...current, currentPage: 1 }));
+  };
+
+  // Função para limpar todos os filtros
+  const clearAllFilters = () => {
+    setFilters({
+      condominium: '',
+      block: '',
+      unit: '',
+      residentType: ''
+    });
+    setSearchTerm('');
+    setContextSelectedCondominium('');
+    setPagination(current => ({ ...current, currentPage: 1 }));
+  };
 
   // Funções de paginação
   const handlePageChange = (page) => {
-    setPagination(prev => ({ ...prev, currentPage: page }));
+    setPagination(current => ({ ...current, currentPage: page }));
   };
 
   const handleItemsPerPageChange = (itemsPerPage) => {
-    setPagination(prev => ({ currentPage: 1, itemsPerPage }));
+    setPagination(() => ({ currentPage: 1, itemsPerPage }));
   };
 
   const getPaginatedData = (data) => {
@@ -108,25 +135,46 @@ const ResidentsManagementPage = () => {
 
   // Filtrar dados
   const getFilteredData = () => {
-    let filtered = residents;
+    // Usar dados do contexto
+    let filtered = getResidentsByCondominium(filters.condominium || contextSelectedCondominium);
 
-    // Filtrar por condomínio
-    if (selectedCondominium) {
+    // Filtrar por bloco
+    if (filters.block) {
       filtered = filtered.filter(resident => 
-        resident.condominium_id.toString() === selectedCondominium
+        resident.unit?.block?.id?.toString() === filters.block.toString()
       );
     }
 
-    // Filtrar por busca
+    // Filtrar por unidade
+    if (filters.unit) {
+      filtered = filtered.filter(resident => 
+        resident.unit?.id?.toString() === filters.unit.toString()
+      );
+    }
+
+    // Filtrar por tipo de morador
+    if (filters.residentType) {
+      if (filters.residentType === 'owner') {
+        // Apenas proprietários (sem inquilino)
+        filtered = filtered.filter(resident => !resident.has_tenant);
+      } else if (filters.residentType === 'tenant') {
+        // Apenas inquilinos
+        filtered = filtered.filter(resident => resident.has_tenant);
+      }
+      // 'both' mostra todos, então não filtra
+    }
+
+    // Filtrar por busca (nome do proprietário ou inquilino)
     if (searchTerm) {
       filtered = filtered.filter(resident =>
-        resident.owner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        resident.owner.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        resident.owner.phone.includes(searchTerm) ||
-        (resident.tenant.has_tenant && resident.tenant.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (resident.tenant.has_tenant && resident.tenant.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (resident.tenant.has_tenant && resident.tenant.phone.includes(searchTerm)) ||
-        resident.unit?.number.toLowerCase().includes(searchTerm.toLowerCase())
+        resident.owner?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        resident.owner?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        resident.owner?.phone?.includes(searchTerm) ||
+        (resident.tenant?.has_tenant && resident.tenant?.name?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (resident.tenant?.has_tenant && resident.tenant?.email?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (resident.tenant?.has_tenant && resident.tenant?.phone?.includes(searchTerm)) ||
+        resident.unit?.number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        resident.unit?.block?.name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -151,44 +199,43 @@ const ResidentsManagementPage = () => {
   };
 
   const handleResidentSave = async (savedResident) => {
+    console.log('👥 ResidentsManagementPage - Morador salvo:', savedResident);
+    
     try {
-      // Aqui você implementaria a lógica de salvar na API
-      console.log('Morador salvo:', savedResident);
-      
+      // Usar o contexto para atualizar os dados
       if (residentModal.mode === 'create') {
-        setResidents(prev => [...prev, { ...savedResident, id: Date.now() }]);
-      } else {
-        setResidents(prev => prev.map(r => 
-          r.id === savedResident.id ? savedResident : r
-        ));
+        await handleCrudOperation('create', savedResident);
+      } else if (residentModal.mode === 'edit') {
+        await handleCrudOperation('update', savedResident);
       }
       
+      console.log('✅ ResidentsManagementPage - Contexto atualizado com sucesso');
       closeResidentModal();
     } catch (error) {
-      console.error('Erro ao salvar morador:', error);
+      console.error('❌ ResidentsManagementPage - Erro ao atualizar contexto:', error);
     }
   };
 
   const handleDeleteResident = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este morador?')) {
       try {
-        // Aqui você implementaria a lógica de deletar na API
-        setResidents(prev => prev.filter(r => r.id !== id));
+        console.log('🗑️ ResidentsManagementPage - Excluindo morador:', id);
+        
+        // Chamar API para deletar
+        await residentService.delete(id);
+        
+        // Atualizar contexto
+        await handleCrudOperation('delete', { id });
+        
+        console.log('✅ ResidentsManagementPage - Morador excluído com sucesso');
       } catch (error) {
-        console.error('Erro ao excluir morador:', error);
+        console.error('❌ ResidentsManagementPage - Erro ao excluir morador:', error);
+        alert('Erro ao excluir morador: ' + (error.message || 'Erro desconhecido'));
       }
     }
   };
 
-  // Funções auxiliares
-  const getTypeLabel = (type) => {
-    const types = {
-      owner: 'Proprietário',
-      tenant: 'Inquilino',
-      resident: 'Morador'
-    };
-    return types[type] || type;
-  };
+
 
   const getStatusBadge = (status) => {
     const statusConfig = {
@@ -296,10 +343,9 @@ const ResidentsManagementPage = () => {
                   <td className="py-4 px-4">
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
-                        <span className="text-xs text-[#f3f7f1]/60">Unidade:</span>
                         {getUnitStatusBadge(resident.unit_status)}
                       </div>
-                      <div className="flex items-center space-x-2">
+                      {/* <div className="flex items-center space-x-2">
                         <span className="text-xs text-[#f3f7f1]/60">Proprietário:</span>
                         {getStatusBadge(resident.owner.status)}
                       </div>
@@ -308,7 +354,7 @@ const ResidentsManagementPage = () => {
                           <span className="text-xs text-[#f3f7f1]/60">Inquilino:</span>
                           {getStatusBadge(resident.tenant.status)}
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </td>
                   
@@ -369,42 +415,156 @@ const ResidentsManagementPage = () => {
         </div>
         <button 
           onClick={() => openResidentModal('create')}
-          className="btn-primary"
+          className="px-4 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors flex items-center space-x-2 cursor-pointer"
         >
           <Plus className="w-5 h-5 mr-2" />
-          Nova Unidade/Morador
+          Novo Morador
         </button>
       </div>
 
-      {/* Filtros */}
+      {/* Filtros Avançados */}
       <div className="card mb-6">
-        <div className="p-4">
-          <div className="flex flex-wrap gap-4">
-            <div className="flex-1 min-w-[200px]">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-white flex items-center">
+              <Search className="w-5 h-5 mr-2 text-[#31a196]" />
+              Filtros de Busca
+            </h3>
+            <button
+              onClick={clearAllFilters}
+              className="px-3 py-1 text-sm text-[#31a196] hover:bg-[#31a196]/10 rounded-lg transition-colors"
+            >
+              Limpar Filtros
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            {/* Busca por Nome */}
+            <div className="lg:col-span-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Buscar por nome
+              </label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#31a196]/60 w-4 h-4" />
+                <User className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#31a196]" />
                 <input
                   type="text"
-                  placeholder="Buscar por nome, email, telefone ou unidade..."
+                  placeholder="Nome do proprietário ou inquilino..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#f3f7f1]/50 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
                 />
               </div>
             </div>
-            <div className="min-w-[200px]">
+
+            {/* Filtro por Condomínio */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Condomínio
+              </label>
               <select
-                value={selectedCondominium}
-                onChange={(e) => setSelectedCondominium(e.target.value)}
-                className="w-full px-4 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
+                value={filters.condominium}
+                onChange={(e) => handleFilterChange('condominium', e.target.value)}
+                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
               >
-                <option value="">Todos os condomínios</option>
+                <option value="">Todos</option>
                 {condominiums.map((cond) => (
                   <option key={cond.id} value={cond.id.toString()}>
                     {cond.name}
                   </option>
                 ))}
               </select>
+            </div>
+
+            {/* Filtro por Bloco */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Bloco/Torre
+              </label>
+              <select
+                value={filters.block}
+                onChange={(e) => handleFilterChange('block', e.target.value)}
+                disabled={!filters.condominium && !contextSelectedCondominium}
+                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <option value="">Todos</option>
+                {getAvailableBlocks().map((block) => (
+                  <option key={block.id} value={block.id.toString()}>
+                    {block.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Filtro por Unidade */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Unidade
+              </label>
+              <select
+                value={filters.unit}
+                onChange={(e) => handleFilterChange('unit', e.target.value)}
+                disabled={!filters.condominium && !contextSelectedCondominium}
+                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <option value="">Todas</option>
+                {getAvailableUnits().map((unit) => (
+                  <option key={unit.id} value={unit.id.toString()}>
+                    {unit.number} {unit.block ? `- ${unit.block.name}` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Filtro por Tipo de Morador */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Tipo de Morador
+              </label>
+              <select
+                value={filters.residentType}
+                onChange={(e) => handleFilterChange('residentType', e.target.value)}
+                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
+              >
+                <option value="">Todos</option>
+                <option value="owner">Apenas Proprietários</option>
+                <option value="tenant">Apenas com Inquilinos</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Indicadores de Filtros Ativos */}
+          <div className="mt-4">
+            <div className="flex flex-wrap gap-2">
+              {(filters.condominium || filters.block || filters.unit || filters.residentType || searchTerm) && (
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-[#f3f7f1]/60">Filtros ativos:</span>
+                  {searchTerm && (
+                    <span className="px-2 py-1 bg-[#31a196]/20 text-[#31a196] rounded text-xs">
+                      Nome: "{searchTerm}"
+                    </span>
+                  )}
+                  {filters.condominium && (
+                    <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">
+                      Condomínio
+                    </span>
+                  )}
+                  {filters.block && (
+                    <span className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">
+                      Bloco
+                    </span>
+                    )}
+                  {filters.unit && (
+                    <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">
+                      Unidade
+                    </span>
+                  )}
+                  {filters.residentType && (
+                    <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs">
+                      {filters.residentType === 'owner' ? 'Proprietários' : 'Com Inquilinos'}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -413,7 +573,7 @@ const ResidentsManagementPage = () => {
       {/* Tabela */}
       <div className="card">
         <div className="p-6">
-          {loadingResidents ? (
+          {(loading || loadingResidents) ? (
             <div className="flex justify-center items-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#31a196]"></div>
             </div>
@@ -429,7 +589,9 @@ const ResidentsManagementPage = () => {
                     Nenhum morador encontrado
                   </p>
                   <p className="text-white font-medium">
-                    {searchTerm || selectedCondominium ? 'Tente ajustar os filtros' : 'Comece cadastrando uma unidade com morador'}
+                    {(searchTerm || filters.condominium || filters.block || filters.unit || filters.residentType) 
+                      ? 'Tente ajustar os filtros para encontrar moradores' 
+                      : 'Comece cadastrando uma unidade com morador'}
                   </p>
                 </div>
               )}

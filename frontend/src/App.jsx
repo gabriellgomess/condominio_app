@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { StructureProvider } from './contexts/StructureContext';
+import { ResidentsProvider } from './contexts/ResidentsContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import UserAreaRouter from './components/UserAreaRouter';
@@ -15,7 +16,8 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <StructureProvider>
-          <Router>
+          <ResidentsProvider>
+            <Router>
         <div className="App">
           <Routes>
             {/* Rota pública - Página inicial */}
@@ -91,7 +93,8 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
-          </Router>
+            </Router>
+          </ResidentsProvider>
         </StructureProvider>
       </AuthProvider>
     </ThemeProvider>

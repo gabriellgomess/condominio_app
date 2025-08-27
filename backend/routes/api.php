@@ -19,6 +19,7 @@ use App\Http\Controllers\Block\BlockController;
 use App\Http\Controllers\Unit\UnitController;
 use App\Http\Controllers\ParkingSpace\ParkingSpaceController;
 use App\Http\Controllers\StorageUnit\StorageUnitController;
+use App\Http\Controllers\Resident\ResidentController;
 use App\Http\Controllers\Api\CepController;
 
 
@@ -79,4 +80,9 @@ Route::group([
     Route::apiResource('condominiums.storage-units', StorageUnitController::class)->except(['show', 'update', 'destroy']);
     Route::apiResource('storage-units', StorageUnitController::class)->only(['show', 'update', 'destroy']);
     Route::get('condominiums/{condominium_id}/storage-units/stats', [StorageUnitController::class, 'stats']);
+
+    // Moradores (Proprietários + Inquilinos)
+    Route::apiResource('residents', ResidentController::class);
+    Route::get('condominiums/{condominium_id}/residents', [ResidentController::class, 'index']);
+    Route::get('condominiums/{condominium_id}/residents/stats', [ResidentController::class, 'stats']);
 });

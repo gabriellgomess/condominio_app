@@ -86,4 +86,29 @@ export const authService = {
   getRedirectInfo: () => api.get('/redirect-info'),
 };
 
+// Serviços de moradores (proprietários + inquilinos)
+export const residentService = {
+  // Listar moradores
+  getAll: (params = {}) => api.get('/residents', params),
+  
+  // Listar moradores por condomínio
+  getByCondominium: (condominiumId, params = {}) => 
+    api.get(`/condominiums/${condominiumId}/residents`, params),
+  
+  // Obter morador específico
+  getById: (id) => api.get(`/residents/${id}`),
+  
+  // Criar novo morador
+  create: (residentData) => api.post('/residents', residentData),
+  
+  // Atualizar morador
+  update: (id, residentData) => api.put(`/residents/${id}`, residentData),
+  
+  // Excluir morador
+  delete: (id) => api.delete(`/residents/${id}`),
+  
+  // Estatísticas de moradores por condomínio
+  getStats: (condominiumId) => api.get(`/condominiums/${condominiumId}/residents/stats`)
+};
+
 export default api;

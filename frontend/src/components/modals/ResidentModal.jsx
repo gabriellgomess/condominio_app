@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { residentService, api } from '../../services/api';
 import { X, Save, Eye, Edit, User, Phone, Mail, Home, Building, Calendar, Users, FileText } from 'lucide-react';
 
 const ResidentModal = ({ 
@@ -234,16 +235,25 @@ const ResidentModal = ({
     try {
       console.log('👥 ResidentModal - Dados enviados:', formData);
       
-      // Aqui você implementaria a chamada para a API
-      const savedResident = {
-        ...formData,
-        id: resident?.id || Date.now(),
-        condominium: condominiums.find(c => c.id.toString() === formData.condominium_id),
-        unit: units.find(u => u.id.toString() === formData.unit_id)
-      };
+      let response;
+      if (mode === 'edit' && resident?.id) {
+        // Atualizar morador existente
+        response = await residentService.update(resident.id, formData);
+      } else {
+        // Criar novo morador
+        response = await residentService.create(formData);
+      }
       
-      console.log('✅ ResidentModal - Morador preparado:', savedResident);
-      onSave(savedResident);
+      console.log('🚀 ResidentModal - Resposta da API:', response);
+      
+      if (response.status === 'success') {
+        console.log('✅ ResidentModal - Sucesso, chamando onSave com:', response.data);
+        onSave(response.data);
+        onClose();
+      } else {
+        console.error('❌ ResidentModal - Erro da API:', response.message);
+        setErrors({ submit: response.message || 'Erro ao salvar morador' });
+      }
     } catch (error) {
       console.error('Erro ao salvar morador:', error);
       setErrors({ submit: 'Erro ao salvar morador' });
@@ -273,7 +283,7 @@ const ResidentModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-[#1a1a1a] rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
