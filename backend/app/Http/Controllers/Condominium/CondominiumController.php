@@ -312,7 +312,7 @@ class CondominiumController extends Controller
     public function show($id)
     {
         try {
-            $condominium = Condominium::with(['blocks', 'units', 'parkingSpaces', 'storageUnits'])
+            $condominium = Condominium::with(['blocks', 'units', 'parkingSpaces', 'spaces'])
                 ->find($id);
 
             if (!$condominium) {
@@ -535,7 +535,7 @@ class CondominiumController extends Controller
         try {
             // Carregar todos os condomínios ativos
             $condominiums = Condominium::active()
-                ->withCount(['blocks', 'units', 'parkingSpaces', 'storageUnits'])
+                ->withCount(['blocks', 'units', 'parkingSpaces', 'spaces'])
                 ->orderBy('name')
                 ->get();
 
@@ -543,7 +543,7 @@ class CondominiumController extends Controller
             $allBlocks = [];
             $allUnits = [];
             $allParkingSpaces = [];
-            $allStorageUnits = [];
+            $allSpaces = [];
 
             if ($condominiums->isNotEmpty()) {
                 $condominiumIds = $condominiums->pluck('id');
@@ -574,7 +574,7 @@ class CondominiumController extends Controller
                     ->get();
 
                 // Carregar todos os depósitos
-                $allStorageUnits = \App\Models\StorageUnit::whereIn('condominium_id', $condominiumIds)
+                $allSpaces = \App\Models\Space::whereIn('condominium_id', $condominiumIds)
                     ->active()
                     ->with(['condominium:id,name', 'unit:id,number'])
                     ->orderBy('condominium_id')
@@ -590,7 +590,7 @@ class CondominiumController extends Controller
                     'blocks' => $allBlocks,
                     'units' => $allUnits,
                     'parking_spaces' => $allParkingSpaces,
-                    'storage_units' => $allStorageUnits,
+                    'spaces' => $allSpaces,
                 ]
             ], 200);
         } catch (\Throwable $th) {

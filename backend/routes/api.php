@@ -18,7 +18,7 @@ use App\Http\Controllers\Condominium\CondominiumController;
 use App\Http\Controllers\Block\BlockController;
 use App\Http\Controllers\Unit\UnitController;
 use App\Http\Controllers\ParkingSpace\ParkingSpaceController;
-use App\Http\Controllers\StorageUnit\StorageUnitController;
+use App\Http\Controllers\Space\SpaceController;
 use App\Http\Controllers\Resident\ResidentController;
 use App\Http\Controllers\Supplier\SupplierController;
 use App\Http\Controllers\Api\CepController;
@@ -80,10 +80,11 @@ Route::group([
     Route::apiResource('parking-spaces', ParkingSpaceController::class)->only(['show', 'update', 'destroy']);
     Route::get('condominiums/{condominium_id}/parking-spaces/stats', [ParkingSpaceController::class, 'stats']);
 
-    // Depósitos
-    Route::apiResource('condominiums.storage-units', StorageUnitController::class)->except(['show', 'update', 'destroy']);
-    Route::apiResource('storage-units', StorageUnitController::class)->only(['show', 'update', 'destroy']);
-    Route::get('condominiums/{condominium_id}/storage-units/stats', [StorageUnitController::class, 'stats']);
+    // Espaços
+    Route::apiResource('condominiums.spaces', SpaceController::class)->except(['show', 'update', 'destroy']);
+    Route::apiResource('spaces', SpaceController::class)->only(['show', 'update', 'destroy']);
+    Route::get('condominiums/{condominium_id}/spaces/stats', [SpaceController::class, 'stats']);
+    Route::get('spaces/types', [SpaceController::class, 'types']);
 
     // Moradores (Proprietários + Inquilinos)
     Route::apiResource('residents', ResidentController::class);

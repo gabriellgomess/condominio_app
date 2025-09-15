@@ -156,49 +156,54 @@ export const parkingService = {
   },
 };
 
-// Serviços para Depósitos/Box
-export const storageService = {
-  // Listar depósitos de um condomínio
+// Serviços para Espaços
+export const spaceService = {
+  // Listar espaços de um condomínio
   getByCondominium: (condominiumId, params = {}) => {
-    return api.get(`/condominiums/${condominiumId}/storage-units`, params);
+    return api.get(`/condominiums/${condominiumId}/spaces`, params);
   },
 
-  // Obter depósito por ID
+  // Obter espaço por ID
   getById: (id) => {
-    return api.get(`/storage-units/${id}`);
+    return api.get(`/spaces/${id}`);
   },
 
-  // Criar novo depósito
+  // Criar novo espaço
   create: (condominiumId, data) => {
-    return api.post(`/condominiums/${condominiumId}/storage-units`, {
+    return api.post(`/condominiums/${condominiumId}/spaces`, {
       ...data,
       condominium_id: condominiumId,
     });
   },
 
-  // Atualizar depósito
+  // Atualizar espaço
   update: (id, data) => {
-    return api.put(`/storage-units/${id}`, data);
+    return api.put(`/spaces/${id}`, data);
   },
 
-  // Excluir depósito
+  // Excluir espaço
   delete: (id) => {
-    return api.delete(`/storage-units/${id}`);
+    return api.delete(`/spaces/${id}`);
   },
 
-  // Vincular depósito a uma unidade
+  // Vincular espaço a uma unidade
   linkToUnit: (id, unitId) => {
-    return api.put(`/storage-units/${id}/link`, { unit_id: unitId });
+    return api.put(`/spaces/${id}/link`, { unit_id: unitId });
   },
 
-  // Desvincular depósito de uma unidade
+  // Desvincular espaço de uma unidade
   unlinkFromUnit: (id) => {
-    return api.put(`/storage-units/${id}/unlink`);
+    return api.put(`/spaces/${id}/unlink`);
   },
 
-  // Obter estatísticas dos depósitos
+  // Obter estatísticas dos espaços
   getStats: (condominiumId) => {
-    return api.get(`/condominiums/${condominiumId}/storage-units/stats`);
+    return api.get(`/condominiums/${condominiumId}/spaces/stats`);
+  },
+
+  // Obter tipos de espaço
+  getTypes: () => {
+    return api.get('/spaces/types');
   },
 };
 
@@ -275,6 +280,6 @@ export default {
   block: blockService,
   unit: unitService,
   parking: parkingService,
-  storage: storageService,
+  space: spaceService,
   structure: structureService,
 };

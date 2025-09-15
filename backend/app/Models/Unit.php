@@ -62,9 +62,9 @@ class Unit extends Model
     /**
      * Relacionamento com depósitos/box
      */
-    public function storageUnits(): HasMany
+    public function spaces(): HasMany
     {
-        return $this->hasMany(StorageUnit::class);
+        return $this->hasMany(Space::class);
     }
 
     /**
@@ -114,7 +114,7 @@ class Unit extends Model
     {
         return [
             'parking_spaces' => $this->parkingSpaces()->count(),
-            'storage_units' => $this->storageUnits()->count(),
+            'spaces' => $this->spaces()->count(),
             'total_area' => $this->area,
         ];
     }

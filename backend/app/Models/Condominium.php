@@ -55,11 +55,11 @@ class Condominium extends Model
     }
 
     /**
-     * Relacionamento com depósitos/box
+     * Relacionamento com espaços
      */
-    public function storageUnits(): HasMany
+    public function spaces(): HasMany
     {
-        return $this->hasMany(StorageUnit::class);
+        return $this->hasMany(Space::class);
     }
 
     /**
@@ -95,7 +95,7 @@ class Condominium extends Model
             'total_blocks' => $this->blocks()->count(),
             'total_units' => $this->units()->count(),
             'total_parking_spaces' => $this->parkingSpaces()->count(),
-            'total_storage_units' => $this->storageUnits()->count(),
+            'total_spaces' => $this->spaces()->count(),
             'occupied_units' => $this->units()->where('status', 'occupied')->count(),
             'available_units' => $this->units()->where('status', 'available')->count(),
         ];

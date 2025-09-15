@@ -28,22 +28,27 @@ const apiRequest = async (endpoint, options = {}) => {
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
     
-    // Verificar se a resposta é JSON
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.message || `Erro HTTP: ${response.status}`);
+    // Clonar a resposta para poder tentar diferentes métodos de parse
+    const responseClone = response.clone();
+    
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      // Se não conseguir fazer parse do JSON, usar o texto da resposta clonada
+      try {
+        const text = await responseClone.text();
+        data = { message: text };
+      } catch (textError) {
+        data = { message: `Erro ao processar resposta: ${textError.message}` };
       }
-      
-      return data;
-    } else {
-      if (!response.ok) {
-        throw new Error(`Erro HTTP: ${response.status}`);
-      }
-      return response;
     }
+    
+    if (!response.ok) {
+      throw new Error(data.message || `Erro HTTP: ${response.status}`);
+    }
+    
+    return data;
   } catch (error) {
     console.error('Erro na requisição API:', error);
     throw error;

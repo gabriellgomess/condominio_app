@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { X, Save, Eye, Edit, Package } from 'lucide-react';
 import structureService from '../../services/structureService';
 
-const StorageModal = ({ 
+const SpaceModal = ({ 
   isOpen, 
   onClose, 
   mode = 'create', // 'create', 'edit', 'view'
-  storage = null,
+  space = null,
   condominiums = [],
   units = [],
   onSave 
 }) => {
   const [formData, setFormData] = useState({
     number: '',
-    type: 'storage',
+    space_type: 'storage',
     location: '',
     area: '',
     height: '',
@@ -22,6 +22,7 @@ const StorageModal = ({
     unit_id: '',
     description: '',
     climate_controlled: false,
+    reservable: false,
     active: true
   });
   const [loading, setLoading] = useState(false);
@@ -29,37 +30,39 @@ const StorageModal = ({
   const [filteredUnits, setFilteredUnits] = useState([]);
 
   useEffect(() => {
-    if (storage && (mode === 'edit' || mode === 'view')) {
+    if (space && (mode === 'edit' || mode === 'view')) {
       setFormData({
-        number: storage.number || '',
-        type: storage.type || 'storage',
-        location: storage.location || '',
-        area: storage.area || '',
-        height: storage.height || '',
-        status: storage.status || 'available',
-        condominium_id: storage.condominium_id || '',
-        unit_id: storage.unit_id || '',
-        description: storage.description || '',
-        climate_controlled: storage.climate_controlled !== undefined ? storage.climate_controlled : false,
-        active: storage.active !== undefined ? storage.active : true
+        number: space.number || '',
+        space_type: space.space_type || 'storage',
+        location: space.location || '',
+        area: space.area || '',
+        height: space.height || '',
+        status: space.status || 'available',
+        condominium_id: space.condominium_id || '',
+        unit_id: space.unit_id || '',
+        description: space.description || '',
+        climate_controlled: space.climate_controlled !== undefined ? space.climate_controlled : false,
+        reservable: space.reservable !== undefined ? space.reservable : false,
+        active: space.active !== undefined ? space.active : true
       });
     } else {
       setFormData({
         number: '',
-        type: 'storage',
+        space_type: 'storage',
         location: '',
         area: '',
         height: '',
         status: 'available',
-        condominium_id: storage?.condominium_id?.toString() || '', // Usar condominium_id se fornecido
+        condominium_id: space?.condominium_id?.toString() || '', // Usar condominium_id se fornecido
         unit_id: '',
         description: '',
         climate_controlled: false,
+        reservable: false,
         active: true
       });
     }
     setErrors({});
-  }, [storage, mode, isOpen]);
+  }, [space, mode, isOpen]);
 
   // Filtrar unidades baseado no condomínio selecionado
   useEffect(() => {
@@ -105,8 +108,8 @@ const StorageModal = ({
       newErrors.condominium_id = 'Condomínio é obrigatório';
     }
     
-    if (!formData.type) {
-      newErrors.type = 'Tipo é obrigatório';
+    if (!formData.space_type) {
+      newErrors.space_type = 'Tipo é obrigatório';
     }
     
     if (!formData.status) {
@@ -127,35 +130,35 @@ const StorageModal = ({
     setLoading(true);
     
     try {
-      console.log('📦 StorageModal - Dados enviados:', formData);
+      console.log('🏢 SpaceModal - Dados enviados:', formData);
       let result;
       
       if (mode === 'create') {
-        console.log('📦 StorageModal - Criando depósito com condominium_id:', formData.condominium_id);
-        result = await structureService.storage.create(formData.condominium_id, formData);
+        console.log('🏢 SpaceModal - Criando espaço com condominium_id:', formData.condominium_id);
+        result = await structureService.space.create(formData.condominium_id, formData);
       } else if (mode === 'edit') {
-        result = await structureService.storage.update(storage.id, formData);
+        result = await structureService.space.update(space.id, formData);
       }
       
-      console.log('📦 StorageModal - Resposta do backend:', result);
-      console.log('📦 StorageModal - Status recebido:', result.status);
-      console.log('📦 StorageModal - Comparação status === "success":', result.status === 'success');
+      console.log('🏢 SpaceModal - Resposta do backend:', result);
+      console.log('🏢 SpaceModal - Status recebido:', result.status);
+      console.log('🏢 SpaceModal - Comparação status === "success":', result.status === 'success');
       
       if (result.status === 'success') {
-        console.log('✅ StorageModal - Sucesso, chamando onSave com:', result.data);
+        console.log('✅ SpaceModal - Sucesso, chamando onSave com:', result.data);
         // Chamar onSave e fechar o modal
         onSave(result.data);
         // Não esperar o onSave para evitar problemas - o modal será fechado pelo onSave
       } else {
-        console.error('❌ StorageModal - Erro do backend:', result.message);
-        setErrors({ submit: result.message || 'Erro ao salvar depósito' });
+        console.error('❌ SpaceModal - Erro do backend:', result.message);
+        setErrors({ submit: result.message || 'Erro ao salvar espaço' });
       }
     } catch (error) {
-      console.error('Erro ao salvar depósito:', error);
+      console.error('Erro ao salvar espaço:', error);
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
       } else {
-        setErrors({ submit: 'Erro ao salvar depósito' });
+        setErrors({ submit: 'Erro ao salvar espaço' });
       }
     } finally {
       setLoading(false);
@@ -165,9 +168,14 @@ const StorageModal = ({
   const getTypeLabel = (type) => {
     const types = {
       storage: 'Depósito',
-      box: 'Box',
-      cellar: 'Adega',
-      attic: 'Sótão'
+      gas_depot: 'Depósito de Gás',
+      trash_depot: 'Depósito de Lixo',
+      gym: 'Academia',
+      party_hall: 'Salão de Festas',
+      meeting_room: 'Sala de Reuniões',
+      laundry: 'Lavanderia',
+      storage_room: 'Depósito Geral',
+      other: 'Outro'
     };
     return types[type] || type;
   };
@@ -185,13 +193,13 @@ const StorageModal = ({
   const getModalTitle = () => {
     switch (mode) {
       case 'create':
-        return 'Novo Depósito';
+        return 'Novo Espaço';
       case 'edit':
-        return 'Editar Depósito';
+        return 'Editar Espaço';
       case 'view':
-        return 'Visualizar Depósito';
+        return 'Visualizar Espaço';
       default:
-        return 'Depósito';
+        return 'Espaço';
     }
   };
 
@@ -282,21 +290,26 @@ const StorageModal = ({
                 Tipo *
               </label>
               <select
-                name="type"
-                value={formData.type}
+                name="space_type"
+                value={formData.space_type}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
                 className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.type ? 'border-red-500' : 'border-gray-600'
+                  errors.space_type ? 'border-red-500' : 'border-gray-600'
                 } focus:border-[#ff6600] focus:outline-none`}
               >
                 <option value="storage">Depósito</option>
-                <option value="box">Box</option>
-                <option value="cellar">Adega</option>
-                <option value="attic">Sótão</option>
+                <option value="gas_depot">Depósito de Gás</option>
+                <option value="trash_depot">Depósito de Lixo</option>
+                <option value="gym">Academia</option>
+                <option value="party_hall">Salão de Festas</option>
+                <option value="meeting_room">Sala de Reuniões</option>
+                <option value="laundry">Lavanderia</option>
+                <option value="storage_room">Depósito Geral</option>
+                <option value="other">Outro</option>
               </select>
-              {errors.type && (
-                <p className="text-red-400 text-sm mt-1">{errors.type}</p>
+              {errors.space_type && (
+                <p className="text-red-400 text-sm mt-1">{errors.space_type}</p>
               )}
             </div>
 
@@ -411,7 +424,7 @@ const StorageModal = ({
               disabled={mode === 'view'}
               rows={3}
               className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
-              placeholder="Descrição do depósito..."
+              placeholder="Descrição do espaço..."
             />
           </div>
 
@@ -434,6 +447,20 @@ const StorageModal = ({
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
+                name="reservable"
+                checked={formData.reservable}
+                onChange={handleInputChange}
+                disabled={mode === 'view'}
+                className="w-4 h-4 text-[#ff6600] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#ff6600] focus:ring-2"
+              />
+              <label className="text-sm font-medium text-gray-300">
+                Espaço reservável
+              </label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
                 name="active"
                 checked={formData.active}
                 onChange={handleInputChange}
@@ -441,7 +468,7 @@ const StorageModal = ({
                 className="w-4 h-4 text-[#ff6600] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#ff6600] focus:ring-2"
               />
               <label className="text-sm font-medium text-gray-300">
-                Depósito ativo
+                Espaço ativo
               </label>
             </div>
           </div>
@@ -499,4 +526,4 @@ const StorageModal = ({
   );
 };
 
-export default StorageModal;
+export default SpaceModal;

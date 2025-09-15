@@ -258,7 +258,7 @@ class UnitController extends Controller
     public function show($id)
     {
         try {
-            $unit = Unit::with(['condominium', 'block', 'parkingSpaces', 'storageUnits'])->findOrFail($id);
+            $unit = Unit::with(['condominium', 'block', 'parkingSpaces', 'spaces'])->findOrFail($id);
 
             return response()->json([
                 'status' => 'success',
@@ -414,7 +414,7 @@ class UnitController extends Controller
             $unit = Unit::findOrFail($id);
 
             // Verificar se há vagas de garagem ou depósitos vinculados
-            $hasRelatedItems = $unit->parkingSpaces()->count() > 0 || $unit->storageUnits()->count() > 0;
+            $hasRelatedItems = $unit->parkingSpaces()->count() > 0 || $unit->spaces()->count() > 0;
 
             if ($hasRelatedItems) {
                 return response()->json([

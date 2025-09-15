@@ -8,7 +8,7 @@ use App\Models\Condominium;
 use App\Models\Block;
 use App\Models\Unit;
 use App\Models\ParkingSpace;
-use App\Models\StorageUnit;
+use App\Models\Space;
 
 class CondominiumSeeder extends Seeder
 {
@@ -141,17 +141,18 @@ class CondominiumSeeder extends Seeder
         for ($storage = 1; $storage <= 50; $storage++) {
             $storageNumber = 'D' . str_pad($storage, 3, '0', STR_PAD_LEFT);
 
-            StorageUnit::create([
+            Space::create([
                 'condominium_id' => $condominium->id,
                 'unit_id' => null, // Não vinculado a unidade específica
                 'number' => $storageNumber,
-                'type' => $storage <= 30 ? 'storage' : ($storage <= 40 ? 'box' : 'cellar'),
+                'space_type' => $storage <= 30 ? 'storage' : ($storage <= 40 ? 'storage_room' : 'other'),
                 'location' => $storage <= 25 ? 'subsolo' : 'térreo',
                 'area' => rand(5, 12),
                 'height' => rand(2, 3),
                 'status' => $storage <= 20 ? 'occupied' : 'available',
-                'description' => "Depósito {$storageNumber}",
+                'description' => "Espaço {$storageNumber}",
                 'climate_controlled' => $storage <= 10,
+                'reservable' => $storage <= 5, // Apenas alguns espaços são reserváveis
                 'active' => true,
             ]);
         }
@@ -159,15 +160,15 @@ class CondominiumSeeder extends Seeder
         // Vincular algumas vagas e depósitos às unidades
         $units = Unit::where('status', 'occupied')->get();
         $parkingSpaces = ParkingSpace::where('status', 'occupied')->get();
-        $storageUnits = StorageUnit::where('status', 'occupied')->get();
+        $spaces = Space::where('status', 'occupied')->get();
 
         foreach ($units as $index => $unit) {
             if (isset($parkingSpaces[$index])) {
                 $parkingSpaces[$index]->update(['unit_id' => $unit->id]);
             }
 
-            if (isset($storageUnits[$index])) {
-                $storageUnits[$index]->update(['unit_id' => $unit->id]);
+            if (isset($spaces[$index])) {
+                $spaces[$index]->update(['unit_id' => $unit->id]);
             }
         }
 
@@ -176,6 +177,6 @@ class CondominiumSeeder extends Seeder
         $this->command->info("Blocos: " . Block::count());
         $this->command->info("Unidades: " . Unit::count());
         $this->command->info("Vagas: " . ParkingSpace::count());
-        $this->command->info("Depósitos: " . StorageUnit::count());
+        $this->command->info("Espaços: " . Space::count());
     }
 }

@@ -30,8 +30,8 @@ export const StructureProvider = ({ children }) => {
     const stored = localStorage.getItem('parkingSpaces');
     return stored ? JSON.parse(stored) : [];
   });
-  const [storageUnits, setStorageUnits] = useState(() => {
-    const stored = localStorage.getItem('storageUnits');
+  const [spaces, setSpaces] = useState(() => {
+    const stored = localStorage.getItem('spaces');
     return stored ? JSON.parse(stored) : [];
   });
   const [loading, setLoading] = useState(false);
@@ -52,7 +52,7 @@ export const StructureProvider = ({ children }) => {
       setBlocks(structureData.blocks || []);
       setUnits(structureData.units || []);
       setParkingSpaces(structureData.parking_spaces || []);
-      setStorageUnits(structureData.storage_units || []);
+      setSpaces(structureData.spaces || []);
       
       // Usar o serviço de cache para armazenar os dados
       cacheService.storeStructureData(structureData);
@@ -78,11 +78,11 @@ export const StructureProvider = ({ children }) => {
   // Para operações pontuais, ainda usa chamadas específicas para melhor performance
   const refreshCondominiumData = useCallback(async (condominiumId) => {
     try {
-      const [blocksRes, unitsRes, parkingRes, storageRes] = await Promise.allSettled([
+      const [blocksRes, unitsRes, parkingRes, spacesRes] = await Promise.allSettled([
         structureService.block.getByCondominium(condominiumId),
         structureService.unit.getByCondominium(condominiumId),
         structureService.parking.getByCondominium(condominiumId),
-        structureService.storage.getByCondominium(condominiumId)
+        structureService.space.getByCondominium(condominiumId)
       ]);
 
       // Atualizar apenas os dados do condomínio específico
@@ -113,18 +113,18 @@ export const StructureProvider = ({ children }) => {
         localStorage.setItem('parkingSpaces', JSON.stringify(newParkingSpaces));
       }
       
-      if (storageRes.status === 'fulfilled' && storageRes.value?.data) {
-        const newStorageUnits = [
-          ...storageUnits.filter(storage => storage.condominium_id !== condominiumId),
-          ...storageRes.value.data
+      if (spacesRes.status === 'fulfilled' && spacesRes.value?.data) {
+        const newSpaces = [
+          ...spaces.filter(space => space.condominium_id !== condominiumId),
+          ...spacesRes.value.data
         ];
-        setStorageUnits(newStorageUnits);
-        localStorage.setItem('storageUnits', JSON.stringify(newStorageUnits));
+        setSpaces(newSpaces);
+        localStorage.setItem('spaces', JSON.stringify(newSpaces));
       }
     } catch (error) {
       console.error(`Erro ao recarregar dados do condomínio ${condominiumId}:`, error);
     }
-  }, [blocks, units, parkingSpaces, storageUnits]);
+  }, [blocks, units, parkingSpaces, spaces]);
 
   // Função para atualização automática após operações CRUD
   const handleCrudOperation = useCallback(async (operation, entityType, condominiumId = null) => {
@@ -158,7 +158,7 @@ export const StructureProvider = ({ children }) => {
           setBlocks(cachedData.blocks || []);
           setUnits(cachedData.units || []);
           setParkingSpaces(cachedData.parkingSpaces || []);
-          setStorageUnits(cachedData.storageUnits || []);
+          setSpaces(cachedData.spaces || []);
           setLastUpdate(cachedData.lastUpdate);
           return;
         }
@@ -187,7 +187,7 @@ export const StructureProvider = ({ children }) => {
     blocks,
     units,
     parkingSpaces,
-    storageUnits,
+    spaces,
     loading,
     selectedCondominium,
     lastUpdate,

@@ -6,7 +6,7 @@ import CondominiumModal from '../../components/modals/CondominiumModal';
 import BlockModal from '../../components/modals/BlockModal';
 import UnitModal from '../../components/modals/UnitModal';
 import ParkingModal from '../../components/modals/ParkingModal';
-import StorageModal from '../../components/modals/StorageModal';
+import SpaceModal from '../../components/modals/SpaceModal';
 import Pagination from '../../components/Pagination';
 import structureService from '../../services/structureService';
 
@@ -17,7 +17,7 @@ const StructureManagementPage = () => {
     blocks,
     units,
     parkingSpaces,
-    storageUnits,
+    spaces,
     loading,
     selectedCondominium,
     setSelectedCondominium,
@@ -35,7 +35,7 @@ const StructureManagementPage = () => {
     blocks: { currentPage: 1, itemsPerPage: 10 },
     units: { currentPage: 1, itemsPerPage: 10 },
     parking: { currentPage: 1, itemsPerPage: 10 },
-    storage: { currentPage: 1, itemsPerPage: 10 }
+    spaces: { currentPage: 1, itemsPerPage: 10 }
   });
 
   // Funções de paginação
@@ -86,7 +86,7 @@ const StructureManagementPage = () => {
     data: null
   });
 
-  const [storageModal, setStorageModal] = useState({
+  const [spaceModal, setSpaceModal] = useState({
     isOpen: false,
     mode: 'create',
     data: null
@@ -277,50 +277,50 @@ const StructureManagementPage = () => {
   };
 
   // Funções do modal de depósitos
-  const openStorageModal = (mode, data = null) => {
-    setStorageModal({
+  const openSpaceModal = (mode, data = null) => {
+    setSpaceModal({
       isOpen: true,
       mode,
       data
     });
   };
 
-  const closeStorageModal = () => {
-    setStorageModal({
+  const closeSpaceModal = () => {
+    setSpaceModal({
       isOpen: false,
       mode: 'create',
       data: null
     });
   };
 
-  const handleStorageSave = async (savedStorage) => {
+  const handleSpaceSave = async (savedSpace) => {
     try {
-      console.log('🏠 StructureManagementPage - handleStorageSave chamado com:', savedStorage);
+      console.log('🏠 StructureManagementPage - handleSpaceSave chamado com:', savedSpace);
       console.log('🏠 StructureManagementPage - selectedCondominium:', selectedCondominium);
-      console.log('🏠 StructureManagementPage - storageModal.mode:', storageModal.mode);
+      console.log('🏠 StructureManagementPage - spaceModal.mode:', spaceModal.mode);
       
       // O modal já fez a chamada da API, apenas fechamos e atualizamos o contexto
-      closeStorageModal();
+      closeSpaceModal();
       
       // Usar o sistema centralizado de atualização
-      const condominiumId = savedStorage?.condominium_id || parseInt(selectedCondominium);
+      const condominiumId = savedSpace?.condominium_id || parseInt(selectedCondominium);
       console.log('🏠 StructureManagementPage - Atualizando contexto para condominium_id:', condominiumId);
       
-      await handleCrudOperation(storageModal.mode, 'storage', condominiumId);
+      await handleCrudOperation(spaceModal.mode, 'space', condominiumId);
       console.log('✅ StructureManagementPage - Contexto atualizado com sucesso');
     } catch (error) {
-      console.error('❌ StructureManagementPage - Erro ao atualizar contexto após salvar depósito:', error);
+      console.error('❌ StructureManagementPage - Erro ao atualizar contexto após salvar espaço:', error);
     }
   };
 
-  const handleDeleteStorage = async (id) => {
-    if (window.confirm('Tem certeza que deseja excluir este depósito?')) {
+  const handleDeleteSpace = async (id) => {
+    if (window.confirm('Tem certeza que deseja excluir este espaço?')) {
       try {
-        await structureService.storage.delete(id);
-        await handleCrudOperation('delete', 'storage', parseInt(selectedCondominium));
+        await structureService.space.delete(id);
+        await handleCrudOperation('delete', 'space', parseInt(selectedCondominium));
       } catch (error) {
-        console.error('Erro ao excluir depósito:', error);
-        alert('Erro ao excluir depósito. Tente novamente.');
+        console.error('Erro ao excluir espaço:', error);
+        alert('Erro ao excluir espaço. Tente novamente.');
       }
     }
   };
@@ -345,7 +345,7 @@ const StructureManagementPage = () => {
     { id: 'blocks', label: 'Blocos', icon: Building, count: getFilteredCount(blocks, 'blocks') },
     { id: 'units', label: 'Unidades', icon: Home, count: getFilteredCount(units, 'units') },
     { id: 'parking', label: 'Garagens', icon: Car, count: getFilteredCount(parkingSpaces, 'parking') },
-    { id: 'storage', label: 'Depósitos', icon: Package, count: getFilteredCount(storageUnits, 'storage') }
+    { id: 'spaces', label: 'Espaços', icon: Package, count: getFilteredCount(spaces, 'spaces') }
   ];
 
 
@@ -768,16 +768,16 @@ const StructureManagementPage = () => {
     );
   };
 
-  const renderStorageTable = () => {
+  const renderSpaceTable = () => {
     // Filtrar dados
-    const filteredData = storageUnits.filter(item => 
+    const filteredData = spaces.filter(item => 
       !selectedCondominium || item.condominium_id.toString() === selectedCondominium
     ).filter(item => 
       item.number.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // Aplicar paginação
-    const paginatedData = getPaginatedData(filteredData, 'storage');
+    const paginatedData = getPaginatedData(filteredData, 'spaces');
 
     return (
       <>
@@ -791,47 +791,54 @@ const StructureManagementPage = () => {
                 <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Localização</th>
                 {!selectedCondominium && <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Condomínio</th>}
                 <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unidade Vinculada</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Reservável</th>
                 <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
                 <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ativo</th>
                 <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
               </tr>
             </thead>
             <tbody>
-              {paginatedData.map((storage) => {
-                const unit = units.find(u => u.id === storage.unit_id);
+              {paginatedData.map((space) => {
+                const unit = units.find(u => u.id === space.unit_id);
                 return (
-                  <tr key={storage.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
-                    <td className="py-4 px-4 text-white font-medium">{storage.number}</td>
+                  <tr key={space.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
+                    <td className="py-4 px-4 text-white font-medium">{space.number}</td>
                     <td className="py-4 px-4 text-[#f3f7f1]">
-                      {storage.type === 'storage' ? 'Depósito' : 
-                       storage.type === 'box' ? 'Box' : 
-                       storage.type === 'cellar' ? 'Adega' : 
-                       storage.type === 'attic' ? 'Sótão' : storage.type}
+                      {space.space_type === 'storage' ? 'Depósito' : 
+                       space.space_type === 'gas_depot' ? 'Depósito de Gás' : 
+                       space.space_type === 'trash_depot' ? 'Depósito de Lixo' : 
+                       space.space_type === 'gym' ? 'Academia' : 
+                       space.space_type === 'party_hall' ? 'Salão de Festas' : 
+                       space.space_type === 'meeting_room' ? 'Sala de Reuniões' : 
+                       space.space_type === 'laundry' ? 'Lavanderia' : 
+                       space.space_type === 'storage_room' ? 'Depósito Geral' : 
+                       space.space_type === 'other' ? 'Outro' : space.space_type}
                     </td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{storage.area || 'N/A'}</td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{storage.location || 'N/A'}</td>
-                    {!selectedCondominium && <td className="py-4 px-4 text-[#f3f7f1]">{storage.condominium?.name || 'N/A'}</td>}
+                    <td className="py-4 px-4 text-[#f3f7f1]">{space.area || 'N/A'}</td>
+                    <td className="py-4 px-4 text-[#f3f7f1]">{space.location || 'N/A'}</td>
+                    {!selectedCondominium && <td className="py-4 px-4 text-[#f3f7f1]">{space.condominium?.name || 'N/A'}</td>}
                     <td className="py-4 px-4 text-[#f3f7f1]">{unit?.number || 'Não vinculado'}</td>
-                    <td className="py-4 px-4">{getStorageStatusBadge(storage.status)}</td>
-                    <td className="py-4 px-4">{getStatusBadge(storage.active)}</td>
+                    <td className="py-4 px-4">{getStatusBadge(space.reservable)}</td>
+                    <td className="py-4 px-4">{getStorageStatusBadge(space.status)}</td>
+                    <td className="py-4 px-4">{getStatusBadge(space.active)}</td>
                     <td className="py-4 px-4">
                       <div className="flex space-x-2">
                         <button 
-                          onClick={() => openStorageModal('view', storage)}
+                          onClick={() => openSpaceModal('view', space)}
                           className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                           title="Visualizar"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button 
-                          onClick={() => openStorageModal('edit', storage)}
+                          onClick={() => openSpaceModal('edit', space)}
                           className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                           title="Editar"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button 
-                          onClick={() => handleDeleteStorage(storage.id)}
+                          onClick={() => handleDeleteSpace(space.id)}
                           className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                           title="Excluir"
                         >
@@ -848,11 +855,11 @@ const StructureManagementPage = () => {
         
         {/* Paginação */}
         <Pagination
-          currentPage={pagination.storage.currentPage}
+          currentPage={pagination.spaces.currentPage}
           totalItems={filteredData.length}
-          itemsPerPage={pagination.storage.itemsPerPage}
-          onPageChange={(page) => handlePageChange('storage', page)}
-          onItemsPerPageChange={(itemsPerPage) => handleItemsPerPageChange('storage', itemsPerPage)}
+          itemsPerPage={pagination.spaces.itemsPerPage}
+          onPageChange={(page) => handlePageChange('spaces', page)}
+          onItemsPerPageChange={(itemsPerPage) => handleItemsPerPageChange('spaces', itemsPerPage)}
         />
       </>
     );
@@ -868,8 +875,8 @@ const StructureManagementPage = () => {
         return renderUnitsTable();
       case 'parking':
         return renderParkingTable();
-      case 'storage':
-        return renderStorageTable();
+      case 'spaces':
+        return renderSpaceTable();
       default:
         return renderCondominiumsTable();
     }
@@ -881,7 +888,7 @@ const StructureManagementPage = () => {
       blocks: 'Novo Bloco',
       units: 'Nova Unidade',
       parking: 'Nova Vaga',
-      storage: 'Novo Depósito'
+      spaces: 'Novo Espaço'
     };
     return labels[activeTab] || 'Novo Item';
   };
@@ -907,8 +914,8 @@ const StructureManagementPage = () => {
                openUnitModal('create', { condominium_id: selectedCondominium });
              } else if (activeTab === 'parking') {
                openParkingModal('create', { condominium_id: parseInt(selectedCondominium) });
-             } else if (activeTab === 'storage') {
-               openStorageModal('create', { condominium_id: parseInt(selectedCondominium) });
+             } else if (activeTab === 'spaces') {
+               openSpaceModal('create', { condominium_id: parseInt(selectedCondominium) });
              } else {
                console.log('Create', activeTab.slice(0, -1));
              }
@@ -1001,14 +1008,14 @@ const StructureManagementPage = () => {
                     (activeTab === 'blocks' && blocks.filter(b => !selectedCondominium || b.condominium_id.toString() === selectedCondominium).length > 0) ||
                     (activeTab === 'units' && units.filter(u => !selectedCondominium || u.condominium_id.toString() === selectedCondominium).length > 0) ||
                     (activeTab === 'parking' && parkingSpaces.filter(p => !selectedCondominium || p.condominium_id.toString() === selectedCondominium).length > 0) ||
-                    (activeTab === 'storage' && storageUnits.filter(s => !selectedCondominium || s.condominium_id.toString() === selectedCondominium).length > 0);
+                    (activeTab === 'spaces' && spaces.filter(s => !selectedCondominium || s.condominium_id.toString() === selectedCondominium).length > 0);
                   
                   if (!hasData) {
                     const entityLabels = {
                       blocks: 'blocos',
                       units: 'unidades', 
                       parking: 'vagas de garagem',
-                      storage: 'depósitos'
+                      spaces: 'espaços'
                     };
                     
                     return (
@@ -1069,14 +1076,14 @@ const StructureManagementPage = () => {
         onSave={handleParkingSave}
        />
 
-       <StorageModal
-        isOpen={storageModal.isOpen}
-        onClose={closeStorageModal}
-        mode={storageModal.mode}
-        storage={storageModal.data}
+       <SpaceModal
+        isOpen={spaceModal.isOpen}
+        onClose={closeSpaceModal}
+        mode={spaceModal.mode}
+        space={spaceModal.data}
         condominiums={condominiums}
         units={units}
-        onSave={handleStorageSave}
+        onSave={handleSpaceSave}
        />
       
       {/* Outros modais serão implementados conforme necessário */}

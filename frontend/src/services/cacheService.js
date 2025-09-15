@@ -8,7 +8,7 @@ const CACHE_KEYS = {
   BLOCKS: 'blocks', 
   UNITS: 'units',
   PARKING_SPACES: 'parkingSpaces',
-  STORAGE_UNITS: 'storageUnits',
+  SPACES: 'spaces',
   LAST_UPDATE: 'structure_last_update'
 };
 
@@ -38,7 +38,7 @@ class CacheService {
       localStorage.getItem(CACHE_KEYS.BLOCKS) &&
       localStorage.getItem(CACHE_KEYS.UNITS) &&
       localStorage.getItem(CACHE_KEYS.PARKING_SPACES) &&
-      localStorage.getItem(CACHE_KEYS.STORAGE_UNITS)
+      localStorage.getItem(CACHE_KEYS.SPACES)
     );
   }
 
@@ -52,7 +52,7 @@ class CacheService {
         blocks: JSON.parse(localStorage.getItem(CACHE_KEYS.BLOCKS) || '[]'),
         units: JSON.parse(localStorage.getItem(CACHE_KEYS.UNITS) || '[]'),
         parkingSpaces: JSON.parse(localStorage.getItem(CACHE_KEYS.PARKING_SPACES) || '[]'),
-        storageUnits: JSON.parse(localStorage.getItem(CACHE_KEYS.STORAGE_UNITS) || '[]'),
+        spaces: JSON.parse(localStorage.getItem(CACHE_KEYS.SPACES) || '[]'),
         lastUpdate: localStorage.getItem(CACHE_KEYS.LAST_UPDATE)
       };
     } catch (error) {
@@ -70,7 +70,7 @@ class CacheService {
       localStorage.setItem(CACHE_KEYS.BLOCKS, JSON.stringify(structureData.blocks || []));
       localStorage.setItem(CACHE_KEYS.UNITS, JSON.stringify(structureData.units || []));
       localStorage.setItem(CACHE_KEYS.PARKING_SPACES, JSON.stringify(structureData.parking_spaces || []));
-      localStorage.setItem(CACHE_KEYS.STORAGE_UNITS, JSON.stringify(structureData.storage_units || []));
+      localStorage.setItem(CACHE_KEYS.SPACES, JSON.stringify(structureData.spaces || []));
       localStorage.setItem(CACHE_KEYS.LAST_UPDATE, new Date().toISOString());
       
       console.log('Dados estruturais armazenados no cache com sucesso');
@@ -124,12 +124,12 @@ class CacheService {
         localStorage.setItem(CACHE_KEYS.PARKING_SPACES, JSON.stringify(updatedParkingSpaces));
       }
 
-      if (newData.storageUnits) {
-        const updatedStorageUnits = [
-          ...currentData.storageUnits.filter(storage => storage.condominium_id !== condominiumId),
-          ...newData.storageUnits
+      if (newData.spaces) {
+        const updatedSpaces = [
+          ...currentData.spaces.filter(space => space.condominium_id !== condominiumId),
+          ...newData.spaces
         ];
-        localStorage.setItem(CACHE_KEYS.STORAGE_UNITS, JSON.stringify(updatedStorageUnits));
+        localStorage.setItem(CACHE_KEYS.SPACES, JSON.stringify(updatedSpaces));
       }
 
       localStorage.setItem(CACHE_KEYS.LAST_UPDATE, new Date().toISOString());
