@@ -277,21 +277,21 @@ const ResidentsManagementPage = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#31a196]/20">
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Unidade</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Proprietário</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Inquilino</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Status</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
+              <tr className="border-b border-[#ff6600]/20">
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unidade</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Proprietário</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Inquilino</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((resident) => (
-                <tr key={resident.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
+                <tr key={resident.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
                   {/* Unidade */}
                   <td className="py-4 px-4">
                     <div className="flex items-center space-x-2">
-                      <Home className="w-4 h-4 text-[#31a196]" />
+                      <Home className="w-4 h-4 text-[#ff6600]" />
                       <div>
                         <div className="text-white font-medium">{resident.unit?.number}</div>
                         <div className="text-[#f3f7f1]/60 text-sm">{resident.unit?.block?.name}</div>
@@ -309,7 +309,7 @@ const ResidentsManagementPage = () => {
                         <div className="text-white font-medium">{resident.owner.name}</div>
                         <div className="text-[#f3f7f1]/60 text-sm">{resident.owner.cpf}</div>
                         <div className="flex items-center space-x-1 text-xs">
-                          <Mail className="w-3 h-3 text-[#31a196]" />
+                          <Mail className="w-3 h-3 text-[#ff6600]" />
                           <span className="text-[#f3f7f1]/70">{resident.owner.email}</span>
                         </div>
                       </div>
@@ -327,7 +327,7 @@ const ResidentsManagementPage = () => {
                           <div className="text-white font-medium">{resident.tenant.name}</div>
                           <div className="text-[#f3f7f1]/60 text-sm">{resident.tenant.cpf}</div>
                           <div className="flex items-center space-x-1 text-xs">
-                            <Mail className="w-3 h-3 text-[#31a196]" />
+                            <Mail className="w-3 h-3 text-[#ff6600]" />
                             <span className="text-[#f3f7f1]/70">{resident.tenant.email}</span>
                           </div>
                         </div>
@@ -363,14 +363,14 @@ const ResidentsManagementPage = () => {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => openResidentModal('view', resident)}
-                        className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                        className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                         title="Visualizar"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => openResidentModal('edit', resident)}
-                        className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                        className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                         title="Editar"
                       >
                         <Edit className="w-4 h-4" />
@@ -415,7 +415,7 @@ const ResidentsManagementPage = () => {
         </div>
         <button 
           onClick={() => openResidentModal('create')}
-          className="px-4 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors flex items-center space-x-2 cursor-pointer"
+          className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors flex items-center space-x-2 cursor-pointer"
         >
           <Plus className="w-5 h-5 mr-2" />
           Novo Morador
@@ -427,12 +427,12 @@ const ResidentsManagementPage = () => {
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-white flex items-center">
-              <Search className="w-5 h-5 mr-2 text-[#31a196]" />
+              <Search className="w-5 h-5 mr-2 text-[#ff6600]" />
               Filtros de Busca
             </h3>
             <button
               onClick={clearAllFilters}
-              className="px-3 py-1 text-sm text-[#31a196] hover:bg-[#31a196]/10 rounded-lg transition-colors"
+              className="px-3 py-1 text-sm text-[#ff6600] hover:bg-[#ff6600]/10 rounded-lg transition-colors"
             >
               Limpar Filtros
             </button>
@@ -445,13 +445,13 @@ const ResidentsManagementPage = () => {
                 Buscar por nome
               </label>
               <div className="relative">
-                <User className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#31a196]" />
+                <User className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#ff6600]" />
                 <input
                   type="text"
                   placeholder="Nome do proprietário ou inquilino..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#f3f7f1]/50 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white placeholder-[#f3f7f1]/50 focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
                 />
               </div>
             </div>
@@ -464,7 +464,7 @@ const ResidentsManagementPage = () => {
               <select
                 value={filters.condominium}
                 onChange={(e) => handleFilterChange('condominium', e.target.value)}
-                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
+                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
               >
                 <option value="">Todos</option>
                 {condominiums.map((cond) => (
@@ -484,7 +484,7 @@ const ResidentsManagementPage = () => {
                 value={filters.block}
                 onChange={(e) => handleFilterChange('block', e.target.value)}
                 disabled={!filters.condominium && !contextSelectedCondominium}
-                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value="">Todos</option>
                 {getAvailableBlocks().map((block) => (
@@ -504,7 +504,7 @@ const ResidentsManagementPage = () => {
                 value={filters.unit}
                 onChange={(e) => handleFilterChange('unit', e.target.value)}
                 disabled={!filters.condominium && !contextSelectedCondominium}
-                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value="">Todas</option>
                 {getAvailableUnits().map((unit) => (
@@ -523,7 +523,7 @@ const ResidentsManagementPage = () => {
               <select
                 value={filters.residentType}
                 onChange={(e) => handleFilterChange('residentType', e.target.value)}
-                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
+                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
               >
                 <option value="">Todos</option>
                 <option value="owner">Apenas Proprietários</option>
@@ -539,7 +539,7 @@ const ResidentsManagementPage = () => {
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-[#f3f7f1]/60">Filtros ativos:</span>
                   {searchTerm && (
-                    <span className="px-2 py-1 bg-[#31a196]/20 text-[#31a196] rounded text-xs">
+                    <span className="px-2 py-1 bg-[#ff6600]/20 text-[#ff6600] rounded text-xs">
                       Nome: "{searchTerm}"
                     </span>
                   )}
@@ -575,7 +575,7 @@ const ResidentsManagementPage = () => {
         <div className="p-6">
           {(loading || loadingResidents) ? (
             <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#31a196]"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff6600]"></div>
             </div>
           ) : (
             <>
@@ -584,7 +584,7 @@ const ResidentsManagementPage = () => {
               {/* Mensagem quando não há dados */}
               {getFilteredData().length === 0 && (
                 <div className="text-center py-12">
-                  <Users className="w-12 h-12 text-[#31a196]/40 mx-auto mb-4" />
+                  <Users className="w-12 h-12 text-[#ff6600]/40 mx-auto mb-4" />
                   <p className="text-[#f3f7f1]/60 mb-2">
                     Nenhum morador encontrado
                   </p>

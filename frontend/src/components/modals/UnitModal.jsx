@@ -177,13 +177,13 @@ const UnitModal = ({
   const getModalIcon = () => {
     switch (mode) {
       case 'create':
-        return <Home className="w-6 h-6" />;
+        return <Home className="w-6 h-6 text-[#ff6600]" />;
       case 'edit':
-        return <Edit className="w-6 h-6" />;
+        return <Edit className="w-6 h-6 text-[#ff6600]" />;
       case 'view':
-        return <Eye className="w-6 h-6" />;
+        return <Eye className="w-6 h-6 text-[#ff6600]" />;
       default:
-        return <Home className="w-6 h-6" />;
+        return <Home className="w-6 h-6 text-[#ff6600]" />;
     }
   };
 
@@ -200,298 +200,298 @@ const UnitModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#0a0f0a] border border-[#31a196]/30 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#31a196]/20">
+    <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-[#1a1a1a] rounded-lg p-6 w-full max-w-4xl max-h-[95vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-[#31a196]/20 rounded-lg text-[#31a196]">
-              {getModalIcon()}
-            </div>
-            <h3 className="text-xl font-bold text-white">{getModalTitle()}</h3>
+            {getModalIcon()}
+            <h2 className="text-xl font-semibold text-white">{getModalTitle()}</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-white hover:bg-[#31a196]/20 rounded-lg transition-colors"
+            className="text-gray-400 hover:text-white transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Condomínio e Bloco */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Condomínio *
-                </label>
-                {mode === 'view' ? (
-                  <div className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white">
-                    {getSelectedCondominiumName()}
-                  </div>
-                ) : (
-                  <select
-                    name="condominium_id"
-                    value={formData.condominium_id}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                      errors.condominium_id ? 'border-red-500' : 'border-[#31a196]/30'
-                    }`}
-                  >
-                    <option value="">Selecione um condomínio</option>
-                    {condominiums.map(condominium => (
-                      <option key={condominium.id} value={condominium.id}>
-                        {condominium.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-                {errors.condominium_id && (
-                  <p className="mt-1 text-sm text-red-400">{errors.condominium_id}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Bloco/Torre
-                </label>
-                {mode === 'view' ? (
-                  <div className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white">
-                    {getSelectedBlockName()}
-                  </div>
-                ) : (
-                  <select
-                    name="block_id"
-                    value={formData.block_id}
-                    onChange={handleInputChange}
-                    disabled={!formData.condominium_id}
-                    className="w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <option value="">Sem bloco (casa/térrea)</option>
-                    {filteredBlocks.map(block => (
-                      <option key={block.id} value={block.id}>
-                        {block.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-            </div>
-
-            {/* Número e Andar */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Número da Unidade *
-                </label>
-                <input
-                  type="text"
-                  name="number"
-                  value={formData.number}
-                  onChange={handleInputChange}
-                  disabled={mode === 'view'}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                    errors.number ? 'border-red-500' : 'border-[#31a196]/30'
-                  } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="Ex: 101, A, Casa 1"
-                />
-                {errors.number && (
-                  <p className="mt-1 text-sm text-red-400">{errors.number}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Andar *
-                </label>
-                <input
-                  type="number"
-                  name="floor"
-                  value={formData.floor}
-                  onChange={handleInputChange}
-                  disabled={mode === 'view'}
-                  min="0"
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                    errors.floor ? 'border-red-500' : 'border-[#31a196]/30'
-                  } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="Ex: 0 (térreo), 1, 2..."
-                />
-                {errors.floor && (
-                  <p className="mt-1 text-sm text-red-400">{errors.floor}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Tipo e Área */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Tipo de Unidade
-                </label>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Condomínio e Bloco */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Condomínio *
+              </label>
+              {mode === 'view' ? (
+                <div className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white">
+                  {getSelectedCondominiumName()}
+                </div>
+              ) : (
                 <select
-                  name="type"
-                  value={formData.type}
+                  name="condominium_id"
+                  value={formData.condominium_id}
                   onChange={handleInputChange}
-                  disabled={mode === 'view'}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                    mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
+                  className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white focus:border-[#ff6600] focus:outline-none ${
+                    errors.condominium_id ? 'border-red-500' : 'border-gray-600'
                   }`}
                 >
-                  <option value="apartment">Apartamento</option>
-                  <option value="house">Casa</option>
-                  <option value="commercial">Comercial</option>
-                  <option value="office">Escritório</option>
-                  <option value="studio">Studio</option>
+                  <option value="">Selecione um condomínio</option>
+                  {condominiums.map(condominium => (
+                    <option key={condominium.id} value={condominium.id}>
+                      {condominium.name}
+                    </option>
+                  ))}
                 </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Área (m²)
-                </label>
-                <input
-                  type="number"
-                  name="area"
-                  value={formData.area}
-                  onChange={handleInputChange}
-                  disabled={mode === 'view'}
-                  min="0"
-                  step="0.01"
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                    errors.area ? 'border-red-500' : 'border-[#31a196]/30'
-                  } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="Ex: 85.50"
-                />
-                {errors.area && (
-                  <p className="mt-1 text-sm text-red-400">{errors.area}</p>
-                )}
-              </div>
+              )}
+              {errors.condominium_id && (
+                <p className="text-red-400 text-sm mt-1">{errors.condominium_id}</p>
+              )}
             </div>
 
-            {/* Quartos e Banheiros */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Quartos
-                </label>
-                <input
-                  type="number"
-                  name="bedrooms"
-                  value={formData.bedrooms}
-                  onChange={handleInputChange}
-                  disabled={mode === 'view'}
-                  min="0"
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                    errors.bedrooms ? 'border-red-500' : 'border-[#31a196]/30'
-                  } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="Ex: 3"
-                />
-                {errors.bedrooms && (
-                  <p className="mt-1 text-sm text-red-400">{errors.bedrooms}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Banheiros
-                </label>
-                <input
-                  type="number"
-                  name="bathrooms"
-                  value={formData.bathrooms}
-                  onChange={handleInputChange}
-                  disabled={mode === 'view'}
-                  min="0"
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                    errors.bathrooms ? 'border-red-500' : 'border-[#31a196]/30'
-                  } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="Ex: 2"
-                />
-                {errors.bathrooms && (
-                  <p className="mt-1 text-sm text-red-400">{errors.bathrooms}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Descrição */}
             <div>
-              <label className="block text-sm font-medium text-[#31a196] mb-2">
-                Descrição
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Bloco/Torre
               </label>
-              <textarea
-                name="description"
-                value={formData.description}
+              {mode === 'view' ? (
+                <div className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white">
+                  {getSelectedBlockName()}
+                </div>
+              ) : (
+                <select
+                  name="block_id"
+                  value={formData.block_id}
+                  onChange={handleInputChange}
+                  disabled={!formData.condominium_id}
+                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <option value="">Sem bloco (casa/térrea)</option>
+                  {filteredBlocks.map(block => (
+                    <option key={block.id} value={block.id}>
+                      {block.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          </div>
+
+          {/* Número e Andar */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Número da Unidade *
+              </label>
+              <input
+                type="text"
+                name="number"
+                value={formData.number}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                rows={3}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors resize-none ${
-                  mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
-                }`}
-                placeholder="Descrição opcional da unidade..."
+                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                  errors.number ? 'border-red-500' : 'border-gray-600'
+                } focus:border-[#ff6600] focus:outline-none`}
+                placeholder="Ex: 101, A, Casa 1"
               />
+              {errors.number && (
+                <p className="text-red-400 text-sm mt-1">{errors.number}</p>
+              )}
             </div>
 
-            {/* Status */}
             <div>
-              <label className="block text-sm font-medium text-[#31a196] mb-2">
-                Status
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Andar *
+              </label>
+              <input
+                type="number"
+                name="floor"
+                value={formData.floor}
+                onChange={handleInputChange}
+                disabled={mode === 'view'}
+                min="0"
+                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                  errors.floor ? 'border-red-500' : 'border-gray-600'
+                } focus:border-[#ff6600] focus:outline-none`}
+                placeholder="Ex: 0 (térreo), 1, 2..."
+              />
+              {errors.floor && (
+                <p className="text-red-400 text-sm mt-1">{errors.floor}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Tipo e Área */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Tipo de Unidade
               </label>
               <select
-                name="status"
-                value={formData.status}
+                name="type"
+                value={formData.type}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                  mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
-                }`}
+                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
               >
-                <option value="available">Disponível</option>
-                <option value="occupied">Ocupada</option>
-                <option value="maintenance">Em Manutenção</option>
-                <option value="reserved">Reservada</option>
-                <option value="inactive">Inativa</option>
+                <option value="apartment">Apartamento</option>
+                <option value="house">Casa</option>
+                <option value="commercial">Comercial</option>
+                <option value="office">Escritório</option>
+                <option value="studio">Studio</option>
               </select>
             </div>
-          </form>
-        </div>
 
-        {/* Footer */}
-        {mode !== 'view' && (
-          <div className="flex justify-end space-x-3 p-6 border-t border-[#31a196]/20">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="px-6 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              ) : (
-                <Save className="w-4 h-4" />
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Área (m²)
+              </label>
+              <input
+                type="number"
+                name="area"
+                value={formData.area}
+                onChange={handleInputChange}
+                disabled={mode === 'view'}
+                min="0"
+                step="0.01"
+                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                  errors.area ? 'border-red-500' : 'border-gray-600'
+                } focus:border-[#ff6600] focus:outline-none`}
+                placeholder="Ex: 85.50"
+              />
+              {errors.area && (
+                <p className="text-red-400 text-sm mt-1">{errors.area}</p>
               )}
-              <span>{mode === 'create' ? 'Criar' : 'Salvar'}</span>
-            </button>
+            </div>
           </div>
-        )}
 
-        {mode === 'view' && (
-          <div className="flex justify-end p-6 border-t border-[#31a196]/20">
-            <button
-              onClick={onClose}
-              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              Fechar
-            </button>
+          {/* Quartos e Banheiros */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Quartos
+              </label>
+              <input
+                type="number"
+                name="bedrooms"
+                value={formData.bedrooms}
+                onChange={handleInputChange}
+                disabled={mode === 'view'}
+                min="0"
+                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                  errors.bedrooms ? 'border-red-500' : 'border-gray-600'
+                } focus:border-[#ff6600] focus:outline-none`}
+                placeholder="Ex: 3"
+              />
+              {errors.bedrooms && (
+                <p className="text-red-400 text-sm mt-1">{errors.bedrooms}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Banheiros
+              </label>
+              <input
+                type="number"
+                name="bathrooms"
+                value={formData.bathrooms}
+                onChange={handleInputChange}
+                disabled={mode === 'view'}
+                min="0"
+                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                  errors.bathrooms ? 'border-red-500' : 'border-gray-600'
+                } focus:border-[#ff6600] focus:outline-none`}
+                placeholder="Ex: 2"
+              />
+              {errors.bathrooms && (
+                <p className="text-red-400 text-sm mt-1">{errors.bathrooms}</p>
+              )}
+            </div>
           </div>
-        )}
+
+          {/* Descrição */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Descrição
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              disabled={mode === 'view'}
+              rows={3}
+              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+              placeholder="Descrição opcional da unidade..."
+            />
+          </div>
+
+          {/* Status */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Status
+            </label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleInputChange}
+              disabled={mode === 'view'}
+              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+            >
+              <option value="available">Disponível</option>
+              <option value="occupied">Ocupada</option>
+              <option value="maintenance">Em Manutenção</option>
+              <option value="reserved">Reservada</option>
+              <option value="inactive">Inativa</option>
+            </select>
+          </div>
+
+          {/* Erro geral */}
+          {errors.submit && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+              <p className="text-red-400 text-sm">{errors.submit}</p>
+            </div>
+          )}
+
+          {/* Botões */}
+          {mode !== 'view' && (
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Salvando...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>Salvar</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
+          {mode === 'view' && (
+            <div className="flex justify-end pt-4">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors"
+              >
+                Fechar
+              </button>
+            </div>
+          )}
+        </form>
       </div>
     </div>
   );

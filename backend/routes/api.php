@@ -20,6 +20,7 @@ use App\Http\Controllers\Unit\UnitController;
 use App\Http\Controllers\ParkingSpace\ParkingSpaceController;
 use App\Http\Controllers\StorageUnit\StorageUnitController;
 use App\Http\Controllers\Resident\ResidentController;
+use App\Http\Controllers\Supplier\SupplierController;
 use App\Http\Controllers\Api\CepController;
 
 
@@ -41,6 +42,9 @@ Route::post("verify-reset-token", [ApiController::class, "verifyResetToken"]);
 // Busca de CEP (rota pública)
 Route::get("cep/{cep}", [CepController::class, "search"]);
 Route::post("cep/search", [CepController::class, "searchPost"]);
+
+// Contrato de fornecedor (rota pública para visualização)
+Route::get("suppliers/{id}/contract", [SupplierController::class, "generateContract"]);
 
 
 //Nesta rotas de baixo precisa estar autenticado para usa-lás
@@ -85,4 +89,13 @@ Route::group([
     Route::apiResource('residents', ResidentController::class);
     Route::get('condominiums/{condominium_id}/residents', [ResidentController::class, 'index']);
     Route::get('condominiums/{condominium_id}/residents/stats', [ResidentController::class, 'stats']);
+
+    // Fornecedores
+    Route::apiResource('suppliers', SupplierController::class);
+    Route::get('condominiums/{condominium_id}/suppliers', [SupplierController::class, 'index']);
+    Route::get('suppliers/category/{category}', [SupplierController::class, 'getByCategory']);
+    Route::post('suppliers/{id}/evaluate', [SupplierController::class, 'evaluate']);
+    Route::get('suppliers-stats', [SupplierController::class, 'getStats']);
+    Route::get('supplier-categories', [SupplierController::class, 'getCategories']);
+    Route::get('supplier-types', [SupplierController::class, 'getSupplierTypes']);
 });

@@ -10,7 +10,7 @@ const SyndicDashboard = () => {
       {/* Welcome Section */}
       <div className="mb-8 animate-fade-in">
         <h2 className="text-4xl font-bold text-white mb-4">
-          Olá, <span className="text-[#31a196]">Síndico</span>! 👋
+          Olá, <span className="text-[#ff6600]">Síndico</span>! 👋
         </h2>
         <p className="text-xl text-[#f3f7f1]">
           Gerencie seu condomínio com eficiência e transparência
@@ -20,12 +20,12 @@ const SyndicDashboard = () => {
       {/* Quick Stats */}
       <div className="grid md:grid-cols-4 gap-6 mb-8">
         <div className="card p-6 text-center animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          <div className="w-16 h-16 bg-gradient-to-br from-[#31a196] to-green-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-slow">
+          <div className="w-16 h-16 bg-gradient-to-br from-[#ff6600] to-green-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-slow">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
           </div>
-          <div className="text-3xl font-bold text-[#31a196] mb-2">48</div>
+          <div className="text-3xl font-bold text-[#ff6600] mb-2">48</div>
           <div className="text-[#f3f7f1]">Unidades</div>
         </div>
 
@@ -35,7 +35,7 @@ const SyndicDashboard = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
-          <div className="text-3xl font-bold text-[#31a196] mb-2">42</div>
+          <div className="text-3xl font-bold text-[#ff6600] mb-2">42</div>
           <div className="text-[#f3f7f1]">Moradores</div>
         </div>
 
@@ -45,7 +45,7 @@ const SyndicDashboard = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div className="text-3xl font-bold text-[#31a196] mb-2">3</div>
+          <div className="text-3xl font-bold text-[#ff6600] mb-2">3</div>
           <div className="text-[#f3f7f1]">Pendentes</div>
         </div>
 
@@ -55,7 +55,7 @@ const SyndicDashboard = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div className="text-3xl font-bold text-[#31a196] mb-2">95%</div>
+          <div className="text-3xl font-bold text-[#ff6600] mb-2">95%</div>
           <div className="text-[#f3f7f1]">Ocupação</div>
         </div>
       </div>
@@ -65,7 +65,7 @@ const SyndicDashboard = () => {
         {/* Unidades */}
         <div className="card p-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <div className="flex items-center space-x-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#31a196] to-green-500 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#ff6600] to-green-500 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
@@ -77,15 +77,15 @@ const SyndicDashboard = () => {
           </p>
           <div className="space-y-3">
             <div className="flex items-center space-x-3 text-[#f3f7f1]">
-              <div className="w-2 h-2 bg-[#31a196] rounded-full"></div>
+              <div className="w-2 h-2 bg-[#ff6600] rounded-full"></div>
               <span>Listar todas as unidades</span>
             </div>
             <div className="flex items-center space-x-3 text-[#f3f7f1]">
-              <div className="w-2 h-2 bg-[#31a196] rounded-full"></div>
+              <div className="w-2 h-2 bg-[#ff6600] rounded-full"></div>
               <span>Verificar status de ocupação</span>
             </div>
             <div className="flex items-center space-x-3 text-[#f3f7f1]">
-              <div className="w-2 h-2 bg-[#31a196] rounded-full"></div>
+              <div className="w-2 h-2 bg-[#ff6600] rounded-full"></div>
               <span>Gerenciar moradores</span>
             </div>
           </div>
@@ -133,31 +133,31 @@ const SyndicDashboard = () => {
         <h3 className="text-2xl font-bold text-white mb-6">Atividade Recente</h3>
         <div className="card p-6">
           <div className="space-y-4">
-            <div className="flex items-center space-x-4 p-4 bg-[#080d08]/40 rounded-lg border border-[#31a196]/20">
-              <div className="w-3 h-3 bg-[#31a196] rounded-full animate-pulse"></div>
+            <div className="flex items-center space-x-4 p-4 bg-[#080d08]/40 rounded-lg border border-[#ff6600]/20">
+              <div className="w-3 h-3 bg-[#ff6600] rounded-full animate-pulse"></div>
               <div className="flex-1">
                 <p className="text-white font-medium">Nova solicitação de manutenção</p>
                 <p className="text-[#f3f7f1] text-sm">Unidade 12A - Problema no encanamento</p>
               </div>
-              <span className="text-[#31a196] text-sm">1 hora atrás</span>
+              <span className="text-[#ff6600] text-sm">1 hora atrás</span>
             </div>
             
-            <div className="flex items-center space-x-4 p-4 bg-[#080d08]/40 rounded-lg border border-[#31a196]/20">
+            <div className="flex items-center space-x-4 p-4 bg-[#080d08]/40 rounded-lg border border-[#ff6600]/20">
               <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
               <div className="flex-1">
                 <p className="text-white font-medium">Morador registrado</p>
                 <p className="text-[#f3f7f1] text-sm">Maria Santos - Unidade 8B</p>
               </div>
-              <span className="text-[#31a196] text-sm">3 horas atrás</span>
+              <span className="text-[#ff6600] text-sm">3 horas atrás</span>
             </div>
             
-            <div className="flex items-center space-x-4 p-4 bg-[#080d08]/40 rounded-lg border border-[#31a196]/20">
+            <div className="flex items-center space-x-4 p-4 bg-[#080d08]/40 rounded-lg border border-[#ff6600]/20">
               <div className="w-3 h-3 bg-teal-400 rounded-full animate-pulse"></div>
               <div className="flex-1">
                 <p className="text-white font-medium">Manutenção concluída</p>
                 <p className="text-[#f3f7f1] text-sm">Elevador principal - Funcionando normalmente</p>
               </div>
-              <span className="text-[#31a196] text-sm">1 dia atrás</span>
+              <span className="text-[#ff6600] text-sm">1 dia atrás</span>
             </div>
           </div>
         </div>

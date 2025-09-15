@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import CondominiumsPage from './pages/admin/CondominiumsPage';
 import StructureManagementPage from './pages/admin/StructureManagementPage';
 import ResidentsManagementPage from './pages/admin/ResidentsManagementPage';
+import SuppliersPage from './pages/admin/SuppliersPage';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
                     <Route path="condominiums" element={<CondominiumsPage />} />
                     <Route path="structure" element={<StructureManagementPage />} />
                     <Route path="residents" element={<ResidentsManagementPage />} />
+                    <Route path="suppliers" element={<SuppliersPage />} />
                     <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                   </Routes>
                 </ProtectedRoute>

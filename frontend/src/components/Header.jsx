@@ -107,7 +107,7 @@ const Header = () => {
             {/* Breadcrumb */}
             <div className="hidden sm:flex items-center space-x-2">
               <h1 className={`text-lg font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
-                Sistema Condomínio
+                síndicoapp
               </h1>
               <span className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                 • {getBreadcrumb()}
@@ -195,9 +195,9 @@ const Header = () => {
             <div className="relative" ref={profileRef}>
               <button
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="flex items-center space-x-3 p-1 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#31a196] transition-all duration-200 hover:scale-105"
+                className="flex items-center space-x-3 p-1 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6600] transition-all duration-200 hover:scale-105"
               >
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#31a196] to-[#2d8f85] flex items-center justify-center shadow-lg">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#ff6600] to-[#fa7a25] flex items-center justify-center shadow-lg">
                   <span className="text-white font-medium text-sm">
                     {getInitials(user?.name)}
                   </span>
@@ -207,7 +207,7 @@ const Header = () => {
                     {user?.name || 'Usuário'}
                   </p>
                   <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    {user?.access_level || 'Morador'}
+                    {user?.role || '-'}
                   </p>
                 </div>
                 <ChevronDown className={`
@@ -234,7 +234,7 @@ const Header = () => {
                       {user?.email}
                     </p>
                     <span className="inline-block mt-1 px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                      {user?.access_level || 'Morador'}
+                      {user?.role || '-'}
                     </span>
                   </div>
                   

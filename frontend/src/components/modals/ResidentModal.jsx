@@ -284,10 +284,10 @@ const ResidentModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#1a1a1a] rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-[#1a1a1a] rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <User className="w-6 h-6 text-[#31a196]" />
+            <User className="w-6 h-6 text-[#ff6600]" />
             <h2 className="text-xl font-semibold text-white">
               {mode === 'create' && 'Nova Unidade/Morador'}
               {mode === 'edit' && 'Editar Unidade/Morador'}
@@ -304,9 +304,9 @@ const ResidentModal = ({
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Seção: Dados da Unidade */}
-          <div className="border-b border-[#31a196]/30 pb-4">
+          <div className="border-b border-[#ff6600]/30 pb-4">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-              <Building className="w-5 h-5 mr-2 text-[#31a196]" />
+              <Building className="w-5 h-5 mr-2 text-[#ff6600]" />
               Dados da Unidade
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -322,7 +322,7 @@ const ResidentModal = ({
                   disabled={mode === 'view'}
                   className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                     errors.condominium_id ? 'border-red-500' : 'border-gray-600'
-                  } focus:border-[#31a196] focus:outline-none`}
+                  } focus:border-[#ff6600] focus:outline-none`}
                 >
                   <option value="">Selecione um condomínio</option>
                   {condominiums.map(condominium => (
@@ -348,7 +348,7 @@ const ResidentModal = ({
                   disabled={mode === 'view' || !formData.condominium_id}
                   className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                     errors.unit_id ? 'border-red-500' : 'border-gray-600'
-                  } focus:border-[#31a196] focus:outline-none ${
+                  } focus:border-[#ff6600] focus:outline-none ${
                     !formData.condominium_id ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -376,7 +376,7 @@ const ResidentModal = ({
                   value={formData.unit_status}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
                 >
                   <option value="occupied">Ocupada</option>
                   <option value="vacant">Vazia</option>
@@ -387,9 +387,9 @@ const ResidentModal = ({
           </div>
 
           {/* Seção: Dados do Proprietário */}
-          <div className="border-b border-[#31a196]/30 pb-4">
+          <div className="border-b border-[#ff6600]/30 pb-4">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-              <User className="w-5 h-5 mr-2 text-[#31a196]" />
+              <User className="w-5 h-5 mr-2 text-[#ff6600]" />
               Dados do Proprietário *
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -406,7 +406,7 @@ const ResidentModal = ({
                   disabled={mode === 'view'}
                   className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                     errors['owner.name'] ? 'border-red-500' : 'border-gray-600'
-                  } focus:border-[#31a196] focus:outline-none`}
+                  } focus:border-[#ff6600] focus:outline-none`}
                   placeholder="Nome completo do proprietário"
                 />
                 {errors['owner.name'] && (
@@ -427,7 +427,7 @@ const ResidentModal = ({
                   disabled={mode === 'view'}
                   className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                     errors['owner.email'] ? 'border-red-500' : 'border-gray-600'
-                  } focus:border-[#31a196] focus:outline-none`}
+                  } focus:border-[#ff6600] focus:outline-none`}
                   placeholder="email@exemplo.com"
                 />
                 {errors['owner.email'] && (
@@ -448,7 +448,7 @@ const ResidentModal = ({
                   disabled={mode === 'view'}
                   className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                     errors['owner.phone'] ? 'border-red-500' : 'border-gray-600'
-                  } focus:border-[#31a196] focus:outline-none`}
+                  } focus:border-[#ff6600] focus:outline-none`}
                   placeholder="(11) 99999-9999"
                 />
                 {errors['owner.phone'] && (
@@ -469,7 +469,7 @@ const ResidentModal = ({
                   disabled={mode === 'view'}
                   className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                     errors['owner.cpf'] ? 'border-red-500' : 'border-gray-600'
-                  } focus:border-[#31a196] focus:outline-none`}
+                  } focus:border-[#ff6600] focus:outline-none`}
                   placeholder="123.456.789-00"
                 />
                 {errors['owner.cpf'] && (
@@ -487,7 +487,7 @@ const ResidentModal = ({
                   value={formData.owner.status}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
                 >
                   <option value="active">Ativo</option>
                   <option value="inactive">Inativo</option>
@@ -506,7 +506,7 @@ const ResidentModal = ({
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
                   rows={2}
-                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
                   placeholder="Observações sobre o proprietário..."
                 />
               </div>
@@ -514,10 +514,10 @@ const ResidentModal = ({
           </div>
 
           {/* Seção: Dados do Inquilino */}
-          <div className="border-b border-[#31a196]/30 pb-4">
+          <div className="border-b border-[#ff6600]/30 pb-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-white flex items-center">
-                <Users className="w-5 h-5 mr-2 text-[#31a196]" />
+                <Users className="w-5 h-5 mr-2 text-[#ff6600]" />
                 Dados do Inquilino
               </h3>
               <label className="flex items-center space-x-2">
@@ -527,7 +527,7 @@ const ResidentModal = ({
                   checked={formData.tenant.has_tenant}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-4 h-4 text-[#31a196] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#31a196] focus:ring-2"
+                  className="w-4 h-4 text-[#ff6600] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#ff6600] focus:ring-2"
                 />
                 <span className="text-sm text-gray-300">Tem inquilino</span>
               </label>
@@ -548,7 +548,7 @@ const ResidentModal = ({
                     disabled={mode === 'view'}
                     className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                       errors['tenant.name'] ? 'border-red-500' : 'border-gray-600'
-                    } focus:border-[#31a196] focus:outline-none`}
+                    } focus:border-[#ff6600] focus:outline-none`}
                     placeholder="Nome completo do inquilino"
                   />
                   {errors['tenant.name'] && (
@@ -569,7 +569,7 @@ const ResidentModal = ({
                     disabled={mode === 'view'}
                     className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                       errors['tenant.email'] ? 'border-red-500' : 'border-gray-600'
-                    } focus:border-[#31a196] focus:outline-none`}
+                    } focus:border-[#ff6600] focus:outline-none`}
                     placeholder="email@exemplo.com"
                   />
                   {errors['tenant.email'] && (
@@ -590,7 +590,7 @@ const ResidentModal = ({
                     disabled={mode === 'view'}
                     className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                       errors['tenant.phone'] ? 'border-red-500' : 'border-gray-600'
-                    } focus:border-[#31a196] focus:outline-none`}
+                    } focus:border-[#ff6600] focus:outline-none`}
                     placeholder="(11) 99999-9999"
                   />
                   {errors['tenant.phone'] && (
@@ -611,7 +611,7 @@ const ResidentModal = ({
                     disabled={mode === 'view'}
                     className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                       errors['tenant.cpf'] ? 'border-red-500' : 'border-gray-600'
-                    } focus:border-[#31a196] focus:outline-none`}
+                    } focus:border-[#ff6600] focus:outline-none`}
                     placeholder="123.456.789-00"
                   />
                   {errors['tenant.cpf'] && (
@@ -632,7 +632,7 @@ const ResidentModal = ({
                     disabled={mode === 'view'}
                     className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                       errors['tenant.lease_start'] ? 'border-red-500' : 'border-gray-600'
-                    } focus:border-[#31a196] focus:outline-none`}
+                    } focus:border-[#ff6600] focus:outline-none`}
                   />
                   {errors['tenant.lease_start'] && (
                     <p className="text-red-400 text-sm mt-1">{errors['tenant.lease_start']}</p>
@@ -650,7 +650,7 @@ const ResidentModal = ({
                     value={formData.tenant.lease_end}
                     onChange={handleInputChange}
                     disabled={mode === 'view'}
-                    className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+                    className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
                   />
                 </div>
 
@@ -664,7 +664,7 @@ const ResidentModal = ({
                     value={formData.tenant.status}
                     onChange={handleInputChange}
                     disabled={mode === 'view'}
-                    className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+                    className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
                   >
                     <option value="active">Ativo</option>
                     <option value="inactive">Inativo</option>
@@ -683,7 +683,7 @@ const ResidentModal = ({
                     onChange={handleInputChange}
                     disabled={mode === 'view'}
                     rows={2}
-                    className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+                    className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
                   placeholder="Observações sobre o inquilino..."
                   />
                 </div>
@@ -694,7 +694,7 @@ const ResidentModal = ({
           {/* Seção: Observações Gerais */}
           <div>
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-              <FileText className="w-5 h-4 mr-2 text-[#31a196]" />
+              <FileText className="w-5 h-4 mr-2 text-[#ff6600]" />
               Observações Gerais
             </h3>
             <textarea
@@ -703,7 +703,7 @@ const ResidentModal = ({
               onChange={handleInputChange}
               disabled={mode === 'view'}
               rows={3}
-              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
               placeholder="Observações gerais sobre a unidade..."
             />
           </div>
@@ -728,7 +728,7 @@ const ResidentModal = ({
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {loading ? (
                   <>
@@ -750,7 +750,7 @@ const ResidentModal = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors"
+                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors"
               >
                 Fechar
               </button>

@@ -17,7 +17,8 @@ import {
   LogOut,
   ChevronDown,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  Truck
 } from 'lucide-react';
 import { useLayout } from './Layout';
 // Logo será implementado posteriormente
@@ -55,6 +56,12 @@ const Sidebar = () => {
       title: 'Estrutura',
       icon: <Building className="w-5 h-5" />,
       path: '/admin/structure',
+      submenu: []
+    },
+    {
+      title: 'Fornecedores',
+      icon: <Truck className="w-5 h-5" />,
+      path: '/admin/suppliers',
       submenu: []
     },
     {
@@ -148,7 +155,7 @@ const Sidebar = () => {
           <div className={`font-bold text-lg ${
             isDarkMode ? 'text-white' : 'text-gray-800'
           }`}>
-            CondomínioApp
+            síndicoapp
           </div>
           <span className={`ml-3 text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
             Condomínio
@@ -181,7 +188,7 @@ const Sidebar = () => {
                   group flex items-center w-full px-3 py-2.5 text-sm font-medium rounded-xl
                   transition-all duration-200 hover:scale-[1.02]
                   ${isActiveRoute(item.path)
-                    ? 'bg-gradient-to-r from-[#31a196] to-[#2d8f85] text-white shadow-lg shadow-[#31a196]/25'
+                    ? 'bg-gradient-to-r from-[#ff6600] to-[#fa7a25] text-white shadow-lg shadow-[#ff6600]/25'
                     : isDarkMode
                       ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
                       : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
@@ -204,7 +211,7 @@ const Sidebar = () => {
                   group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl
                   transition-all duration-200 hover:scale-[1.02]
                   ${isActiveRoute(item.path)
-                    ? 'bg-gradient-to-r from-[#31a196] to-[#2d8f85] text-white shadow-lg shadow-[#31a196]/25'
+                    ? 'bg-gradient-to-r from-[#ff6600] to-[#fa7a25] text-white shadow-lg shadow-[#ff6600]/25'
                     : isDarkMode
                       ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
                       : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
@@ -235,7 +242,7 @@ const Sidebar = () => {
                       block px-3 py-2 text-sm rounded-lg transition-all duration-200
                       hover:translate-x-1
                       ${isActiveRoute(subItem.path)
-                        ? 'bg-[#31a196]/15 text-[#31a196] font-medium border-l-2 border-[#31a196]'
+                        ? 'bg-[#ff6600]/15 text-[#ff6600] font-medium border-l-2 border-[#ff6600]'
                         : isDarkMode
                           ? 'text-gray-400 hover:bg-gray-700 hover:text-gray-200'
                           : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
@@ -254,7 +261,7 @@ const Sidebar = () => {
       {/* Footer da Sidebar */}
       <div className={`p-4 border-t border-inherit ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
         <div className="flex items-center space-x-3">
-          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#31a196] to-[#2d8f85] flex items-center justify-center">
+          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#ff6600] to-[#fa7a25] flex items-center justify-center">
             <span className="text-white font-medium text-sm">
               {getInitials(user?.name)}
             </span>
@@ -264,7 +271,7 @@ const Sidebar = () => {
               {user?.name || 'Usuário'}
             </p>
             <p className={`text-xs truncate ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              {user?.access_level || 'Morador'}
+              {user?.role || '-'}
             </p>
           </div>
         </div>

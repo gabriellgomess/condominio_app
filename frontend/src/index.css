@@ -2,14 +2,14 @@
 
 :root {
   --color-primary: #080d08;
-  --color-secondary: #31a196;
+  --color-secondary: #ff6600; 
   --color-light: #f3f7f1;
   --color-white: #fff;
   
   /* Enhanced variations for modern effects */
   --color-primary-lighter: #0f1a0f;
-  --color-secondary-darker: #03b803;
-  --color-secondary-lighter: #00fae2;
+  --color-secondary-darker: #ff6600;
+  --color-secondary-lighter: #fa7a25;
   --glass-bg: rgba(15, 26, 15, 0.25);
   --glass-border: rgba(49, 161, 150, 0.2);
   --shadow-glow: 0 0 30px rgba(49, 161, 150, 0.15);

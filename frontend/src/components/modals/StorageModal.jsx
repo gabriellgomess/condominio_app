@@ -182,19 +182,41 @@ const StorageModal = ({
     return statuses[status] || status;
   };
 
+  const getModalTitle = () => {
+    switch (mode) {
+      case 'create':
+        return 'Novo Depósito';
+      case 'edit':
+        return 'Editar Depósito';
+      case 'view':
+        return 'Visualizar Depósito';
+      default:
+        return 'Depósito';
+    }
+  };
+
+  const getModalIcon = () => {
+    switch (mode) {
+      case 'create':
+        return <Package className="w-6 h-6 text-[#ff6600]" />;
+      case 'edit':
+        return <Edit className="w-6 h-6 text-[#ff6600]" />;
+      case 'view':
+        return <Eye className="w-6 h-6 text-[#ff6600]" />;
+      default:
+        return <Package className="w-6 h-6 text-[#ff6600]" />;
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#1a1a1a] rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-[#1a1a1a] rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <Package className="w-6 h-6 text-[#31a196]" />
-            <h2 className="text-xl font-semibold text-white">
-              {mode === 'create' && 'Novo Depósito'}
-              {mode === 'edit' && 'Editar Depósito'}
-              {mode === 'view' && 'Visualizar Depósito'}
-            </h2>
+            {getModalIcon()}
+            <h2 className="text-xl font-semibold text-white">{getModalTitle()}</h2>
           </div>
           <button
             onClick={onClose}
@@ -204,9 +226,9 @@ const StorageModal = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Número e Condomínio */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Número */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Número *
@@ -219,7 +241,7 @@ const StorageModal = ({
                 disabled={mode === 'view'}
                 className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                   errors.number ? 'border-red-500' : 'border-gray-600'
-                } focus:border-[#31a196] focus:outline-none`}
+                } focus:border-[#ff6600] focus:outline-none`}
                 placeholder="Ex: D-01, B-01"
               />
               {errors.number && (
@@ -227,7 +249,6 @@ const StorageModal = ({
               )}
             </div>
 
-            {/* Condomínio */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Condomínio *
@@ -239,7 +260,7 @@ const StorageModal = ({
                 disabled={mode === 'view'}
                 className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                   errors.condominium_id ? 'border-red-500' : 'border-gray-600'
-                } focus:border-[#31a196] focus:outline-none`}
+                } focus:border-[#ff6600] focus:outline-none`}
               >
                 <option value="">Selecione um condomínio</option>
                 {condominiums.map(condominium => (
@@ -252,8 +273,10 @@ const StorageModal = ({
                 <p className="text-red-400 text-sm mt-1">{errors.condominium_id}</p>
               )}
             </div>
+          </div>
 
-            {/* Tipo */}
+          {/* Tipo e Status */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Tipo *
@@ -265,7 +288,7 @@ const StorageModal = ({
                 disabled={mode === 'view'}
                 className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                   errors.type ? 'border-red-500' : 'border-gray-600'
-                } focus:border-[#31a196] focus:outline-none`}
+                } focus:border-[#ff6600] focus:outline-none`}
               >
                 <option value="storage">Depósito</option>
                 <option value="box">Box</option>
@@ -277,7 +300,6 @@ const StorageModal = ({
               )}
             </div>
 
-            {/* Status */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Status *
@@ -289,7 +311,7 @@ const StorageModal = ({
                 disabled={mode === 'view'}
                 className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
                   errors.status ? 'border-red-500' : 'border-gray-600'
-                } focus:border-[#31a196] focus:outline-none`}
+                } focus:border-[#ff6600] focus:outline-none`}
               >
                 <option value="available">Disponível</option>
                 <option value="occupied">Ocupado</option>
@@ -300,8 +322,10 @@ const StorageModal = ({
                 <p className="text-red-400 text-sm mt-1">{errors.status}</p>
               )}
             </div>
+          </div>
 
-            {/* Localização */}
+          {/* Localização e Unidade */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Localização
@@ -312,12 +336,11 @@ const StorageModal = ({
                 value={formData.location}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
                 placeholder="Ex: Subsolo, Térreo"
               />
             </div>
 
-            {/* Unidade */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Unidade (Opcional)
@@ -327,7 +350,7 @@ const StorageModal = ({
                 value={formData.unit_id}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
               >
                 <option value="">Sem unidade vinculada</option>
                 {filteredUnits.map(unit => (
@@ -337,8 +360,10 @@ const StorageModal = ({
                 ))}
               </select>
             </div>
+          </div>
 
-            {/* Área */}
+          {/* Área e Altura */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Área (m²)
@@ -351,12 +376,11 @@ const StorageModal = ({
                 disabled={mode === 'view'}
                 step="0.01"
                 min="0"
-                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
                 placeholder="Ex: 5.50"
               />
             </div>
 
-            {/* Altura */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Altura (m)
@@ -369,7 +393,7 @@ const StorageModal = ({
                 disabled={mode === 'view'}
                 step="0.01"
                 min="0"
-                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
                 placeholder="Ex: 2.50"
               />
             </div>
@@ -386,13 +410,13 @@ const StorageModal = ({
               onChange={handleInputChange}
               disabled={mode === 'view'}
               rows={3}
-              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#31a196] focus:outline-none"
+              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
               placeholder="Descrição do depósito..."
             />
           </div>
 
           {/* Checkboxes */}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-6">
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -400,7 +424,7 @@ const StorageModal = ({
                 checked={formData.climate_controlled}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className="w-4 h-4 text-[#31a196] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#31a196] focus:ring-2"
+                className="w-4 h-4 text-[#ff6600] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#ff6600] focus:ring-2"
               />
               <label className="text-sm font-medium text-gray-300">
                 Controle climático
@@ -414,7 +438,7 @@ const StorageModal = ({
                 checked={formData.active}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className="w-4 h-4 text-[#31a196] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#31a196] focus:ring-2"
+                className="w-4 h-4 text-[#ff6600] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#ff6600] focus:ring-2"
               />
               <label className="text-sm font-medium text-gray-300">
                 Depósito ativo
@@ -442,7 +466,7 @@ const StorageModal = ({
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {loading ? (
                   <>
@@ -462,9 +486,8 @@ const StorageModal = ({
           {mode === 'view' && (
             <div className="flex justify-end pt-4">
               <button
-                type="button"
                 onClick={onClose}
-                className="px-4 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors"
+                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors"
               >
                 Fechar
               </button>

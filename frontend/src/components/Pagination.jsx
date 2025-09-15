@@ -85,7 +85,7 @@ const Pagination = ({
   }
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-[#151515] border-t border-[#31a196]/20">
+    <div className="flex items-center justify-between px-4 py-3 bg-[#151515] border-t border-[#ff6600]/20">
       {/* Informações de itens */}
       <div className="flex items-center space-x-4">
         <div className="text-sm text-[#f3f7f1]">
@@ -100,7 +100,7 @@ const Pagination = ({
           <select
             value={itemsPerPage}
             onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-            className="px-2 py-1 bg-[#2a2a2a] border border-[#31a196]/30 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
+            className="px-2 py-1 bg-[#2a2a2a] border border-[#ff6600]/30 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
           >
             {itemsPerPageOptions.map(option => (
               <option key={option} value={option}>
@@ -117,7 +117,7 @@ const Pagination = ({
         <button
           onClick={handleFirst}
           disabled={currentPage === 1}
-          className="p-2 text-[#f3f7f1] hover:bg-[#31a196]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-2 text-[#f3f7f1] hover:bg-[#ff6600]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           title="Primeira página"
         >
           <ChevronsLeft className="w-4 h-4" />
@@ -127,7 +127,7 @@ const Pagination = ({
         <button
           onClick={handlePrevious}
           disabled={currentPage === 1}
-          className="p-2 text-[#f3f7f1] hover:bg-[#31a196]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-2 text-[#f3f7f1] hover:bg-[#ff6600]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           title="Página anterior"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -142,10 +142,10 @@ const Pagination = ({
               disabled={page === '...'}
               className={`px-3 py-2 text-sm rounded-lg transition-colors ${
                 page === currentPage
-                  ? 'bg-[#31a196] text-white font-medium'
+                  ? 'bg-[#ff6600] text-white font-medium'
                   : page === '...'
                   ? 'text-[#f3f7f1] cursor-default'
-                  : 'text-[#f3f7f1] hover:bg-[#31a196]/20'
+                  : 'text-[#f3f7f1] hover:bg-[#ff6600]/20'
               }`}
             >
               {page}
@@ -157,7 +157,7 @@ const Pagination = ({
         <button
           onClick={handleNext}
           disabled={currentPage === totalPages}
-          className="p-2 text-[#f3f7f1] hover:bg-[#31a196]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-2 text-[#f3f7f1] hover:bg-[#ff6600]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           title="Próxima página"
         >
           <ChevronRight className="w-4 h-4" />
@@ -167,7 +167,7 @@ const Pagination = ({
         <button
           onClick={handleLast}
           disabled={currentPage === totalPages}
-          className="p-2 text-[#f3f7f1] hover:bg-[#31a196]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-2 text-[#f3f7f1] hover:bg-[#ff6600]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           title="Última página"
         >
           <ChevronsRight className="w-4 h-4" />

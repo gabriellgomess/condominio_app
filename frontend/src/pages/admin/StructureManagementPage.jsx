@@ -355,11 +355,11 @@ const StructureManagementPage = () => {
   const getStatusBadge = (status) => {
     const statusString = status == 1 || status === true || status === 'active' ? 'active' : 'inactive';
     const statusConfig = {
-      active: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Ativo' },
+      active: { bg: 'bg-[#ff6600]/20', text: 'text-[#ff6600]', border: 'border-[#ff6600]/30', label: 'Ativo' },
       inactive: { bg: 'bg-red-500/20', text: 'text-red-400', border: 'border-red-500/30', label: 'Inativo' },
-      occupied: { bg: 'bg-blue-500/20', text: 'text-blue-400', border: 'border-blue-500/30', label: 'Ocupado' },
+      occupied: { bg: 'bg-[#ff8533]/20', text: 'text-[#ff8533]', border: 'border-[#ff8533]/30', label: 'Ocupado' },
       vacant: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30', label: 'Vago' },
-      available: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Disponível' },
+      available: { bg: 'bg-[#ff6600]/20', text: 'text-[#ff6600]', border: 'border-[#ff6600]/30', label: 'Disponível' },
       maintenance: { bg: 'bg-orange-500/20', text: 'text-orange-400', border: 'border-orange-500/30', label: 'Manutenção' }
     };
 
@@ -373,13 +373,13 @@ const StructureManagementPage = () => {
 
   const getUnitOccupationBadge = (status) => {
     const statusConfig = {
-      occupied: { bg: 'bg-blue-500/20', text: 'text-blue-400', border: 'border-blue-500/30', label: 'Ocupada' },
+      occupied: { bg: 'bg-[#ff8533]/20', text: 'text-[#ff8533]', border: 'border-[#ff8533]/30', label: 'Ocupada' },
       vacant: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30', label: 'Vaga' },
-      available: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Disponível' },
+      available: { bg: 'bg-[#ff6600]/20', text: 'text-[#ff6600]', border: 'border-[#ff6600]/30', label: 'Disponível' },
       maintenance: { bg: 'bg-orange-500/20', text: 'text-orange-400', border: 'border-orange-500/30', label: 'Manutenção' },
       rented: { bg: 'bg-purple-500/20', text: 'text-purple-400', border: 'border-purple-500/30', label: 'Alugada' },
       reserved: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30', label: 'Reservada' },
-      free: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Livre' }
+      free: { bg: 'bg-[#ff6600]/20', text: 'text-[#ff6600]', border: 'border-[#ff6600]/30', label: 'Livre' }
     };
 
     const config = statusConfig[status] || statusConfig.available;
@@ -392,8 +392,8 @@ const StructureManagementPage = () => {
 
   const getParkingStatusBadge = (status) => {
     const statusConfig = {
-      available: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Disponível' },
-      occupied: { bg: 'bg-blue-500/20', text: 'text-blue-400', border: 'border-blue-500/30', label: 'Ocupada' },
+      available: { bg: 'bg-[#ff6600]/20', text: 'text-[#ff6600]', border: 'border-[#ff6600]/30', label: 'Disponível' },
+      occupied: { bg: 'bg-[#ff8533]/20', text: 'text-[#ff8533]', border: 'border-[#ff8533]/30', label: 'Ocupada' },
       reserved: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30', label: 'Reservada' },
       maintenance: { bg: 'bg-orange-500/20', text: 'text-orange-400', border: 'border-orange-500/30', label: 'Manutenção' }
     };
@@ -423,19 +423,19 @@ const StructureManagementPage = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#31a196]/20">
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Nome</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Endereço</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Cidade/UF</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Unidades</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Blocos</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Status</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
+              <tr className="border-b border-[#ff6600]/20">
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Nome</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Endereço</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Cidade/UF</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unidades</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Blocos</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((condominium) => (
-                <tr key={condominium.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
+                <tr key={condominium.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
                   <td className="py-4 px-4 text-white font-medium">{condominium.name}</td>
                   <td className="py-4 px-4 text-[#f3f7f1]">{condominium.address}</td>
                   <td className="py-4 px-4 text-[#f3f7f1]">{condominium.city}/{condominium.state}</td>
@@ -446,14 +446,14 @@ const StructureManagementPage = () => {
                     <div className="flex space-x-2">
                       <button 
                         onClick={() => openCondominiumModal('view', condominium)}
-                        className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                        className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                         title="Visualizar"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => openCondominiumModal('edit', condominium)}
-                        className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                        className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                         title="Editar"
                       >
                         <Edit className="w-4 h-4" />
@@ -501,21 +501,21 @@ const StructureManagementPage = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#31a196]/20">
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Nome</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Condomínio</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Andares</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Unid./Andar</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Total Unidades</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Status</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
+              <tr className="border-b border-[#ff6600]/20">
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Nome</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Condomínio</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Andares</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unid./Andar</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Total Unidades</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((block) => {
                 const totalUnits = block.floors * block.units_per_floor;
                 return (
-                  <tr key={block.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
+                  <tr key={block.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
                     <td className="py-4 px-4 text-white font-medium">{block.name}</td>
                     <td className="py-4 px-4 text-[#f3f7f1]">{block.condominium?.name || 'N/A'}</td>
                     <td className="py-4 px-4 text-[#f3f7f1]">{block.floors}</td>
@@ -526,14 +526,14 @@ const StructureManagementPage = () => {
                       <div className="flex space-x-2">
                        <button 
                          onClick={() => openBlockModal('view', block)}
-                         className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                         className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                          title="Visualizar"
                        >
                          <Eye className="w-4 h-4" />
                        </button>
                        <button 
                          onClick={() => openBlockModal('edit', block)}
-                         className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                         className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                          title="Editar"
                        >
                          <Edit className="w-4 h-4" />
@@ -582,23 +582,23 @@ const StructureManagementPage = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#31a196]/20">
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Número</th>
-                {!selectedCondominium && <th className="text-left py-3 px-4 text-[#31a196] font-medium">Condomínio</th>}
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Bloco</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Andar</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Tipo</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Quartos</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Área (m²)</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ativo</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ocupação</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
+              <tr className="border-b border-[#ff6600]/20">
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Número</th>
+                {!selectedCondominium && <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Condomínio</th>}
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Bloco</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Andar</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Tipo</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Quartos</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Área (m²)</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ativo</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ocupação</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((unit) => {
                 return (
-                  <tr key={unit.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
+                  <tr key={unit.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
                     <td className="py-4 px-4 text-white font-medium">{unit.number}</td>
                     {!selectedCondominium && <td className="py-4 px-4 text-[#f3f7f1]">{unit.condominium?.name || 'N/A'}</td>}
                     <td className="py-4 px-4 text-[#f3f7f1]">{unit.block?.name || 'N/A'}</td>
@@ -619,14 +619,14 @@ const StructureManagementPage = () => {
                       <div className="flex space-x-2">
                         <button 
                           onClick={() => openUnitModal('view', unit)}
-                          className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                          className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                           title="Visualizar"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button 
                           onClick={() => openUnitModal('edit', unit)}
-                          className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                          className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                           title="Editar"
                         >
                           <Edit className="w-4 h-4" />
@@ -675,22 +675,22 @@ const StructureManagementPage = () => {
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-[#31a196]/20">
-            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Número</th>
-            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Tipo</th>
-            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Tamanho</th>
-            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Condomínio</th>
-            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Unidade Vinculada</th>
-            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Status</th>
-            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ativo</th>
-            <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
+          <tr className="border-b border-[#ff6600]/20">
+            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Número</th>
+            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Tipo</th>
+            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Tamanho</th>
+            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Condomínio</th>
+            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unidade Vinculada</th>
+            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
+            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ativo</th>
+            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
           </tr>
         </thead>
         <tbody>
           {paginatedData.map((parking) => {
             const unit = units.find(u => u.id === parking.unit_id);
             return (
-              <tr key={parking.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
+              <tr key={parking.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
                 <td className="py-4 px-4 text-white font-medium">{parking.number}</td>
                 <td className="py-4 px-4 text-[#f3f7f1]">
                   {parking.type === 'covered' ? 'Coberta' : 
@@ -712,14 +712,14 @@ const StructureManagementPage = () => {
                   <div className="flex space-x-2">
                     <button 
                       onClick={() => openParkingModal('view', parking)}
-                      className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                      className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                       title="Visualizar"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
                     <button 
                       onClick={() => openParkingModal('edit', parking)}
-                      className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                      className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                       title="Editar"
                     >
                       <Edit className="w-4 h-4" />
@@ -754,8 +754,8 @@ const StructureManagementPage = () => {
 
   const getStorageStatusBadge = (status) => {
     const statusConfig = {
-      available: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Disponível' },
-      occupied: { bg: 'bg-blue-500/20', text: 'text-blue-400', border: 'border-blue-500/30', label: 'Ocupado' },
+      available: { bg: 'bg-[#ff6600]/20', text: 'text-[#ff6600]', border: 'border-[#ff6600]/30', label: 'Disponível' },
+      occupied: { bg: 'bg-[#ff8533]/20', text: 'text-[#ff8533]', border: 'border-[#ff8533]/30', label: 'Ocupado' },
       reserved: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30', label: 'Reservado' },
       maintenance: { bg: 'bg-orange-500/20', text: 'text-orange-400', border: 'border-orange-500/30', label: 'Manutenção' }
     };
@@ -784,23 +784,23 @@ const StructureManagementPage = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#31a196]/20">
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Número</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Tipo</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Área (m²)</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Localização</th>
-                {!selectedCondominium && <th className="text-left py-3 px-4 text-[#31a196] font-medium">Condomínio</th>}
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Unidade Vinculada</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Status</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ativo</th>
-                <th className="text-left py-3 px-4 text-[#31a196] font-medium">Ações</th>
+              <tr className="border-b border-[#ff6600]/20">
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Número</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Tipo</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Área (m²)</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Localização</th>
+                {!selectedCondominium && <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Condomínio</th>}
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unidade Vinculada</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ativo</th>
+                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((storage) => {
                 const unit = units.find(u => u.id === storage.unit_id);
                 return (
-                  <tr key={storage.id} className="border-b border-[#31a196]/10 hover:bg-[#31a196]/5 transition-colors">
+                  <tr key={storage.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
                     <td className="py-4 px-4 text-white font-medium">{storage.number}</td>
                     <td className="py-4 px-4 text-[#f3f7f1]">
                       {storage.type === 'storage' ? 'Depósito' : 
@@ -818,14 +818,14 @@ const StructureManagementPage = () => {
                       <div className="flex space-x-2">
                         <button 
                           onClick={() => openStorageModal('view', storage)}
-                          className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                          className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                           title="Visualizar"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button 
                           onClick={() => openStorageModal('edit', storage)}
-                          className="p-2 text-[#31a196] hover:bg-[#31a196]/20 rounded-lg transition-colors"
+                          className="p-2 text-[#ff6600] hover:bg-[#ff6600]/20 rounded-lg transition-colors"
                           title="Editar"
                         >
                           <Edit className="w-4 h-4" />
@@ -913,7 +913,7 @@ const StructureManagementPage = () => {
                console.log('Create', activeTab.slice(0, -1));
              }
            }}
-          className="btn-primary"
+          className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors flex items-center space-x-2 cursor-pointer"
         >
           <Plus className="w-5 h-5 mr-2" />
           {getCreateButtonText()}
@@ -930,8 +930,8 @@ const StructureManagementPage = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
                 activeTab === tab.id
-                  ? 'bg-[#31a196] text-white'
-                  : 'bg-[#080d08]/80 text-[#f3f7f1] hover:bg-[#31a196]/20'
+                  ? 'bg-[#ff6600] text-white'
+                  : 'bg-[#080d08]/80 text-[#f3f7f1] hover:bg-[#ff6600]/20'
               }`}
             >
               <Icon className="w-4 h-4 mr-2" />
@@ -950,13 +950,13 @@ const StructureManagementPage = () => {
           <div className="flex flex-wrap gap-4">
             <div className="flex-1 min-w-[200px]">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#31a196]/60 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#ff6600]/60 w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Buscar..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white placeholder-[#ff6600]/60 focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
                 />
               </div>
             </div>
@@ -965,7 +965,7 @@ const StructureManagementPage = () => {
                 <select
                   value={selectedCondominium}
                   onChange={(e) => setSelectedCondominium(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent"
+                  className="w-full px-4 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
                 >
                   <option value="">Todos os condomínios</option>
                   {condominiums.map((cond) => (
@@ -985,7 +985,7 @@ const StructureManagementPage = () => {
         <div className="p-6">
           {loading ? (
             <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#31a196]"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff6600]"></div>
             </div>
           ) : (
             <>
@@ -1013,7 +1013,7 @@ const StructureManagementPage = () => {
                     
                     return (
                       <div className="text-center py-12">
-                        <Package className="w-12 h-12 text-[#31a196]/40 mx-auto mb-4" />
+                        <Package className="w-12 h-12 text-[#ff6600]/40 mx-auto mb-4" />
                         <p className="text-[#f3f7f1]/60 mb-2">
                           Nenhum(a) {entityLabels[activeTab]} cadastrado(a) {selectedCondominium ? 'para o condomínio' : 'em'}
                         </p>

@@ -193,275 +193,276 @@ const CondominiumModal = ({
   const getModalIcon = () => {
     switch (mode) {
       case 'create':
-        return <Building className="w-6 h-6" />;
+        return <Building className="w-6 h-6 text-[#ff6600]" />;
       case 'edit':
-        return <Edit className="w-6 h-6" />;
+        return <Edit className="w-6 h-6 text-[#ff6600]" />;
       case 'view':
-        return <Eye className="w-6 h-6" />;
+        return <Eye className="w-6 h-6 text-[#ff6600]" />;
       default:
-        return <Building className="w-6 h-6" />;
+        return <Building className="w-6 h-6 text-[#ff6600]" />;
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#0a0f0a] border border-[#31a196]/30 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#31a196]/20">
+    <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-[#1a1a1a] rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-[#31a196]/20 rounded-lg text-[#31a196]">
-              {getModalIcon()}
-            </div>
-            <h3 className="text-xl font-bold text-white">{getModalTitle()}</h3>
+            {getModalIcon()}
+            <h2 className="text-xl font-semibold text-white">{getModalTitle()}</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-white hover:bg-[#31a196]/20 rounded-lg transition-colors"
+            className="text-gray-400 hover:text-white transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
-          <form onSubmit={handleSubmit} className="space-y-6">            
+        <form onSubmit={handleSubmit} className="space-y-6">            
+          {/* Nome */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Nome do Condomínio *
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              disabled={mode === 'view'}
+              className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                errors.name ? 'border-red-500' : 'border-gray-600'
+              } focus:border-[#ff6600] focus:outline-none`}
+              placeholder="Ex: Residencial Verde"
+            />
+            {errors.name && (
+              <p className="text-red-400 text-sm mt-1">{errors.name}</p>
+            )}
+          </div>
 
-            {/* Nome */}
-            <div>
-              <label className="block text-sm font-medium text-[#31a196] mb-2">
-                Nome do Condomínio *
-              </label>
+          {/* CEP */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              CEP *
+            </label>
+            <div className="relative">
               <input
                 type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                  errors.name ? 'border-red-500' : 'border-[#31a196]/30'
-                } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                placeholder="Ex: Residencial Verde"
+                name="cep"
+                value={formData.cep}
+                onChange={handleCEPChange}
+                disabled={mode === 'view' || loadingCep}
+                maxLength={9}
+                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                  errors.cep ? 'border-red-500' : 'border-gray-600'
+                } focus:border-[#ff6600] focus:outline-none`}
+                placeholder="12345-678"
               />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-400">{errors.name}</p>
-              )}
-            </div>
-
-            {/* CEP */}
-            <div>
-              <label className="block text-sm font-medium text-[#31a196] mb-2">
-                CEP *
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="cep"
-                  value={formData.cep}
-                  onChange={handleCEPChange}
-                  disabled={mode === 'view' || loadingCep}
-                  maxLength={9}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                    errors.cep ? 'border-red-500' : 'border-[#31a196]/30'
-                  } ${mode === 'view' || loadingCep ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="12345-678"
-                />
-                {loadingCep && (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <Loader2 className="w-5 h-5 text-[#31a196] animate-spin" />
-                  </div>
-                )}
-              </div>
-              {errors.cep && (
-                <p className="mt-1 text-sm text-red-400">{errors.cep}</p>
-              )}
               {loadingCep && (
-                <p className="mt-1 text-sm text-[#31a196]/80">Buscando endereço...</p>
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <Loader2 className="w-5 h-5 text-[#ff6600] animate-spin" />
+                </div>
               )}
             </div>
+            {errors.cep && (
+              <p className="text-red-400 text-sm mt-1">{errors.cep}</p>
+            )}
+            {loadingCep && (
+              <p className="text-[#ff6600]/80 text-sm mt-1">Buscando endereço...</p>
+            )}
+          </div>
 
-            {/* Endereço */}
+          {/* Endereço */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Endereço *
+            </label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
+              disabled={mode === 'view'}
+              className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                errors.address ? 'border-red-500' : 'border-gray-600'
+              } focus:border-[#ff6600] focus:outline-none`}
+              placeholder="Ex: Rua das Flores, 123"
+            />
+            {errors.address && (
+              <p className="text-red-400 text-sm mt-1">{errors.address}</p>
+            )}
+          </div>
+
+          {/* Número */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Número
+            </label>
+            <input
+              type="text"
+              name="number"
+              value={formData.number}
+              onChange={handleInputChange}
+              disabled={mode === 'view'}
+              className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                errors.number ? 'border-red-500' : 'border-gray-600'
+              } focus:border-[#ff6600] focus:outline-none`}
+              placeholder="Ex: 123, 456-A"
+            />
+            {errors.number && (
+              <p className="text-red-400 text-sm mt-1">{errors.number}</p>
+            )}
+          </div>
+
+          {/* Bairro, Cidade e Estado */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#31a196] mb-2">
-                Endereço *
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Bairro
               </label>
               <input
                 type="text"
-                name="address"
-                value={formData.address}
+                name="district"
+                value={formData.district}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                  errors.address ? 'border-red-500' : 'border-[#31a196]/30'
-                } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                placeholder="Ex: Rua das Flores, 123"
+                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                  errors.district ? 'border-red-500' : 'border-gray-600'
+                } focus:border-[#ff6600] focus:outline-none`}
+                placeholder="Centro"
               />
-              {errors.address && (
-                <p className="mt-1 text-sm text-red-400">{errors.address}</p>
+              {errors.district && (
+                <p className="text-red-400 text-sm mt-1">{errors.district}</p>
               )}
             </div>
-
-            {/* Número */}
             <div>
-              <label className="block text-sm font-medium text-[#31a196] mb-2">
-                Número
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Cidade *
               </label>
               <input
                 type="text"
-                name="number"
-                value={formData.number}
+                name="city"
+                value={formData.city}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                  errors.number ? 'border-red-500' : 'border-[#31a196]/30'
-                } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                placeholder="Ex: 123, 456-A"
+                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                  errors.city ? 'border-red-500' : 'border-gray-600'
+                } focus:border-[#ff6600] focus:outline-none`}
+                placeholder="São Paulo"
               />
-              {errors.number && (
-                <p className="mt-1 text-sm text-red-400">{errors.number}</p>
+              {errors.city && (
+                <p className="text-red-400 text-sm mt-1">{errors.city}</p>
               )}
             </div>
 
-            {/* Bairro, Cidade e Estado */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Bairro
-                </label>
-                <input
-                  type="text"
-                  name="district"
-                  value={formData.district}
-                  onChange={handleInputChange}
-                  disabled={mode === 'view'}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                    errors.district ? 'border-red-500' : 'border-[#31a196]/30'
-                  } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="Centro"
-                />
-                {errors.district && (
-                  <p className="mt-1 text-sm text-red-400">{errors.district}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Cidade *
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  disabled={mode === 'view'}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                    errors.city ? 'border-red-500' : 'border-[#31a196]/30'
-                  } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="São Paulo"
-                />
-                {errors.city && (
-                  <p className="mt-1 text-sm text-red-400">{errors.city}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[#31a196] mb-2">
-                  Estado *
-                </label>
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleInputChange}
-                  disabled={mode === 'view'}
-                  maxLength={2}
-                  className={`w-full px-4 py-3 bg-[#080d08]/80 border rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                    errors.state ? 'border-red-500' : 'border-[#31a196]/30'
-                  } ${mode === 'view' ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="SP"
-                  style={{ textTransform: 'uppercase' }}
-                />
-                {errors.state && (
-                  <p className="mt-1 text-sm text-red-400">{errors.state}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Descrição */}
             <div>
-              <label className="block text-sm font-medium text-[#31a196] mb-2">
-                Descrição
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Estado *
               </label>
-              <textarea
-                name="description"
-                value={formData.description}
+              <input
+                type="text"
+                name="state"
+                value={formData.state}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                rows={3}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white placeholder-[#31a196]/60 focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors resize-none ${
-                  mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
-                }`}
-                placeholder="Descrição opcional do condomínio..."
+                maxLength={2}
+                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
+                  errors.state ? 'border-red-500' : 'border-gray-600'
+                } focus:border-[#ff6600] focus:outline-none`}
+                placeholder="SP"
+                style={{ textTransform: 'uppercase' }}
               />
+              {errors.state && (
+                <p className="text-red-400 text-sm mt-1">{errors.state}</p>
+              )}
             </div>
+          </div>
 
-            {/* Status */}
-            <div>
-              <label className="block text-sm font-medium text-[#31a196] mb-2">
-                Status
-              </label>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleInputChange}
-                disabled={mode === 'view'}
-                className={`w-full px-4 py-3 bg-[#080d08]/80 border border-[#31a196]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#31a196] focus:border-transparent transition-colors ${
-                  mode === 'view' ? 'cursor-not-allowed opacity-70' : ''
-                }`}
+          {/* Descrição */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Descrição
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              disabled={mode === 'view'}
+              rows={3}
+              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+              placeholder="Descrição opcional do condomínio..."
+            />
+          </div>
+
+          {/* Status */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Status
+            </label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleInputChange}
+              disabled={mode === 'view'}
+              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+            >
+              <option value="active">Ativo</option>
+              <option value="inactive">Inativo</option>
+              <option value="maintenance">Em Manutenção</option>
+            </select>
+          </div>
+
+          {/* Erro geral */}
+          {errors.submit && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+              <p className="text-red-400 text-sm">{errors.submit}</p>
+            </div>
+          )}
+
+          {/* Botões */}
+          {mode !== 'view' && (
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors"
               >
-                <option value="active">Ativo</option>
-                <option value="inactive">Inativo</option>
-                <option value="maintenance">Em Manutenção</option>
-              </select>
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Salvando...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>Salvar</span>
+                  </>
+                )}
+              </button>
             </div>
-          </form>
-        </div>
+          )}
 
-        {/* Footer */}
-        {mode !== 'view' && (
-          <div className="flex justify-end space-x-3 p-6 border-t border-[#31a196]/20">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="px-6 py-2 bg-[#31a196] text-white rounded-lg hover:bg-[#31a196]/80 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              ) : (
-                <Save className="w-4 h-4" />
-              )}
-              <span>{mode === 'create' ? 'Criar' : 'Salvar'}</span>
-            </button>
-          </div>
-        )}
-
-        {mode === 'view' && (
-          <div className="flex justify-end p-6 border-t border-[#31a196]/20">
-            <button
-              onClick={onClose}
-              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              Fechar
-            </button>
-          </div>
-        )}
+          {mode === 'view' && (
+            <div className="flex justify-end pt-4">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors"
+              >
+                Fechar
+              </button>
+            </div>
+          )}
+        </form>
       </div>
     </div>
   );
