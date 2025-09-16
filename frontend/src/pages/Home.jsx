@@ -13,6 +13,7 @@ import {
   Smile,
   Calendar
 } from 'lucide-react';
+import Logo from '../components/ui/Logo';
 
 const Home = () => {
   return (
@@ -35,12 +36,12 @@ const Home = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 glass-icon rounded-xl flex items-center justify-center">
-                <Building className="w-7 h-7 text-[#ff6600]" />
-              </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#ff6600] to-[#fa7a25] bg-clip-text text-transparent">
-                síndicoapp
-              </h1>
+              <Logo 
+                variant="horizontal" 
+                size="medium" 
+                theme="light"
+                className="flex-shrink-0"
+              />
             </div>
             <Link to="/login" className="btn-glass animate-fade-in hover:scale-105 transition-all duration-300">
               Entrar
@@ -53,6 +54,14 @@ const Home = () => {
       <section className="relative z-10 container mx-auto px-6 pt-20 pb-32 text-center">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8 animate-slide-down">
+            <div className="flex justify-center mb-6">
+              <Logo 
+                variant="horizontal" 
+                size="large" 
+                theme="light"
+                className="animate-fade-in"
+              />
+            </div>
             <h1 className="text-6xl md:text-8xl font-bold mb-4 leading-tight">
               <span className="bg-gradient-to-r from-[#f3f7f1] to-[#e0e4de] bg-clip-text text-transparent">
                 Gestão
@@ -243,12 +252,12 @@ const Home = () => {
         <div className="container mx-auto px-6 py-16">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-4 mb-8">
-              <div className="w-10 h-10 glass-icon rounded-xl flex items-center justify-center">
-                <Building className="w-6 h-6 text-[#ff6600]" />
-              </div>
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-[#ff6600] to-[#fa7a25] bg-clip-text text-transparent">
-                síndicoapp
-              </h3>
+              <Logo 
+                variant="horizontal" 
+                size="medium" 
+                theme="dark"
+                className="flex-shrink-0"
+              />
             </div>
             <p className="text-[#f3f7f1]/80 mb-8 font-light text-lg max-w-md mx-auto">
               Revolucionando a gestão condominial com tecnologia e design de vanguarda

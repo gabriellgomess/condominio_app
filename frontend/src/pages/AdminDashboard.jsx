@@ -1,5 +1,6 @@
 import React from 'react';
 import Layout from '../components/Layout';
+import Logo from '../components/ui/Logo';
 
 const AdminDashboard = () => {
   return (
@@ -9,12 +10,22 @@ const AdminDashboard = () => {
     >
       {/* Welcome Section */}
       <div className="mb-8 animate-fade-in">
-        <h2 className="text-4xl font-bold text-white mb-4">
-          Olá, <span className="text-[#ff6600]">Administrador</span>! 👋
-        </h2>
-        <p className="text-xl text-[#f3f7f1]">
-          Gerencie seu sistema de condomínios com total controle e eficiência
-        </p>
+        <div className="flex items-center space-x-4 mb-4">
+          {/* <Logo 
+            variant="horizontal" 
+            size="large" 
+            theme="dark"
+            className="flex-shrink-0"
+          /> */}
+          <div>
+            <h2 className="text-4xl font-bold text-white">
+              Olá, <span className="text-[#ff6600]">Administrador</span>! 👋
+            </h2>
+            <p className="text-xl text-[#f3f7f1]">
+              Gerencie seu sistema de condomínios com total controle e eficiência
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Quick Stats */}

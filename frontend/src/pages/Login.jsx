@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Building, ArrowLeft, Mail, Lock, ArrowRight, AlertCircle, Info } from 'lucide-react';
+import Logo from '../components/ui/Logo';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -61,12 +62,12 @@ const Login = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center space-x-3 group">
-              <div className="w-12 h-12 glass-icon rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                <Building className="w-7 h-7 text-[#ff6600]" />
-              </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#ff6600] to-[#fa7a25] bg-clip-text text-transparent">
-                síndicoapp
-              </h1>
+              <Logo 
+                variant="horizontal" 
+                size="medium" 
+                theme="light"
+                className="group-hover:scale-105 transition-transform duration-300"
+              />
             </Link>
             <Link to="/" className="btn-glass animate-fade-in hover:scale-105 transition-all duration-300 flex items-center space-x-2">
               <ArrowLeft className="w-4 h-4" />

@@ -21,7 +21,7 @@ import {
   Truck
 } from 'lucide-react';
 import { useLayout } from './Layout';
-// Logo será implementado posteriormente
+import Logo from './ui/Logo';
 
 const Sidebar = () => {
   const {
@@ -152,13 +152,14 @@ const Sidebar = () => {
       >
       {/* Header da Sidebar */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-inherit flex-shrink-0">
-        <div className="flex items-center">
-          <div className={`font-bold text-lg ${
-            isDarkMode ? 'text-white' : 'text-gray-800'
-          }`}>
-            síndicoapp
-          </div>
-          <span className={`ml-3 text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+        <div className="flex items-center space-x-3">
+          <Logo 
+            variant="horizontal" 
+            size="small" 
+            theme="dark"
+            className="flex-shrink-0"
+          />
+          <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
             Condomínio
           </span>
         </div>
