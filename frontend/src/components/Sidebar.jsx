@@ -67,11 +67,12 @@ const Sidebar = () => {
     {
       title: 'Reservas',
       icon: <Calendar className="w-5 h-5" />,
-      path: '/reservas',
+      path: '/admin/reservations',
       submenu: [
-        { title: 'Minhas Reservas', path: '/reservas/minhas' },
-        { title: 'Nova Reserva', path: '/reservas/nova' },
-        { title: 'Áreas Comuns', path: '/reservas/areas' }
+        { title: 'Gerenciar Configurações', path: '/admin/reservations' },
+        { title: 'Gerenciar Reservas', path: '/admin/bookings' },
+        // { title: 'Minhas Reservas', path: '/reservas/minhas' },
+        // { title: 'Nova Reserva', path: '/reservas/nova' }
       ]
     },
     {

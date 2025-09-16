@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Space extends Model
 {
@@ -127,11 +128,19 @@ class Space extends Model
     }
 
     /**
-     * Scope para espaços reserváveis
+     * Relacionamento com configurações de reserva
      */
-    public function scopeReservable($query)
+    public function reservationConfigs()
     {
-        return $query->where('reservable', true);
+        return $this->hasMany(ReservationConfig::class);
+    }
+
+    /**
+     * Relacionamento com configuração de reserva ativa
+     */
+    public function activeReservationConfig()
+    {
+        return $this->hasOne(ReservationConfig::class)->where('active', true);
     }
 
     /**

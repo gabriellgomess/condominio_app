@@ -11,6 +11,8 @@ import CondominiumsPage from './pages/admin/CondominiumsPage';
 import StructureManagementPage from './pages/admin/StructureManagementPage';
 import ResidentsManagementPage from './pages/admin/ResidentsManagementPage';
 import SuppliersPage from './pages/admin/SuppliersPage';
+import ReservationManagementPage from './pages/admin/ReservationManagementPage';
+import ReservationsPage from './pages/admin/ReservationsPage';
 
 function App() {
   return (
@@ -38,6 +40,8 @@ function App() {
                     <Route path="structure" element={<StructureManagementPage />} />
                     <Route path="residents" element={<ResidentsManagementPage />} />
                     <Route path="suppliers" element={<SuppliersPage />} />
+                    <Route path="reservations" element={<ReservationManagementPage />} />
+                    <Route path="bookings" element={<ReservationsPage />} />
                     <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                   </Routes>
                 </ProtectedRoute>

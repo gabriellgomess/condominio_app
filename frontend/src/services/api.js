@@ -45,7 +45,14 @@ const apiRequest = async (endpoint, options = {}) => {
     }
     
     if (!response.ok) {
-      throw new Error(data.message || `Erro HTTP: ${response.status}`);
+      // Criar um erro customizado que preserva os dados da resposta
+      const error = new Error(data.message || `Erro HTTP: ${response.status}`);
+      error.response = {
+        status: response.status,
+        statusText: response.statusText,
+        data: data
+      };
+      throw error;
     }
     
     return data;

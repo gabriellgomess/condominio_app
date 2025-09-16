@@ -20,6 +20,8 @@ use App\Http\Controllers\Unit\UnitController;
 use App\Http\Controllers\ParkingSpace\ParkingSpaceController;
 use App\Http\Controllers\Space\SpaceController;
 use App\Http\Controllers\Resident\ResidentController;
+use App\Http\Controllers\Reservation\ReservationConfigController;
+use App\Http\Controllers\Reservation\ReservationController;
 use App\Http\Controllers\Supplier\SupplierController;
 use App\Http\Controllers\Api\CepController;
 
@@ -80,11 +82,17 @@ Route::group([
     Route::apiResource('parking-spaces', ParkingSpaceController::class)->only(['show', 'update', 'destroy']);
     Route::get('condominiums/{condominium_id}/parking-spaces/stats', [ParkingSpaceController::class, 'stats']);
 
-    // Espaços
-    Route::apiResource('condominiums.spaces', SpaceController::class)->except(['show', 'update', 'destroy']);
-    Route::apiResource('spaces', SpaceController::class)->only(['show', 'update', 'destroy']);
-    Route::get('condominiums/{condominium_id}/spaces/stats', [SpaceController::class, 'stats']);
-    Route::get('spaces/types', [SpaceController::class, 'types']);
+    // Configurações de Reserva
+    Route::apiResource('condominiums.reservation-configs', ReservationConfigController::class)->except(['show', 'update', 'destroy']);
+    Route::apiResource('reservation-configs', ReservationConfigController::class)->only(['show', 'update', 'destroy']);
+    Route::get('condominiums/{condominium_id}/reservable-spaces', [ReservationConfigController::class, 'getReservableSpaces']);
+
+    // Reservas
+    Route::apiResource('reservations', ReservationController::class);
+    Route::get('condominiums/{condominium_id}/reservations', [ReservationController::class, 'index']);
+    Route::get('spaces/{space_id}/availability', [ReservationController::class, 'checkAvailability']);
+    Route::get('spaces/{space_id}/availability-config', [ReservationController::class, 'getAvailabilityConfig']);
+    Route::put('reservations/{id}/confirm', [ReservationController::class, 'confirm']);
 
     // Moradores (Proprietários + Inquilinos)
     Route::apiResource('residents', ResidentController::class);
