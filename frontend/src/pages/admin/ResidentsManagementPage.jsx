@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import { useStructure } from '../../contexts/StructureContext';
 import { useResidents } from '../../contexts/ResidentsContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { residentService } from '../../services/api';
 import { Users, Plus, Edit, Eye, Trash2, Search, User, Phone, Mail, Home, Building } from 'lucide-react';
 import Pagination from '../../components/Pagination';
@@ -16,6 +17,7 @@ const ResidentsManagementPage = () => {
     handleCrudOperation,
     getResidentsByCondominium 
   } = useResidents();
+  const { isDarkMode } = useTheme();
   
   // Estados locais  
   const [searchTerm, setSearchTerm] = useState('');
@@ -237,20 +239,6 @@ const ResidentsManagementPage = () => {
 
 
 
-  const getStatusBadge = (status) => {
-    const statusConfig = {
-      active: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Ativo' },
-      inactive: { bg: 'bg-red-500/20', text: 'text-red-400', border: 'border-red-500/30', label: 'Inativo' },
-      pending: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30', label: 'Pendente' }
-    };
-
-    const config = statusConfig[status] || statusConfig.inactive;
-    return (
-      <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text} border ${config.border}`}>
-        {config.label}
-      </span>
-    );
-  };
 
   const getUnitStatusBadge = (status) => {
     const statusConfig = {
@@ -277,24 +265,24 @@ const ResidentsManagementPage = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#ff6600]/20">
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unidade</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Proprietário</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Inquilino</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
+              <tr className={`border-b ${isDarkMode ? 'border-[#ff6600]/20' : 'border-gray-200'}`}>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Unidade</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Proprietário</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Inquilino</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Status</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ações</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((resident) => (
-                <tr key={resident.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
+                <tr key={resident.id} className={`border-b ${isDarkMode ? 'border-[#ff6600]/10 hover:bg-[#ff6600]/5' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
                   {/* Unidade */}
                   <td className="py-4 px-4">
                     <div className="flex items-center space-x-2">
                       <Home className="w-4 h-4 text-[#ff6600]" />
                       <div>
-                        <div className="text-white font-medium">{resident.unit?.number}</div>
-                        <div className="text-[#f3f7f1]/60 text-sm">{resident.unit?.block?.name}</div>
+                        <div className={`${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>{resident.unit?.number}</div>
+                        <div className={`${isDarkMode ? 'text-[#f3f7f1]/60' : 'text-gray-600'} text-sm`}>{resident.unit?.block?.name}</div>
                       </div>
                     </div>
                   </td>
@@ -306,11 +294,11 @@ const ResidentsManagementPage = () => {
                         <User className="w-4 h-4 text-blue-400" />
                       </div>
                       <div>
-                        <div className="text-white font-medium">{resident.owner.name}</div>
-                        <div className="text-[#f3f7f1]/60 text-sm">{resident.owner.cpf}</div>
+                        <div className={`${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>{resident.owner.name}</div>
+                        <div className={`${isDarkMode ? 'text-[#f3f7f1]/60' : 'text-gray-600'} text-sm`}>{resident.owner.cpf}</div>
                         <div className="flex items-center space-x-1 text-xs">
                           <Mail className="w-3 h-3 text-[#ff6600]" />
-                          <span className="text-[#f3f7f1]/70">{resident.owner.email}</span>
+                          <span className={isDarkMode ? 'text-[#f3f7f1]/70' : 'text-gray-600'}>{resident.owner.email}</span>
                         </div>
                       </div>
                     </div>
@@ -324,17 +312,17 @@ const ResidentsManagementPage = () => {
                           <Users className="w-4 h-4 text-purple-400" />
                         </div>
                         <div>
-                          <div className="text-white font-medium">{resident.tenant.name}</div>
-                          <div className="text-[#f3f7f1]/60 text-sm">{resident.tenant.cpf}</div>
+                          <div className={`${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>{resident.tenant.name}</div>
+                          <div className={`${isDarkMode ? 'text-[#f3f7f1]/60' : 'text-gray-600'} text-sm`}>{resident.tenant.cpf}</div>
                           <div className="flex items-center space-x-1 text-xs">
                             <Mail className="w-3 h-3 text-[#ff6600]" />
-                            <span className="text-[#f3f7f1]/70">{resident.tenant.email}</span>
+                            <span className={isDarkMode ? 'text-[#f3f7f1]/70' : 'text-gray-600'}>{resident.tenant.email}</span>
                           </div>
                         </div>
                       </div>
                     ) : (
                       <div className="text-center py-2">
-                        <span className="text-[#f3f7f1]/40 text-sm">Sem inquilino</span>
+                        <span className={`${isDarkMode ? 'text-[#f3f7f1]/40' : 'text-gray-500'} text-sm`}>Sem inquilino</span>
                       </div>
                     )}
                   </td>
@@ -410,8 +398,8 @@ const ResidentsManagementPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white">Gerenciar Unidades e Moradores</h2>
-          <p className="text-[#f3f7f1]">Gerencie proprietários, inquilinos e vincule às unidades</p>
+          <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Gerenciar Unidades e Moradores</h2>
+          <p className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}>Gerencie proprietários, inquilinos e vincule às unidades</p>
         </div>
         <button 
           onClick={() => openResidentModal('create')}
@@ -423,10 +411,10 @@ const ResidentsManagementPage = () => {
       </div>
 
       {/* Filtros Avançados */}
-      <div className="card mb-6">
+      <div className={`card mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-white flex items-center">
+            <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} flex items-center`}>
               <Search className="w-5 h-5 mr-2 text-[#ff6600]" />
               Filtros de Busca
             </h3>
@@ -441,7 +429,7 @@ const ResidentsManagementPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             {/* Busca por Nome */}
             <div className="lg:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                 Buscar por nome
               </label>
               <div className="relative">
@@ -451,20 +439,20 @@ const ResidentsManagementPage = () => {
                   placeholder="Nome do proprietário ou inquilino..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white placeholder-[#f3f7f1]/50 focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+                  className={`w-full pl-10 pr-4 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white placeholder-[#f3f7f1]/50' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent`}
                 />
               </div>
             </div>
 
             {/* Filtro por Condomínio */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                 Condomínio
               </label>
               <select
                 value={filters.condominium}
                 onChange={(e) => handleFilterChange('condominium', e.target.value)}
-                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent`}
               >
                 <option value="">Todos</option>
                 {condominiums.map((cond) => (
@@ -477,14 +465,14 @@ const ResidentsManagementPage = () => {
 
             {/* Filtro por Bloco */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                 Bloco/Torre
               </label>
               <select
                 value={filters.block}
                 onChange={(e) => handleFilterChange('block', e.target.value)}
                 disabled={!filters.condominium && !contextSelectedCondominium}
-                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 <option value="">Todos</option>
                 {getAvailableBlocks().map((block) => (
@@ -497,14 +485,14 @@ const ResidentsManagementPage = () => {
 
             {/* Filtro por Unidade */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                 Unidade
               </label>
               <select
                 value={filters.unit}
                 onChange={(e) => handleFilterChange('unit', e.target.value)}
                 disabled={!filters.condominium && !contextSelectedCondominium}
-                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 <option value="">Todas</option>
                 {getAvailableUnits().map((unit) => (
@@ -517,13 +505,13 @@ const ResidentsManagementPage = () => {
 
             {/* Filtro por Tipo de Morador */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                 Tipo de Morador
               </label>
               <select
                 value={filters.residentType}
                 onChange={(e) => handleFilterChange('residentType', e.target.value)}
-                className="w-full px-3 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent`}
               >
                 <option value="">Todos</option>
                 <option value="owner">Apenas Proprietários</option>
@@ -537,7 +525,7 @@ const ResidentsManagementPage = () => {
             <div className="flex flex-wrap gap-2">
               {(filters.condominium || filters.block || filters.unit || filters.residentType || searchTerm) && (
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-[#f3f7f1]/60">Filtros ativos:</span>
+                  <span className={`text-sm ${isDarkMode ? 'text-[#f3f7f1]/60' : 'text-gray-600'}`}>Filtros ativos:</span>
                   {searchTerm && (
                     <span className="px-2 py-1 bg-[#ff6600]/20 text-[#ff6600] rounded text-xs">
                       Nome: "{searchTerm}"
@@ -571,8 +559,8 @@ const ResidentsManagementPage = () => {
       </div>
 
       {/* Tabela */}
-      <div className="card">
-        <div className="p-6">
+      <div className={`card ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className='p-6'>
           {(loading || loadingResidents) ? (
             <div className="flex justify-center items-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff6600]"></div>
@@ -585,10 +573,10 @@ const ResidentsManagementPage = () => {
               {getFilteredData().length === 0 && (
                 <div className="text-center py-12">
                   <Users className="w-12 h-12 text-[#ff6600]/40 mx-auto mb-4" />
-                  <p className="text-[#f3f7f1]/60 mb-2">
+                  <p className={`${isDarkMode ? 'text-[#f3f7f1]/60' : 'text-gray-600'} mb-2`}>
                     Nenhum morador encontrado
                   </p>
-                  <p className="text-white font-medium">
+                  <p className={`${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>
                     {(searchTerm || filters.condominium || filters.block || filters.unit || filters.residentType) 
                       ? 'Tente ajustar os filtros para encontrar moradores' 
                       : 'Comece cadastrando uma unidade com morador'}

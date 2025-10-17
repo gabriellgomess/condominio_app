@@ -1,17 +1,24 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const Pagination = ({
-  currentPage,
-  totalItems,
-  itemsPerPage,
+  currentPage = 1,
+  totalItems = 0,
+  itemsPerPage = 15,
   onPageChange,
   onItemsPerPageChange,
-  itemsPerPageOptions = [10, 25, 50, 100]
+  itemsPerPageOptions = [10, 15, 25, 50, 100]
 }) => {
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+  const { isDarkMode } = useTheme();
+  // Garantir que os valores sejam números válidos
+  const validCurrentPage = Number(currentPage) || 1;
+  const validTotalItems = Number(totalItems) || 0;
+  const validItemsPerPage = Number(itemsPerPage) || 15;
+
+  const totalPages = Math.ceil(validTotalItems / validItemsPerPage);
+  const startItem = (validCurrentPage - 1) * validItemsPerPage + 1;
+  const endItem = Math.min(validCurrentPage * validItemsPerPage, validTotalItems);
 
   // Gerar números das páginas para exibir
   const getPageNumbers = () => {
@@ -25,8 +32,8 @@ const Pagination = ({
       }
     } else {
       // Lógica para mostrar páginas com reticências
-      const startPage = Math.max(1, currentPage - 2);
-      const endPage = Math.min(totalPages, currentPage + 2);
+      const startPage = Math.max(1, validCurrentPage - 2);
+      const endPage = Math.min(totalPages, validCurrentPage + 2);
       
       if (startPage > 1) {
         pages.push(1);
@@ -51,56 +58,60 @@ const Pagination = ({
   };
 
   const handlePageClick = (page) => {
-    if (page !== '...' && page !== currentPage && page >= 1 && page <= totalPages) {
+    if (page !== '...' && page !== validCurrentPage && page >= 1 && page <= totalPages) {
       onPageChange(page);
     }
   };
 
   const handlePrevious = () => {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
+    if (validCurrentPage > 1) {
+      onPageChange(validCurrentPage - 1);
     }
   };
 
   const handleNext = () => {
-    if (currentPage < totalPages) {
-      onPageChange(currentPage + 1);
+    if (validCurrentPage < totalPages) {
+      onPageChange(validCurrentPage + 1);
     }
   };
 
   const handleFirst = () => {
-    if (currentPage > 1) {
+    if (validCurrentPage > 1) {
       onPageChange(1);
     }
   };
 
   const handleLast = () => {
-    if (currentPage < totalPages) {
+    if (validCurrentPage < totalPages) {
       onPageChange(totalPages);
     }
   };
 
-  if (totalItems === 0) {
+  if (validTotalItems === 0) {
     return null;
   }
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-[#151515] border-t border-[#ff6600]/20">
+    <div className={`flex items-center justify-between px-4 py-3 border-t ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
       {/* Informações de itens */}
       <div className="flex items-center space-x-4">
-        <div className="text-sm text-[#f3f7f1]">
-          Mostrando <span className="font-medium text-white">{startItem}</span> a{' '}
-          <span className="font-medium text-white">{endItem}</span> de{' '}
-          <span className="font-medium text-white">{totalItems}</span> resultados
+        <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+          Mostrando <span className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{startItem}</span> a{' '}
+          <span className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{endItem}</span> de{' '}
+          <span className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{validTotalItems}</span> resultados
         </div>
         
         {/* Seletor de itens por página */}
         <div className="flex items-center space-x-2">
-          <label className="text-sm text-[#f3f7f1]">Itens por página:</label>
+          <label className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Itens por página:</label>
           <select
-            value={itemsPerPage}
+            value={validItemsPerPage}
             onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-            className="px-2 py-1 bg-[#2a2a2a] border border-[#ff6600]/30 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+            className={`px-2 py-1 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 ${
+              isDarkMode
+                ? 'bg-gray-700 border-gray-600 text-white'
+                : 'bg-white border-gray-300 text-gray-900'
+            }`}
           >
             {itemsPerPageOptions.map(option => (
               <option key={option} value={option}>
@@ -116,8 +127,12 @@ const Pagination = ({
         {/* Primeira página */}
         <button
           onClick={handleFirst}
-          disabled={currentPage === 1}
-          className="p-2 text-[#f3f7f1] hover:bg-[#ff6600]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={validCurrentPage === 1}
+          className={`p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+            isDarkMode
+              ? 'text-gray-300 hover:bg-gray-700'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
           title="Primeira página"
         >
           <ChevronsLeft className="w-4 h-4" />
@@ -126,8 +141,12 @@ const Pagination = ({
         {/* Página anterior */}
         <button
           onClick={handlePrevious}
-          disabled={currentPage === 1}
-          className="p-2 text-[#f3f7f1] hover:bg-[#ff6600]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={validCurrentPage === 1}
+          className={`p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+            isDarkMode
+              ? 'text-gray-300 hover:bg-gray-700'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
           title="Página anterior"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -141,11 +160,11 @@ const Pagination = ({
               onClick={() => handlePageClick(page)}
               disabled={page === '...'}
               className={`px-3 py-2 text-sm rounded-lg transition-colors ${
-                page === currentPage
+                page === validCurrentPage
                   ? 'bg-[#ff6600] text-white font-medium'
                   : page === '...'
-                  ? 'text-[#f3f7f1] cursor-default'
-                  : 'text-[#f3f7f1] hover:bg-[#ff6600]/20'
+                  ? `${isDarkMode ? 'text-gray-400' : 'text-gray-500'} cursor-default`
+                  : `${isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-100'}`
               }`}
             >
               {page}
@@ -156,8 +175,12 @@ const Pagination = ({
         {/* Próxima página */}
         <button
           onClick={handleNext}
-          disabled={currentPage === totalPages}
-          className="p-2 text-[#f3f7f1] hover:bg-[#ff6600]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={validCurrentPage === totalPages}
+          className={`p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+            isDarkMode
+              ? 'text-gray-300 hover:bg-gray-700'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
           title="Próxima página"
         >
           <ChevronRight className="w-4 h-4" />
@@ -166,8 +189,12 @@ const Pagination = ({
         {/* Última página */}
         <button
           onClick={handleLast}
-          disabled={currentPage === totalPages}
-          className="p-2 text-[#f3f7f1] hover:bg-[#ff6600]/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={validCurrentPage === totalPages}
+          className={`p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+            isDarkMode
+              ? 'text-gray-300 hover:bg-gray-700'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
           title="Última página"
         >
           <ChevronsRight className="w-4 h-4" />

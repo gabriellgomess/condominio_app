@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTheme } from '../../contexts/ThemeContext';
 import { X, Save, Eye, Edit, Calendar, Clock, Settings } from 'lucide-react';
 import { reservationConfigService } from '../../services/reservationService';
 
@@ -11,6 +12,7 @@ const ReservationConfigModal = ({
   reservableSpaces = [],
   onSave 
 }) => {
+  const { isDarkMode } = useTheme();
   const [formData, setFormData] = useState({
     space_id: '',
     available_days: [],
@@ -203,16 +205,16 @@ const ReservationConfigModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#1a1a1a] rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto`}>
         {/* Cabeçalho */}
         <div className="flex items-center justify-between p-6 border-b border-[#ff6600]/20">
           <div className="flex items-center space-x-3">
             {getModalIcon()}
-            <h2 className="text-xl font-bold text-white">{getModalTitle()}</h2>
+            <h2 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{getModalTitle()}</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+            className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'} rounded-lg transition-colors`}
           >
             <X className="w-5 h-5" />
           </button>
@@ -222,7 +224,7 @@ const ReservationConfigModal = ({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Espaço */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Espaço *
             </label>
             <select
@@ -230,8 +232,8 @@ const ReservationConfigModal = ({
               value={formData.space_id}
               onChange={handleInputChange}
               disabled={mode === 'view'}
-              className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                errors.space_id ? 'border-red-500' : 'border-gray-600'
+              className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                errors.space_id ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
               } focus:border-[#ff6600] focus:outline-none`}
             >
               <option value="">Selecione um espaço</option>
@@ -256,7 +258,7 @@ const ReservationConfigModal = ({
 
           {/* Dias da Semana */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-3">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-3">
               Dias Disponíveis *
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -267,9 +269,9 @@ const ReservationConfigModal = ({
                     checked={formData.available_days.includes(day.key)}
                     onChange={() => handleDayToggle(day.key)}
                     disabled={mode === 'view'}
-                    className="w-4 h-4 text-[#ff6600] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#ff6600] focus:ring-2"
+                    className="w-4 h-4 text-[#ff6600] ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded focus:ring-[#ff6600] focus:ring-2"
                   />
-                  <span className="text-sm text-gray-300">{day.label}</span>
+                  <span className="text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}">{day.label}</span>
                 </label>
               ))}
             </div>
@@ -281,7 +283,7 @@ const ReservationConfigModal = ({
           {/* Horários */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Horário de Início *
               </label>
               <input
@@ -290,8 +292,8 @@ const ReservationConfigModal = ({
                 value={formData.start_time}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.start_time ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.start_time ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
               />
               {errors.start_time && (
@@ -300,7 +302,7 @@ const ReservationConfigModal = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Horário de Fim *
               </label>
               <input
@@ -309,8 +311,8 @@ const ReservationConfigModal = ({
                 value={formData.end_time}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.end_time ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.end_time ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
               />
               {errors.end_time && (
@@ -321,14 +323,14 @@ const ReservationConfigModal = ({
 
           {/* Configurações Avançadas */}
           <div className="border-t border-gray-700 pt-6">
-            <h3 className="text-lg font-medium text-white mb-4 flex items-center">
+            <h3 className="text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center">
               <Settings className="w-5 h-5 mr-2 text-[#ff6600]" />
               Configurações Avançadas
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                   Duração Mínima (minutos)
                 </label>
                 <input
@@ -339,12 +341,12 @@ const ReservationConfigModal = ({
                   disabled={mode === 'view'}
                   min="15"
                   max="1440"
-                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                   Antecedência Mínima (horas)
                 </label>
                 <input
@@ -355,12 +357,12 @@ const ReservationConfigModal = ({
                   disabled={mode === 'view'}
                   min="1"
                   max="168"
-                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                   Antecedência Máxima (dias)
                 </label>
                 <input
@@ -371,12 +373,12 @@ const ReservationConfigModal = ({
                   disabled={mode === 'view'}
                   min="1"
                   max="365"
-                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                   Máx. Reservas por Dia
                 </label>
                 <input
@@ -386,7 +388,7 @@ const ReservationConfigModal = ({
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
                   min="1"
-                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
                   placeholder="Sem limite"
                 />
               </div>
@@ -395,14 +397,14 @@ const ReservationConfigModal = ({
 
           {/* Taxas (Opcional) */}
           <div className="border-t border-gray-700 pt-6">
-            <h3 className="text-lg font-medium text-white mb-4 flex items-center">
+            <h3 className="text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center">
               <Clock className="w-5 h-5 mr-2 text-[#ff6600]" />
               Taxas (Opcional)
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                   Taxa por Hora (R$)
                 </label>
                 <input
@@ -413,13 +415,13 @@ const ReservationConfigModal = ({
                   disabled={mode === 'view'}
                   min="0"
                   step="0.01"
-                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
                   placeholder="0.00"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                   Taxa por Dia (R$)
                 </label>
                 <input
@@ -430,7 +432,7 @@ const ReservationConfigModal = ({
                   disabled={mode === 'view'}
                   min="0"
                   step="0.01"
-                  className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
                   placeholder="0.00"
                 />
               </div>
@@ -439,7 +441,7 @@ const ReservationConfigModal = ({
 
           {/* Descrição */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Descrição
             </label>
             <textarea
@@ -448,7 +450,7 @@ const ReservationConfigModal = ({
               onChange={handleInputChange}
               disabled={mode === 'view'}
               rows={3}
-              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+              className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
               placeholder="Regras especiais ou observações sobre a reserva..."
             />
           </div>
@@ -461,9 +463,9 @@ const ReservationConfigModal = ({
               checked={formData.active}
               onChange={handleInputChange}
               disabled={mode === 'view'}
-              className="w-4 h-4 text-[#ff6600] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#ff6600] focus:ring-2"
+              className="w-4 h-4 text-[#ff6600] ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded focus:ring-[#ff6600] focus:ring-2"
             />
-            <label className="text-sm font-medium text-gray-300">
+            <label className="text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}">
               Configuração ativa
             </label>
           </div>
@@ -481,14 +483,14 @@ const ReservationConfigModal = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg hover:bg-gray-700 transition-colors"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {loading ? (
                   <>
@@ -509,7 +511,7 @@ const ReservationConfigModal = ({
             <div className="flex justify-end pt-4">
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors"
+                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors"
               >
                 Fechar
               </button>

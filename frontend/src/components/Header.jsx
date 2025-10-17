@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Menu,
   Bell,
@@ -27,12 +27,42 @@ const Header = () => {
     getInitials,
     handleLogout,
     profileRef,
-    notificationRef
+    notificationRef,
+    markIncidentAsViewed
   } = useLayout();
   
   const { isDarkMode, toggleTheme } = useTheme();
 
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Função para lidar com clique nas notificações
+  const handleNotificationClick = (notification) => {
+    if (notification.type === 'incident') {
+      // Marcar como visualizada
+      if (notification.data?.id) {
+        markIncidentAsViewed(notification.data.id);
+      }
+
+      // Fechar notificações
+      setShowNotifications(false);
+
+      // Navegar para a página de incidents com o ID da ocorrência
+      navigate('/admin/incidents', {
+        state: {
+          openIncidentId: notification.data?.id,
+          incidentData: notification.data
+        }
+      });
+    } else if (notification.type === 'reservation') {
+      setShowNotifications(false);
+      navigate('/admin/bookings', {
+        state: {
+          openReservationId: notification.data?.id
+        }
+      });
+    }
+  };
 
   // Função para gerar breadcrumb baseado na rota atual
   const getBreadcrumb = () => {
@@ -83,7 +113,7 @@ const Header = () => {
     <header className={`${
       isDarkMode
         ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-200'
+        : 'bg-gray-400 border-gray-200'
     } shadow-sm border-b h-16 flex-shrink-0 z-10`}>
       <div className="px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex justify-between items-center h-full">
@@ -96,7 +126,7 @@ const Header = () => {
                 p-2 rounded-xl transition-all duration-200 hover:scale-105
                 ${isDarkMode
                   ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                  : 'text-white hover:text-gray-600 hover:bg-gray-100'
                 }
                 lg:hidden
               `}
@@ -106,9 +136,6 @@ const Header = () => {
             
             {/* Breadcrumb */}
             <div className="hidden sm:flex items-center space-x-2">
-              <h1 className={`text-lg font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
-                síndicoapp
-              </h1>
               <span className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                 • {getBreadcrumb()}
               </span>
@@ -124,7 +151,7 @@ const Header = () => {
                 p-2 rounded-xl transition-all duration-200 hover:scale-105
                 ${isDarkMode
                   ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                  : 'text-white hover:text-gray-600 hover:bg-gray-100'
                 }
               `}
             >
@@ -139,7 +166,7 @@ const Header = () => {
                   relative p-2 rounded-xl transition-all duration-200 hover:scale-105
                   ${isDarkMode
                     ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                    : 'text-white hover:text-gray-600 hover:bg-gray-100'
                   }
                 `}
               >
@@ -166,26 +193,44 @@ const Header = () => {
                     </p>
                   </div>
                   <div className="max-h-64 overflow-y-auto">
-                    {notifications.map((notification) => (
-                      <div
-                        key={notification.id}
-                        className={`
-                          px-4 py-3 hover:bg-opacity-50 cursor-pointer transition-colors
-                          ${notification.unread
-                            ? isDarkMode ? 'bg-gray-700/50' : 'bg-blue-50'
-                            : ''
-                          }
-                          ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}
-                        `}
-                      >
-                        <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
-                          {notification.title}
-                        </p>
-                        <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                          {notification.time}
+                    {notifications.length === 0 ? (
+                      <div className="px-4 py-6 text-center">
+                        <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                          Nenhuma notificação
                         </p>
                       </div>
-                    ))}
+                    ) : (
+                      notifications.map((notification) => (
+                        <div
+                          key={notification.id}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleNotificationClick(notification);
+                          }}
+                          className={`
+                            px-4 py-3 hover:bg-opacity-50 cursor-pointer transition-colors
+                            ${notification.unread
+                              ? isDarkMode ? 'bg-gray-700/50' : 'bg-blue-50'
+                              : ''
+                            }
+                            ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}
+                          `}
+                        >
+                          <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                            {notification.title}
+                          </p>
+                          <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            {notification.time}
+                          </p>
+                          {notification.type === 'incident' && (
+                            <p className={`text-xs mt-1 font-medium text-red-600`}>
+                              Clique para ver ocorrências
+                            </p>
+                          )}
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               )}

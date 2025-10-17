@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTheme } from '../../contexts/ThemeContext';
 import { X, Save, Eye, Edit, Building, Loader2 } from 'lucide-react';
 import structureService from '../../services/structureService';
 import cepService from '../../services/cepService';
@@ -10,6 +11,7 @@ const CondominiumModal = ({
   condominium = null,
   onSave 
 }) => {
+  const { isDarkMode } = useTheme();
   const [formData, setFormData] = useState({
     name: '',
     address: '',
@@ -207,15 +209,15 @@ const CondominiumModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#1a1a1a] rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto">
+      <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto`}>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             {getModalIcon()}
-            <h2 className="text-xl font-semibold text-white">{getModalTitle()}</h2>
+            <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{getModalTitle()}</h2>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className={`${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'} transition-colors`}
           >
             <X className="w-6 h-6" />
           </button>
@@ -224,7 +226,7 @@ const CondominiumModal = ({
         <form onSubmit={handleSubmit} className="space-y-6">            
           {/* Nome */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Nome do Condomínio *
             </label>
             <input
@@ -233,8 +235,8 @@ const CondominiumModal = ({
               value={formData.name}
               onChange={handleInputChange}
               disabled={mode === 'view'}
-              className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                errors.name ? 'border-red-500' : 'border-gray-600'
+              className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                errors.name ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
               } focus:border-[#ff6600] focus:outline-none`}
               placeholder="Ex: Residencial Verde"
             />
@@ -245,7 +247,7 @@ const CondominiumModal = ({
 
           {/* CEP */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               CEP *
             </label>
             <div className="relative">
@@ -256,8 +258,8 @@ const CondominiumModal = ({
                 onChange={handleCEPChange}
                 disabled={mode === 'view' || loadingCep}
                 maxLength={9}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.cep ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.cep ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
                 placeholder="12345-678"
               />
@@ -277,7 +279,7 @@ const CondominiumModal = ({
 
           {/* Endereço */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Endereço *
             </label>
             <input
@@ -286,8 +288,8 @@ const CondominiumModal = ({
               value={formData.address}
               onChange={handleInputChange}
               disabled={mode === 'view'}
-              className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                errors.address ? 'border-red-500' : 'border-gray-600'
+              className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                errors.address ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
               } focus:border-[#ff6600] focus:outline-none`}
               placeholder="Ex: Rua das Flores, 123"
             />
@@ -298,7 +300,7 @@ const CondominiumModal = ({
 
           {/* Número */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Número
             </label>
             <input
@@ -307,8 +309,8 @@ const CondominiumModal = ({
               value={formData.number}
               onChange={handleInputChange}
               disabled={mode === 'view'}
-              className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                errors.number ? 'border-red-500' : 'border-gray-600'
+              className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                errors.number ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
               } focus:border-[#ff6600] focus:outline-none`}
               placeholder="Ex: 123, 456-A"
             />
@@ -320,7 +322,7 @@ const CondominiumModal = ({
           {/* Bairro, Cidade e Estado */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Bairro
               </label>
               <input
@@ -329,8 +331,8 @@ const CondominiumModal = ({
                 value={formData.district}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.district ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.district ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
                 placeholder="Centro"
               />
@@ -339,7 +341,7 @@ const CondominiumModal = ({
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Cidade *
               </label>
               <input
@@ -348,8 +350,8 @@ const CondominiumModal = ({
                 value={formData.city}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.city ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.city ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
                 placeholder="São Paulo"
               />
@@ -359,7 +361,7 @@ const CondominiumModal = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Estado *
               </label>
               <input
@@ -369,8 +371,8 @@ const CondominiumModal = ({
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
                 maxLength={2}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.state ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.state ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
                 placeholder="SP"
                 style={{ textTransform: 'uppercase' }}
@@ -383,7 +385,7 @@ const CondominiumModal = ({
 
           {/* Descrição */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Descrição
             </label>
             <textarea
@@ -392,14 +394,14 @@ const CondominiumModal = ({
               onChange={handleInputChange}
               disabled={mode === 'view'}
               rows={3}
-              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+              className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
               placeholder="Descrição opcional do condomínio..."
             />
           </div>
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Status
             </label>
             <select
@@ -407,7 +409,7 @@ const CondominiumModal = ({
               value={formData.status}
               onChange={handleInputChange}
               disabled={mode === 'view'}
-              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+              className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
             >
               <option value="active">Ativo</option>
               <option value="inactive">Inativo</option>
@@ -428,14 +430,14 @@ const CondominiumModal = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg hover:bg-gray-700 transition-colors"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {loading ? (
                   <>
@@ -456,7 +458,7 @@ const CondominiumModal = ({
             <div className="flex justify-end pt-4">
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors"
+                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors"
               >
                 Fechar
               </button>

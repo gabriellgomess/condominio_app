@@ -78,31 +78,26 @@ const Sidebar = () => {
     {
       title: 'Comunicados',
       icon: <MessageSquare className="w-5 h-5" />,
-      path: '/comunicados',
+      path: '/admin/announcements',
       submenu: [
-        { title: 'Todos os Comunicados', path: '/comunicados/todos' },
-        { title: 'Criar Comunicado', path: '/comunicados/criar' },
-        { title: 'Rascunhos', path: '/comunicados/rascunhos' }
+        { title: 'Gerenciar Comunicados', path: '/admin/announcements' }
       ]
     },
     {
       title: 'Ocorrências',
       icon: <Bell className="w-5 h-5" />,
-      path: '/ocorrencias',
-      submenu: [
-        { title: 'Minhas Ocorrências', path: '/ocorrencias/minhas' },
-        { title: 'Nova Ocorrência', path: '/ocorrencias/nova' },
-        { title: 'Histórico', path: '/ocorrencias/historico' }
-      ]
+      path: '/admin/incidents',
+      submenu: []
     },
     {
       title: 'Financeiro',
       icon: <DollarSign className="w-5 h-5" />,
-      path: '/financeiro',
+      path: '/admin/finance',
       submenu: [
-        { title: 'Cobranças', path: '/financeiro/cobrancas' },
-        { title: 'Pagamentos', path: '/financeiro/pagamentos' },
-        { title: 'Relatórios', path: '/financeiro/relatorios' }
+        { title: 'Subcontas', path: '/admin/finance/subaccounts' },
+        { title: 'Categorias', path: '/admin/finance/categories' },
+        { title: 'Receitas', path: '/admin/finance/revenues' },
+        { title: 'Despesas', path: '/admin/finance/expenses' }
       ]
     },
     {
@@ -139,8 +134,7 @@ const Sidebar = () => {
           fixed lg:static inset-y-0 left-0 z-50
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           ${isMobile && isSidebarOpen ? 'w-80' : 'w-64'}
-          ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}
-          shadow-xl lg:shadow-lg border-r
+          ${isDarkMode ? 'bg-gray-800 ' : 'bg-gray-400'}          
           transition-all duration-300 ease-in-out
           flex flex-col
           ${isMobile ? 'backdrop-blur-sm' : ''}
@@ -151,18 +145,12 @@ const Sidebar = () => {
         }}
       >
       {/* Header da Sidebar */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-inherit flex-shrink-0">
-        <div className="flex items-center space-x-3">
+      <div className="h-16 flex items-center justify-between px-4 flex-shrink-0">        
           <Logo 
-            variant="horizontal" 
-            size="small" 
+            variant="horizontal"
             theme="dark"
-            className="flex-shrink-0"
-          />
-          <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
-            Condomínio
-          </span>
-        </div>
+            className="w-full"
+          />        
         
         {/* Botão fechar sidebar (mobile) */}
         {isMobile && (
@@ -171,7 +159,7 @@ const Sidebar = () => {
             className={`p-1.5 rounded-lg transition-colors ${
               isDarkMode
                 ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                : 'text-white hover:text-gray-600 hover:bg-gray-100'
             }`}
           >
             <X className="w-5 h-5" />
@@ -261,39 +249,7 @@ const Sidebar = () => {
       </nav>
 
       {/* Footer da Sidebar */}
-      <div className={`p-4 border-t border-inherit ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-        <div className="flex items-center space-x-3">
-          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#ff6600] to-[#fa7a25] flex items-center justify-center">
-            <span className="text-white font-medium text-sm">
-              {getInitials(user?.name)}
-            </span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className={`text-sm font-medium truncate ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
-              {user?.name || 'Usuário'}
-            </p>
-            <p className={`text-xs truncate ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              {user?.role || '-'}
-            </p>
-          </div>
-        </div>
-        
-        {/* Botão de logout */}
-        <button
-          onClick={handleLogout}
-          className={`
-            w-full mt-3 flex items-center justify-center space-x-2 px-3 py-2 text-sm font-medium rounded-lg
-            transition-all duration-200 hover:scale-[1.02]
-            ${isDarkMode
-              ? 'text-red-400 hover:bg-red-900/20 border border-red-400/20'
-              : 'text-red-600 hover:bg-red-50 border border-red-200'
-            }
-          `}
-        >
-          <LogOut className="w-4 h-4" />
-          <span>Sair</span>
-        </button>
-      </div>
+     
     </div>
   );
 };

@@ -2,6 +2,21 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// Finance - Stage 1
+use App\Http\Controllers\Finance\SubaccountController;
+use App\Http\Controllers\Finance\CategoryController;
+use App\Http\Controllers\Finance\RevenueController;
+use App\Http\Controllers\Finance\ExpenseController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('finance/subaccounts', SubaccountController::class);
+    Route::apiResource('finance/categories', CategoryController::class);
+    Route::get('finance/subaccounts/{subaccount}/categories', [CategoryController::class, 'getBySubaccount']);
+    Route::apiResource('finance/revenues', RevenueController::class);
+    Route::apiResource('finance/expenses', ExpenseController::class);
+});
+
 use App\Http\Controllers\Api\ApiController;
 
 use App\Http\Controllers\Categorias\CategoriasController;
@@ -23,6 +38,8 @@ use App\Http\Controllers\Resident\ResidentController;
 use App\Http\Controllers\Reservation\ReservationConfigController;
 use App\Http\Controllers\Reservation\ReservationController;
 use App\Http\Controllers\Supplier\SupplierController;
+use App\Http\Controllers\Announcement\AnnouncementController;
+use App\Http\Controllers\Incident\IncidentController;
 use App\Http\Controllers\Api\CepController;
 
 
@@ -107,4 +124,28 @@ Route::group([
     Route::get('suppliers-stats', [SupplierController::class, 'getStats']);
     Route::get('supplier-categories', [SupplierController::class, 'getCategories']);
     Route::get('supplier-types', [SupplierController::class, 'getSupplierTypes']);
+
+    // Comunicados
+    Route::apiResource('announcements', AnnouncementController::class);
+    Route::get('condominiums/{condominium_id}/announcements', [AnnouncementController::class, 'index']);
+    Route::post('announcements/{id}/publish', [AnnouncementController::class, 'publish']);
+    Route::post('announcements/{id}/unpublish', [AnnouncementController::class, 'unpublish']);
+    Route::post('announcements/{id}/archive', [AnnouncementController::class, 'archive']);
+    Route::get('announcements-stats', [AnnouncementController::class, 'stats']);
+
+    // Ocorrências
+    Route::apiResource('incidents', IncidentController::class);
+    Route::get('condominiums/{condominium_id}/incidents', [IncidentController::class, 'index']);
+    Route::get('condominiums/{condominium_id}/incidents/stats', [IncidentController::class, 'stats']);
+    Route::get('incidents-stats', [IncidentController::class, 'stats']);
+    Route::get('incident-types', [IncidentController::class, 'getTypes']);
+    Route::get('incident-priorities', [IncidentController::class, 'getPriorities']);
+    Route::get('incident-statuses', [IncidentController::class, 'getStatuses']);
+
+    // Ocorrências do morador logado (mobile app)
+    Route::get('my-incidents', [IncidentController::class, 'myIncidents']);
+    Route::get('my-incidents-stats', [IncidentController::class, 'myStats']);
+
+    // Troca de senha
+    Route::post('change-password', [ApiController::class, 'changePassword']);
 });

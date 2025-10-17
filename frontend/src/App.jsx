@@ -13,6 +13,12 @@ import ResidentsManagementPage from './pages/admin/ResidentsManagementPage';
 import SuppliersPage from './pages/admin/SuppliersPage';
 import ReservationManagementPage from './pages/admin/ReservationManagementPage';
 import ReservationsPage from './pages/admin/ReservationsPage';
+import AnnouncementsPage from './pages/admin/AnnouncementsPage';
+import IncidentsPage from './pages/admin/IncidentsPage';
+import SubaccountsPage from './pages/admin/SubaccountsPage';
+import CategoriesPage from './pages/admin/CategoriesPage';
+import RevenuesPage from './pages/admin/RevenuesPage';
+import ExpensesPage from './pages/admin/ExpensesPage';
 
 function App() {
   return (
@@ -42,6 +48,12 @@ function App() {
                     <Route path="suppliers" element={<SuppliersPage />} />
                     <Route path="reservations" element={<ReservationManagementPage />} />
                     <Route path="bookings" element={<ReservationsPage />} />
+                    <Route path="announcements" element={<AnnouncementsPage />} />
+                    <Route path="incidents" element={<IncidentsPage />} />
+                    <Route path="finance/subaccounts" element={<SubaccountsPage />} />
+                    <Route path="finance/categories" element={<CategoriesPage />} />
+                    <Route path="finance/revenues" element={<RevenuesPage />} />
+                    <Route path="finance/expenses" element={<ExpensesPage />} />
                     <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                   </Routes>
                 </ProtectedRoute>

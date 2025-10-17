@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../../components/Layout';
 import { useStructure } from '../../contexts/StructureContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { Building, Home, Car, Package, Plus, Edit, Eye, Trash2, Search } from 'lucide-react';
 import CondominiumModal from '../../components/modals/CondominiumModal';
 import BlockModal from '../../components/modals/BlockModal';
@@ -23,6 +24,7 @@ const StructureManagementPage = () => {
     setSelectedCondominium,
     handleCrudOperation
   } = useStructure();
+  const { isDarkMode } = useTheme();
   
   const [activeTab, setActiveTab] = useState('condominiums');
 
@@ -92,19 +94,7 @@ const StructureManagementPage = () => {
     data: null
   });
 
-  // Dados já são carregados pelo contexto
 
-  // Dados já são carregados pelo contexto
-
-  // Função removida - dados são gerenciados pelo contexto
-
-  // Dados são automaticamente filtrados pelo contexto baseado no selectedCondominium
-
-  // Função removida - dados são carregados pelo contexto
-
-  // Função removida - dados são carregados pelo contexto
-
-  // Função removida - dados são gerenciados pelo contexto
 
   // Funções do modal de condomínio
   const openCondominiumModal = (mode, data = null) => {
@@ -423,24 +413,24 @@ const StructureManagementPage = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#ff6600]/20">
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Nome</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Endereço</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Cidade/UF</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unidades</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Blocos</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
+              <tr className={`border-b ${isDarkMode ? 'border-[#ff6600]/20' : 'border-gray-200'}`}>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Nome</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Endereço</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Cidade/UF</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Unidades</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Blocos</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Status</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ações</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((condominium) => (
-                <tr key={condominium.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
-                  <td className="py-4 px-4 text-white font-medium">{condominium.name}</td>
-                  <td className="py-4 px-4 text-[#f3f7f1]">{condominium.address}</td>
-                  <td className="py-4 px-4 text-[#f3f7f1]">{condominium.city}/{condominium.state}</td>
-                  <td className="py-4 px-4 text-[#f3f7f1]">{condominium.units_count || 0}</td>
-                  <td className="py-4 px-4 text-[#f3f7f1]">{condominium.blocks_count || 0}</td>
+                <tr key={condominium.id} className={`border-b ${isDarkMode ? 'border-[#ff6600]/10 hover:bg-[#ff6600]/5' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                  <td className={`py-4 px-4 ${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>{condominium.name}</td>
+                  <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{condominium.address}</td>
+                  <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{condominium.city}/{condominium.state}</td>
+                  <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{condominium.units_count || 0}</td>
+                  <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{condominium.blocks_count || 0}</td>
                   <td className="py-4 px-4">{getStatusBadge(condominium.active)}</td>
                   <td className="py-4 px-4">
                     <div className="flex space-x-2">
@@ -501,26 +491,26 @@ const StructureManagementPage = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#ff6600]/20">
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Nome</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Condomínio</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Andares</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unid./Andar</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Total Unidades</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
+              <tr className={`border-b ${isDarkMode ? 'border-[#ff6600]/20' : 'border-gray-200'}`}>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Nome</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Condomínio</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Andares</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Unid./Andar</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Total Unidades</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Status</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ações</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((block) => {
                 const totalUnits = block.floors * block.units_per_floor;
                 return (
-                  <tr key={block.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
-                    <td className="py-4 px-4 text-white font-medium">{block.name}</td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{block.condominium?.name || 'N/A'}</td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{block.floors}</td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{block.units_per_floor}</td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{totalUnits}</td>
+                  <tr key={block.id} className={`border-b ${isDarkMode ? 'border-[#ff6600]/10 hover:bg-[#ff6600]/5' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>{block.name}</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{block.condominium?.name || 'N/A'}</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{block.floors}</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{block.units_per_floor}</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{totalUnits}</td>
                     <td className="py-4 px-4">{getStatusBadge(block.active)}</td>
                     <td className="py-4 px-4">
                       <div className="flex space-x-2">
@@ -582,28 +572,28 @@ const StructureManagementPage = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#ff6600]/20">
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Número</th>
-                {!selectedCondominium && <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Condomínio</th>}
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Bloco</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Andar</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Tipo</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Quartos</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Área (m²)</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ativo</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ocupação</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
+              <tr className={`border-b ${isDarkMode ? 'border-[#ff6600]/20' : 'border-gray-200'}`}>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Número</th>
+                {!selectedCondominium && <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Condomínio</th>}
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Bloco</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Andar</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Tipo</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Quartos</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Área (m²)</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ativo</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ocupação</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ações</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((unit) => {
                 return (
-                  <tr key={unit.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
-                    <td className="py-4 px-4 text-white font-medium">{unit.number}</td>
-                    {!selectedCondominium && <td className="py-4 px-4 text-[#f3f7f1]">{unit.condominium?.name || 'N/A'}</td>}
-                    <td className="py-4 px-4 text-[#f3f7f1]">{unit.block?.name || 'N/A'}</td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{unit.floor}º</td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">
+                  <tr key={unit.id} className={`border-b ${isDarkMode ? 'border-[#ff6600]/10 hover:bg-[#ff6600]/5' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>{unit.number}</td>
+                    {!selectedCondominium && <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{unit.condominium?.name || 'N/A'}</td>}
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{unit.block?.name || 'N/A'}</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{unit.floor}º</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>
                       {unit.type === 'apartamento' ? 'Apartamento' : 
                        unit.type === 'casa' ? 'Casa' : 
                        unit.type === 'comercial' ? 'Comercial' : 
@@ -611,8 +601,8 @@ const StructureManagementPage = () => {
                        unit.type === 'house' ? 'Casa' : 
                        unit.type === 'commercial' ? 'Comercial' : unit.type}
                     </td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{unit.bedrooms}</td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{unit.area}</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{unit.bedrooms}</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{unit.area}</td>
                     <td className="py-4 px-4">{getStatusBadge(unit.active)}</td>
                     <td className="py-4 px-4">{getUnitOccupationBadge(unit.status)}</td>
                     <td className="py-4 px-4">
@@ -675,37 +665,37 @@ const StructureManagementPage = () => {
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-[#ff6600]/20">
-            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Número</th>
-            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Tipo</th>
-            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Tamanho</th>
-            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Condomínio</th>
-            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unidade Vinculada</th>
-            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
-            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ativo</th>
-            <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
+          <tr className={`border-b ${isDarkMode ? 'border-[#ff6600]/20' : 'border-gray-200'}`}>
+            <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Número</th>
+            <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Tipo</th>
+            <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Tamanho</th>
+            <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Condomínio</th>
+            <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Unidade Vinculada</th>
+            <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Status</th>
+            <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ativo</th>
+            <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ações</th>
           </tr>
         </thead>
         <tbody>
           {paginatedData.map((parking) => {
             const unit = units.find(u => u.id === parking.unit_id);
             return (
-              <tr key={parking.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
-                <td className="py-4 px-4 text-white font-medium">{parking.number}</td>
-                <td className="py-4 px-4 text-[#f3f7f1]">
+              <tr key={parking.id} className={`border-b ${isDarkMode ? 'border-[#ff6600]/10 hover:bg-[#ff6600]/5' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                <td className={`py-4 px-4 ${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>{parking.number}</td>
+                <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>
                   {parking.type === 'covered' ? 'Coberta' : 
                    parking.type === 'uncovered' ? 'Descoberta' : 
                    parking.type === 'garage' ? 'Garagem' : 
                    parking.type === 'motorcycle' ? 'Moto' : parking.type}
                 </td>
-                <td className="py-4 px-4 text-[#f3f7f1]">
+                <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>
                   {parking.size === 'compact' ? 'Compacta' : 
                    parking.size === 'standard' ? 'Padrão' : 
                    parking.size === 'large' ? 'Grande' : 
                    parking.size === 'motorcycle' ? 'Moto' : parking.size}
                 </td>
-                <td className="py-4 px-4 text-[#f3f7f1]">{parking.condominium?.name || 'N/A'}</td>
-                <td className="py-4 px-4 text-[#f3f7f1]">{unit?.number || 'Não vinculada'}</td>
+                <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{parking.condominium?.name || 'N/A'}</td>
+                <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{unit?.number || 'Não vinculada'}</td>
                 <td className="py-4 px-4">{getParkingStatusBadge(parking.status)}</td>
                 <td className="py-4 px-4">{getStatusBadge(parking.active)}</td>
                 <td className="py-4 px-4">
@@ -784,26 +774,26 @@ const StructureManagementPage = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#ff6600]/20">
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Número</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Tipo</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Área (m²)</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Localização</th>
-                {!selectedCondominium && <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Condomínio</th>}
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Unidade Vinculada</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Reservável</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ativo</th>
-                <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
+              <tr className={`border-b ${isDarkMode ? 'border-[#ff6600]/20' : 'border-gray-200'}`}>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Número</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Tipo</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Área (m²)</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Localização</th>
+                {!selectedCondominium && <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Condomínio</th>}
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Unidade Vinculada</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Reservável</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Status</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ativo</th>
+                <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ações</th>
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((space) => {
                 const unit = units.find(u => u.id === space.unit_id);
                 return (
-                  <tr key={space.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
-                    <td className="py-4 px-4 text-white font-medium">{space.number}</td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">
+                  <tr key={space.id} className={`border-b ${isDarkMode ? 'border-[#ff6600]/10 hover:bg-[#ff6600]/5' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>{space.number}</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>
                       {space.space_type === 'storage' ? 'Depósito' : 
                        space.space_type === 'gas_depot' ? 'Depósito de Gás' : 
                        space.space_type === 'trash_depot' ? 'Depósito de Lixo' : 
@@ -814,10 +804,10 @@ const StructureManagementPage = () => {
                        space.space_type === 'storage_room' ? 'Depósito Geral' : 
                        space.space_type === 'other' ? 'Outro' : space.space_type}
                     </td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{space.area || 'N/A'}</td>
-                    <td className="py-4 px-4 text-[#f3f7f1]">{space.location || 'N/A'}</td>
-                    {!selectedCondominium && <td className="py-4 px-4 text-[#f3f7f1]">{space.condominium?.name || 'N/A'}</td>}
-                    <td className="py-4 px-4 text-[#f3f7f1]">{unit?.number || 'Não vinculado'}</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{space.area || 'N/A'}</td>
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{space.location || 'N/A'}</td>
+                    {!selectedCondominium && <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{space.condominium?.name || 'N/A'}</td>}
+                    <td className={`py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>{unit?.number || 'Não vinculado'}</td>
                     <td className="py-4 px-4">{getStatusBadge(space.reservable)}</td>
                     <td className="py-4 px-4">{getStorageStatusBadge(space.status)}</td>
                     <td className="py-4 px-4">{getStatusBadge(space.active)}</td>
@@ -901,8 +891,8 @@ const StructureManagementPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white">Estrutura do Condomínio</h2>
-          <p className="text-[#f3f7f1]">Gerencie condomínios, blocos, unidades, garagens e depósitos</p>
+          <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Estrutura do Condomínio</h2>
+          <p className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}>Gerencie condomínios, blocos, unidades, garagens e depósitos</p>
         </div>
         <button 
           onClick={() => {
@@ -938,7 +928,9 @@ const StructureManagementPage = () => {
               className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
                 activeTab === tab.id
                   ? 'bg-[#ff6600] text-white'
-                  : 'bg-[#080d08]/80 text-[#f3f7f1] hover:bg-[#ff6600]/20'
+                  : isDarkMode 
+                    ? 'bg-[#080d08]/80 text-[#f3f7f1] hover:bg-[#ff6600]/20'
+                    : 'bg-white/80 text-gray-700 hover:bg-gray-100 border border-gray-200'
               }`}
             >
               <Icon className="w-4 h-4 mr-2" />
@@ -952,8 +944,8 @@ const StructureManagementPage = () => {
       </div>
 
       {/* Filters */}
-      <div className="card mb-6">
-        <div className="p-4">
+      <div className={`card mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className='p-4'>
           <div className="flex flex-wrap gap-4">
             <div className="flex-1 min-w-[200px]">
               <div className="relative">
@@ -963,7 +955,7 @@ const StructureManagementPage = () => {
                   placeholder="Buscar..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white placeholder-[#ff6600]/60 focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+                  className={`w-full pl-10 pr-4 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white placeholder-[#ff6600]/60' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent`}
                 />
               </div>
             </div>
@@ -972,7 +964,7 @@ const StructureManagementPage = () => {
                 <select
                   value={selectedCondominium}
                   onChange={(e) => setSelectedCondominium(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+                  className={`w-full px-4 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent`}
                 >
                   <option value="">Todos os condomínios</option>
                   {condominiums.map((cond) => (
@@ -988,7 +980,7 @@ const StructureManagementPage = () => {
       </div>
 
       {/* Table */}
-      <div className="card">
+      <div className={`card ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
         <div className="p-6">
           {loading ? (
             <div className="flex justify-center items-center py-12">
@@ -1021,10 +1013,10 @@ const StructureManagementPage = () => {
                     return (
                       <div className="text-center py-12">
                         <Package className="w-12 h-12 text-[#ff6600]/40 mx-auto mb-4" />
-                        <p className="text-[#f3f7f1]/60 mb-2">
+                        <p className={`${isDarkMode ? 'text-[#f3f7f1]/60' : 'text-gray-600'} mb-2`}>
                           Nenhum(a) {entityLabels[activeTab]} cadastrado(a) {selectedCondominium ? 'para o condomínio' : 'em'}
                         </p>
-                        <p className="text-white font-medium">
+                        <p className={`${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>
                           {selectedCondominiumName}
                         </p>
                       </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTheme } from '../../contexts/ThemeContext';
 import { X, Save, Eye, Edit, Building2 } from 'lucide-react';
 import structureService from '../../services/structureService';
 
@@ -10,6 +11,7 @@ const BlockModal = ({
   condominiums = [],
   onSave 
 }) => {
+  const { isDarkMode } = useTheme();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -153,15 +155,15 @@ const BlockModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#1a1a1a] rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto">
+      <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto`}>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             {getModalIcon()}
-            <h2 className="text-xl font-semibold text-white">{getModalTitle()}</h2>
+            <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{getModalTitle()}</h2>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className={`${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'} transition-colors`}
           >
             <X className="w-6 h-6" />
           </button>
@@ -170,11 +172,11 @@ const BlockModal = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Condomínio */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Condomínio *
             </label>
             {mode === 'view' ? (
-              <div className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white">
+              <div className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}">
                 {getSelectedCondominiumName()}
               </div>
             ) : (
@@ -182,8 +184,8 @@ const BlockModal = ({
                 name="condominium_id"
                 value={formData.condominium_id}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white focus:border-[#ff6600] focus:outline-none ${
-                  errors.condominium_id ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none ${
+                  errors.condominium_id ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 }`}
               >
                 <option value="">Selecione um condomínio</option>
@@ -201,7 +203,7 @@ const BlockModal = ({
 
           {/* Nome */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Nome do Bloco/Torre *
             </label>
             <input
@@ -210,8 +212,8 @@ const BlockModal = ({
               value={formData.name}
               onChange={handleInputChange}
               disabled={mode === 'view'}
-              className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                errors.name ? 'border-red-500' : 'border-gray-600'
+              className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                errors.name ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
               } focus:border-[#ff6600] focus:outline-none`}
               placeholder="Ex: Bloco A, Torre 1"
             />
@@ -223,7 +225,7 @@ const BlockModal = ({
           {/* Andares e Unidades por Andar */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Número de Andares *
               </label>
               <input
@@ -233,8 +235,8 @@ const BlockModal = ({
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
                 min="1"
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.floors ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.floors ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
                 placeholder="Ex: 10"
               />
@@ -244,7 +246,7 @@ const BlockModal = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Unidades por Andar *
               </label>
               <input
@@ -254,8 +256,8 @@ const BlockModal = ({
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
                 min="1"
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.units_per_floor ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.units_per_floor ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
                 placeholder="Ex: 4"
               />
@@ -268,10 +270,10 @@ const BlockModal = ({
           {/* Total de Unidades (calculado) */}
           {(formData.floors && formData.units_per_floor) && (
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Total de Unidades (calculado)
               </label>
-              <div className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-[#ff6600] font-medium">
+              <div className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg text-[#ff6600] font-medium">
                 {parseInt(formData.floors) * parseInt(formData.units_per_floor)} unidades
               </div>
             </div>
@@ -279,7 +281,7 @@ const BlockModal = ({
 
           {/* Descrição */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Descrição
             </label>
             <textarea
@@ -288,14 +290,14 @@ const BlockModal = ({
               onChange={handleInputChange}
               disabled={mode === 'view'}
               rows={3}
-              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+              className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
               placeholder="Descrição opcional do bloco/torre..."
             />
           </div>
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Status
             </label>
             <select
@@ -303,7 +305,7 @@ const BlockModal = ({
               value={formData.status}
               onChange={handleInputChange}
               disabled={mode === 'view'}
-              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+              className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
             >
               <option value="active">Ativo</option>
               <option value="inactive">Inativo</option>
@@ -325,14 +327,14 @@ const BlockModal = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg hover:bg-gray-700 transition-colors"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {loading ? (
                   <>
@@ -353,7 +355,7 @@ const BlockModal = ({
             <div className="flex justify-end pt-4">
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors"
+                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors"
               >
                 Fechar
               </button>

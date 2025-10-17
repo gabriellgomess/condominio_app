@@ -1,4 +1,5 @@
 import React from 'react';
+import LogoBrancoLaranja from '../../assets/logo_branco_laranja.png'
 
 const Logo = ({ 
   variant = 'horizontal', // 'horizontal', 'icon', 'compact'
@@ -10,11 +11,11 @@ const Logo = ({
   // Determina qual logo usar baseado no tema
   const getLogoSrc = () => {
     if (variant === 'icon') {
-      return '/src/assets/sindico-icone-app.png';
+      return '/src/assets/logo_branco_laranja.png';
     }
     
     if (theme === 'light') {
-      return size === 'small' ? '/src/assets/200px branco e laranja.png' : '/src/assets/500px branco e laranja.png';
+      return size === 'small' ? '/src/assets/logo_branco_laranja.png' : '/src/assets/logo_branco_laranja.png';
     }
     
     if (theme === 'dark') {
@@ -22,7 +23,7 @@ const Logo = ({
     }
     
     // Auto: usa branco e laranja por padrão (assumindo tema escuro)
-    return size === 'small' ? '/src/assets/200px branco e laranja.png' : '/src/assets/500px branco e laranja.png';
+    return size === 'small' ? '/src/assets/logo_branco_laranja.png' : '/src/assets/logo_branco_laranja.png';
   };
 
   // Determina as classes de tamanho
@@ -46,7 +47,8 @@ const Logo = ({
   
   return (
     <img
-      src={logoSrc}
+      src={LogoBrancoLaranja}
+      id='logo_sidebar'
       alt="SíndicoApp"
       className={`${baseClasses} ${sizeClasses} ${interactiveClasses} ${className}`}
       onClick={onClick}

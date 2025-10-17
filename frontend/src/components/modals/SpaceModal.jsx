@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTheme } from '../../contexts/ThemeContext';
 import { X, Save, Eye, Edit, Package } from 'lucide-react';
 import structureService from '../../services/structureService';
 
@@ -11,6 +12,7 @@ const SpaceModal = ({
   units = [],
   onSave 
 }) => {
+  const { isDarkMode } = useTheme();
   const [formData, setFormData] = useState({
     number: '',
     space_type: 'storage',
@@ -220,15 +222,15 @@ const SpaceModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#1a1a1a] rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto">
+      <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto`}>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             {getModalIcon()}
-            <h2 className="text-xl font-semibold text-white">{getModalTitle()}</h2>
+            <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{getModalTitle()}</h2>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className={`${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'} transition-colors`}
           >
             <X className="w-6 h-6" />
           </button>
@@ -238,7 +240,7 @@ const SpaceModal = ({
           {/* Número e Condomínio */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Número *
               </label>
               <input
@@ -247,8 +249,8 @@ const SpaceModal = ({
                 value={formData.number}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.number ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.number ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
                 placeholder="Ex: D-01, B-01"
               />
@@ -258,7 +260,7 @@ const SpaceModal = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Condomínio *
               </label>
               <select
@@ -266,8 +268,8 @@ const SpaceModal = ({
                 value={formData.condominium_id}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.condominium_id ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.condominium_id ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
               >
                 <option value="">Selecione um condomínio</option>
@@ -286,7 +288,7 @@ const SpaceModal = ({
           {/* Tipo e Status */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Tipo *
               </label>
               <select
@@ -294,8 +296,8 @@ const SpaceModal = ({
                 value={formData.space_type}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.space_type ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.space_type ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
               >
                 <option value="storage">Depósito</option>
@@ -314,7 +316,7 @@ const SpaceModal = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Status *
               </label>
               <select
@@ -322,8 +324,8 @@ const SpaceModal = ({
                 value={formData.status}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className={`w-full px-3 py-2 bg-[#2a2a2a] border rounded-lg text-white ${
-                  errors.status ? 'border-red-500' : 'border-gray-600'
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} ${
+                  errors.status ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
                 } focus:border-[#ff6600] focus:outline-none`}
               >
                 <option value="available">Disponível</option>
@@ -340,7 +342,7 @@ const SpaceModal = ({
           {/* Localização e Unidade */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Localização
               </label>
               <input
@@ -349,13 +351,13 @@ const SpaceModal = ({
                 value={formData.location}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
                 placeholder="Ex: Subsolo, Térreo"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Unidade (Opcional)
               </label>
               <select
@@ -363,7 +365,7 @@ const SpaceModal = ({
                 value={formData.unit_id}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
               >
                 <option value="">Sem unidade vinculada</option>
                 {filteredUnits.map(unit => (
@@ -378,7 +380,7 @@ const SpaceModal = ({
           {/* Área e Altura */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Área (m²)
               </label>
               <input
@@ -389,13 +391,13 @@ const SpaceModal = ({
                 disabled={mode === 'view'}
                 step="0.01"
                 min="0"
-                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
                 placeholder="Ex: 5.50"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
                 Altura (m)
               </label>
               <input
@@ -406,7 +408,7 @@ const SpaceModal = ({
                 disabled={mode === 'view'}
                 step="0.01"
                 min="0"
-                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
                 placeholder="Ex: 2.50"
               />
             </div>
@@ -414,7 +416,7 @@ const SpaceModal = ({
 
           {/* Descrição */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
               Descrição
             </label>
             <textarea
@@ -423,26 +425,26 @@ const SpaceModal = ({
               onChange={handleInputChange}
               disabled={mode === 'view'}
               rows={3}
-              className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+              className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
               placeholder="Descrição do espaço..."
             />
           </div>
 
           {/* Checkboxes */}
           <div className="flex flex-wrap gap-6">
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 name="climate_controlled"
                 checked={formData.climate_controlled}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className="w-4 h-4 text-[#ff6600] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#ff6600] focus:ring-2"
+                className="w-4 h-4 text-[#ff6600] ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded focus:ring-[#ff6600] focus:ring-2"
               />
-              <label className="text-sm font-medium text-gray-300">
+              <label className="text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}">
                 Controle climático
               </label>
-            </div>
+            </div> */}
 
             <div className="flex items-center space-x-2">
               <input
@@ -451,9 +453,9 @@ const SpaceModal = ({
                 checked={formData.reservable}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className="w-4 h-4 text-[#ff6600] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#ff6600] focus:ring-2"
+                className="w-4 h-4 text-[#ff6600] ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded focus:ring-[#ff6600] focus:ring-2"
               />
-              <label className="text-sm font-medium text-gray-300">
+              <label className="text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}">
                 Espaço reservável
               </label>
             </div>
@@ -465,9 +467,9 @@ const SpaceModal = ({
                 checked={formData.active}
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
-                className="w-4 h-4 text-[#ff6600] bg-[#2a2a2a] border-gray-600 rounded focus:ring-[#ff6600] focus:ring-2"
+                className="w-4 h-4 text-[#ff6600] ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded focus:ring-[#ff6600] focus:ring-2"
               />
-              <label className="text-sm font-medium text-gray-300">
+              <label className="text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}">
                 Espaço ativo
               </label>
             </div>
@@ -486,14 +488,14 @@ const SpaceModal = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg hover:bg-gray-700 transition-colors"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {loading ? (
                   <>
@@ -514,7 +516,7 @@ const SpaceModal = ({
             <div className="flex justify-end pt-4">
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors"
+                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors"
               >
                 Fechar
               </button>

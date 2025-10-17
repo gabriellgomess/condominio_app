@@ -4,6 +4,8 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import { api } from '../config/api';
+
 
 // Context para gerenciar o estado do layout
 const LayoutContext = createContext();
@@ -41,6 +43,15 @@ const Layout = ({ children }) => {
   const profileRef = useRef(null);
   const notificationRef = useRef(null);
 
+  // Estados para notificações
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [viewedIncidents, setViewedIncidents] = useState(() => {
+    // Carregar incidentes já visualizados do localStorage
+    const saved = localStorage.getItem('viewedIncidents');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   // Mock user data (substituir por contexto de auth real)
   const user = {
     name: 'Administrador',
@@ -48,14 +59,97 @@ const Layout = ({ children }) => {
     role: 'SuperAdmin'
   };
 
-  // Mock notifications
-  const notifications = [
-    { id: 1, title: 'Nova ocorrência registrada', time: '2 min atrás', unread: true },
-    { id: 2, title: 'Reserva de área comum aprovada', time: '1 hora atrás', unread: true },
-    { id: 3, title: 'Comunicado publicado', time: '3 horas atrás', unread: false }
-  ];
+  // Carregar notificações de ocorrências
+  const loadNotifications = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+      const response = await api.request(`${api.endpoints.incidents}?per_page=10&status=aberta`);
+
+      if (response.ok) {
+        const data = await response.json();
+        const incidents = data.data.data || [];
+
+        // Converter ocorrências para notificações, excluindo as já visualizadas
+        const incidentNotifications = incidents
+          .filter(incident => !viewedIncidents.includes(incident.id))
+          .map(incident => {
+            const timeAgo = formatTimeAgo(incident.created_at);
+            const priorityText = getPriorityText(incident.priority);
+
+            return {
+              id: `incident_${incident.id}`,
+              title: `${priorityText}: ${incident.title}`,
+              time: timeAgo,
+              unread: true,
+              type: 'incident',
+              data: incident
+            };
+          });
+
+        setNotifications(incidentNotifications);
+        setUnreadCount(incidentNotifications.length);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar notificações:', error);
+      // Fallback para notificações mockadas
+      setNotifications([
+        { id: 1, title: 'Nova ocorrência registrada', time: '2 min atrás', unread: true, type: 'incident' },
+        { id: 2, title: 'Reserva de área comum aprovada', time: '1 hora atrás', unread: true, type: 'reservation' },
+      ]);
+      setUnreadCount(2);
+    }
+  };
+
+  // Formatar tempo relativo
+  const formatTimeAgo = (date) => {
+    const now = new Date();
+    const incidentDate = new Date(date);
+    const diffInMinutes = Math.floor((now - incidentDate) / (1000 * 60));
+
+    if (diffInMinutes < 1) return 'Agora mesmo';
+    if (diffInMinutes < 60) return `${diffInMinutes} min atrás`;
+
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours} hora${diffInHours > 1 ? 's' : ''} atrás`;
+
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays} dia${diffInDays > 1 ? 's' : ''} atrás`;
+  };
+
+  // Obter texto da prioridade
+  const getPriorityText = (priority) => {
+    const priorities = {
+      'urgente': '🔴 URGENTE',
+      'alta': '🟠 ALTA',
+      'media': '🟡 MÉDIA',
+      'baixa': '🟢 BAIXA'
+    };
+    return priorities[priority] || 'OCORRÊNCIA';
+  };
+
+  // Marcar incidente como visualizado
+  const markIncidentAsViewed = (incidentId) => {
+    if (!viewedIncidents.includes(incidentId)) {
+      const updated = [...viewedIncidents, incidentId];
+      setViewedIncidents(updated);
+      localStorage.setItem('viewedIncidents', JSON.stringify(updated));
+
+      // Remover notificação da lista
+      setNotifications(prev => prev.filter(n => n.data?.id !== incidentId));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    }
+  };
+
+  // Carregar notificações na inicialização e quando viewedIncidents mudar
+  useEffect(() => {
+    loadNotifications();
+
+    // Recarregar notificações a cada 30 segundos
+    const interval = setInterval(loadNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [viewedIncidents]);
 
   // Detectar se é mobile
   useEffect(() => {
@@ -149,37 +243,39 @@ const Layout = ({ children }) => {
     isMobile,
     toggleSidebar,
     closeSidebar,
-    
+
     // Estados de submenu
     openSubmenu,
     toggleSubmenu,
-    
+
     // Estados de dropdowns
     showProfileDropdown,
     setShowProfileDropdown,
     showNotifications,
     setShowNotifications,
-    
+
     // Tema
     isDarkMode,
     toggleTheme,
     themeClasses,
     sidebarClasses,
     headerClasses,
-    
+
     // Dados do usuário
     user,
     getInitials,
     handleLogout,
-    
+
     // Notificações
     notifications,
     unreadCount,
-    
+    markIncidentAsViewed,
+    loadNotifications, // Expor função para recarregar notificações
+
     // Navegação
     location,
     isActiveRoute,
-    
+
     // Refs
     sidebarRef,
     profileRef,

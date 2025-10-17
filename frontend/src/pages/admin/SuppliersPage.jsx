@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Layout from '../../components/Layout';
+import { useTheme } from '../../contexts/ThemeContext';
 import SupplierModal from '../../components/modals/SupplierModal';
 import SupplierRatingModal from '../../components/modals/SupplierRatingModal';
 import supplierService from '../../services/supplierService';
@@ -21,6 +22,7 @@ import {
 } from 'lucide-react';
 
 const SuppliersPage = () => {
+  const { isDarkMode } = useTheme();
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -54,15 +56,21 @@ const SuppliersPage = () => {
   const [supplierToRate, setSupplierToRate] = useState(null);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    loadSuppliers();
+  const loadSuppliers = useCallback(async () => {
+    try {
+      const response = await supplierService.getAll(filters);
+      if (response && response.status === 'success') {
+        setSuppliers(response.data || []);
+      } else {
+        setSuppliers([]);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar fornecedores:', error);
+      setSuppliers([]);
+    }
   }, [filters]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       await Promise.all([
@@ -76,21 +84,15 @@ const SuppliersPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [loadSuppliers]);
 
-  const loadSuppliers = async () => {
-    try {
-      const response = await supplierService.getAll(filters);
-      if (response && response.status === 'success') {
-        setSuppliers(response.data || []);
-      } else {
-        setSuppliers([]);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar fornecedores:', error);
-      setSuppliers([]);
-    }
-  };
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  useEffect(() => {
+    loadSuppliers();
+  }, [filters, loadSuppliers]);
 
   const loadStats = async () => {
     try {
@@ -202,7 +204,7 @@ const SuppliersPage = () => {
             }`}
           />
         ))}
-        <span className="text-sm text-[#f3f7f1] ml-2">{numEvaluation.toFixed(1)}</span>
+        <span className={`text-sm ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'} ml-2`}>{numEvaluation.toFixed(1)}</span>
       </div>
     );
   };
@@ -238,12 +240,12 @@ const SuppliersPage = () => {
       {/* Header Actions */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white">Fornecedores</h2>
-          <p className="text-[#f3f7f1]">Gerencie os fornecedores e prestadores de serviços</p>
+          <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Fornecedores</h2>
+          <p className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}>Gerencie os fornecedores e prestadores de serviços</p>
         </div>
         <button 
           onClick={handleAddSupplier}
-          className="btn-primary flex items-center space-x-2"
+          className="btn-primary flex items-center space-x-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors px-4 py-2 cursor-pointer"
         >
           <Plus className="w-5 h-5" />
           <span>Novo Fornecedor</span>
@@ -262,28 +264,28 @@ const SuppliersPage = () => {
 
       {/* Stats Cards */}
       <div className="grid md:grid-cols-5 gap-6 mb-8">
-        <div className="card p-6 text-center">
+        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="text-3xl font-bold text-[#ff6600] mb-2">{stats.total}</div>
-          <div className="text-[#f3f7f1]">Total</div>
+          <div className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'}>Total</div>
         </div>
-        <div className="card p-6 text-center">
+        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="text-3xl font-bold text-green-400 mb-2">{stats.active}</div>
-          <div className="text-[#f3f7f1]">Ativos</div>
+          <div className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'}>Ativos</div>
         </div>
-        <div className="card p-6 text-center">
+        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="text-3xl font-bold text-gray-400 mb-2">{stats.inactive}</div>
-          <div className="text-[#f3f7f1]">Inativos</div>
+          <div className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'}>Inativos</div>
         </div>
-        <div className="card p-6 text-center">
+        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="text-3xl font-bold text-yellow-400 mb-2">{stats.contracts_expiring}</div>
-          <div className="text-[#f3f7f1]">Contratos Vencendo</div>
+          <div className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'}>Contratos Vencendo</div>
         </div>
-        <div className="card p-6 text-center">
+        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="text-3xl font-bold text-[#ff6600] mb-2">
             {stats.evaluation_stats?.average ? stats.evaluation_stats.average.toFixed(1) : '0.0'}
           </div>
-          <div className="text-[#f3f7f1]">Avaliação Média</div>
-          <div className="text-xs text-[#ff6600]/80 mt-1">
+          <div className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'}>Avaliação Média</div>
+          <div className={`text-xs ${isDarkMode ? 'text-[#ff6600]/80' : 'text-gray-600'} mt-1`}>
             {stats.evaluation_stats?.total_evaluated || 0} de {stats.total} avaliados
           </div>
         </div>
@@ -291,16 +293,16 @@ const SuppliersPage = () => {
 
       {/* Detailed Evaluation Stats */}
       {stats.evaluation_stats && stats.evaluation_stats.total_evaluated > 100000000 && (
-        <div className="card p-6 mb-6">
-          <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-            <Star className="w-5 h-5 mr-2 text-[#ff6600]" />
+        <div className={`card p-6 mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center`}>
+            <Star className='w-5 h-5 mr-2 text-[#ff6600]' />
             Estatísticas de Avaliação
           </h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             {/* Distribuição por estrelas */}
             <div>
-              <h4 className="text-md font-medium text-[#f3f7f1] mb-3">Distribuição por Estrelas</h4>
+              <h4 className={`text-md font-medium ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'} mb-3`}>Distribuição por Estrelas</h4>
               <div className="space-y-2">
                 {[5, 4, 3, 2, 1].map((stars) => (
                   <div key={stars} className="flex items-center space-x-3">
@@ -316,7 +318,7 @@ const SuppliersPage = () => {
                         />
                       ))}
                     </div>
-                    <div className="flex-1 bg-gray-700 rounded-full h-2">
+                    <div className={`flex-1 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'} rounded-full h-2`}>
                       <div 
                         className="bg-[#ff6600] h-2 rounded-full transition-all duration-500"
                         style={{ 
@@ -326,7 +328,7 @@ const SuppliersPage = () => {
                         }}
                       ></div>
                     </div>
-                    <span className="text-sm text-[#f3f7f1] w-8 text-right">
+                    <span className={`text-sm ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'} w-8 text-right`}>
                       {stats.evaluation_stats.distribution[stars]}
                     </span>
                   </div>
@@ -336,10 +338,10 @@ const SuppliersPage = () => {
 
             {/* Resumo */}
             <div>
-              <h4 className="text-md font-medium text-[#f3f7f1] mb-3">Resumo</h4>
+              <h4 className={`text-md font-medium ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'} mb-3`}>Resumo</h4>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#f3f7f1]">Avaliação Média:</span>
+                  <span className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}>Avaliação Média:</span>
                   <div className="flex items-center space-x-1">
                     <span className="text-lg font-bold text-[#ff6600]">
                       {stats.evaluation_stats.average.toFixed(1)}
@@ -349,22 +351,22 @@ const SuppliersPage = () => {
                 </div>
                 
                 <div className="flex justify-between items-center">
-                  <span className="text-[#f3f7f1]">Fornecedores Avaliados:</span>
+                  <span className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}>Fornecedores Avaliados:</span>
                   <span className="text-lg font-bold text-green-400">
                     {stats.evaluation_stats.total_evaluated}
                   </span>
                 </div>
                 
                 <div className="flex justify-between items-center">
-                  <span className="text-[#f3f7f1]">Percentual Avaliado:</span>
+                  <span className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}>Percentual Avaliado:</span>
                   <span className="text-lg font-bold text-[#ff6600]">
                     {stats.evaluation_stats.percentage_evaluated.toFixed(1)}%
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-[#f3f7f1]">Total de Fornecedores:</span>
-                  <span className="text-lg font-bold text-white">
+                  <span className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}>Total de Fornecedores:</span>
+                  <span className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                     {stats.evaluation_stats.total_suppliers}
                   </span>
                 </div>
@@ -375,7 +377,7 @@ const SuppliersPage = () => {
       )}
 
       {/* Filters */}
-      <div className="card p-6 mb-6">
+      <div className={`card p-6 mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
         <div className="grid md:grid-cols-4 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#ff6600] w-5 h-5" />
@@ -384,14 +386,14 @@ const SuppliersPage = () => {
               placeholder="Buscar fornecedor..."
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white placeholder-[#ff6600]/60 focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+              className={`w-full pl-10 pr-4 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white placeholder-[#ff6600]/60' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent`}
             />
           </div>
           
           <select 
             value={filters.category}
             onChange={(e) => handleFilterChange('category', e.target.value)}
-            className="px-4 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+            className={`px-4 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent`}
           >
             <option value="">Todas as categorias</option>
             {Object.entries(categories).map(([key, name]) => (
@@ -402,7 +404,7 @@ const SuppliersPage = () => {
           <select 
             value={filters.status}
             onChange={(e) => handleFilterChange('status', e.target.value)}
-            className="px-4 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+            className={`px-4 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent`}
           >
             <option value="">Todos os status</option>
             <option value="active">Ativo</option>
@@ -414,7 +416,7 @@ const SuppliersPage = () => {
           <select 
             value={filters.min_evaluation}
             onChange={(e) => handleFilterChange('min_evaluation', e.target.value)}
-            className="px-4 py-2 bg-[#080d08]/80 border border-[#ff6600]/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent"
+            className={`px-4 py-2 ${isDarkMode ? 'bg-[#080d08]/80 border-[#ff6600]/30 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6600] focus:border-transparent`}
           >
             <option value="">Qualquer avaliação</option>
             <option value="4">4+ estrelas</option>
@@ -426,11 +428,11 @@ const SuppliersPage = () => {
       </div>
 
       {/* Suppliers Table */}
-      <div className="card">
-        <div className="p-6">
+      <div className={`card ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className='p-6'>
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold text-white">Lista de Fornecedores</h3>
-            <div className="flex items-center space-x-2 text-[#f3f7f1]">
+            <h3 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Lista de Fornecedores</h3>
+            <div className={`flex items-center space-x-2 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}`}>
               <Users className="w-5 h-5" />
               <span>{suppliers.length} fornecedores</span>
             </div>
@@ -439,8 +441,8 @@ const SuppliersPage = () => {
           {suppliers.length === 0 ? (
             <div className="text-center py-12">
               <Building2 className="w-16 h-16 text-[#ff6600]/50 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-white mb-2">Nenhum fornecedor encontrado</h3>
-              <p className="text-[#f3f7f1] mb-4">
+              <h3 className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}>Nenhum fornecedor encontrado</h3>
+              <p className={`${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'} mb-4`}>
                 {filters.search || filters.category || filters.status 
                   ? 'Tente ajustar os filtros para encontrar fornecedores'
                   : 'Comece adicionando o primeiro fornecedor'
@@ -449,7 +451,7 @@ const SuppliersPage = () => {
               {!filters.search && !filters.category && !filters.status && (
                 <button 
                   onClick={handleAddSupplier}
-                  className="btn-primary"
+                  className="btn-primary bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors px-4 py-2 cursor-pointer flex m-auto"
                 >
                   <Plus className="w-5 h-5 mr-2" />
                   Adicionar Fornecedor
@@ -460,26 +462,26 @@ const SuppliersPage = () => {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-[#ff6600]/20">
-                    <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Empresa</th>
-                    <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Categoria</th>
-                    <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Contato</th>
-                    <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Avaliação</th>
-                    <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Status</th>
-                    <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Contrato</th>
-                    <th className="text-left py-3 px-4 text-[#ff6600] font-medium">Ações</th>
+                  <tr className={`border-b ${isDarkMode ? 'border-[#ff6600]/20' : 'border-gray-200'}`}>
+                    <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Empresa</th>
+                    <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Categoria</th>
+                    <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Contato</th>
+                    <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Avaliação</th>
+                    <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Status</th>
+                    <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Contrato</th>
+                    <th className={`text-left py-3 px-4 text-[#ff6600] font-medium`}>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {suppliers.map((supplier) => (
-                    <tr key={supplier.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
+                    <tr key={supplier.id} className={`border-b ${isDarkMode ? 'border-[#ff6600]/10 hover:bg-[#ff6600]/5' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
                       <td className="py-4 px-4">
                         <div>
-                          <div className="text-white font-medium">{supplier.company_name}</div>
+                          <div className={`${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium`}>{supplier.company_name}</div>
                           {supplier.trade_name && (
-                            <div className="text-[#f3f7f1] text-sm">{supplier.trade_name}</div>
+                            <div className={`${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'} text-sm`}>{supplier.trade_name}</div>
                           )}
-                          <div className="text-[#ff6600]/80 text-xs font-mono">
+                          <div className={`${isDarkMode ? 'text-[#ff6600]/80' : 'text-gray-500'} text-xs font-mono`}>
                             {supplier.cnpj || supplier.cpf}
                           </div>
                         </div>
@@ -489,11 +491,11 @@ const SuppliersPage = () => {
                       </td>
                       <td className="py-4 px-4">
                         <div className="space-y-1">
-                          <div className="flex items-center text-[#f3f7f1] text-sm">
+                          <div className={`flex items-center ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'} text-sm`}>
                             <Phone className="w-3 h-3 mr-1" />
                             {supplier.phone}
                           </div>
-                          <div className="flex items-center text-[#f3f7f1] text-sm">
+                          <div className={`flex items-center ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'} text-sm`}>
                             <Mail className="w-3 h-3 mr-1" />
                             {supplier.email}
                           </div>
@@ -517,7 +519,7 @@ const SuppliersPage = () => {
                       <td className="py-4 px-4">
                         {supplier.contract_end ? (
                           <div className="text-sm">
-                            <div className="text-[#f3f7f1]">
+                            <div className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}>
                               Até {new Date(supplier.contract_end).toLocaleDateString('pt-BR')}
                             </div>
                             {supplierService.isContractExpiring(supplier.contract_end) && (
@@ -528,7 +530,7 @@ const SuppliersPage = () => {
                             )}
                           </div>
                         ) : (
-                          <span className="text-gray-500 text-sm">Sem contrato</span>
+                          <span className={`${isDarkMode ? 'text-gray-500' : 'text-gray-400'} text-sm`}>Sem contrato</span>
                         )}
                       </td>
                       <td className="py-4 px-4">

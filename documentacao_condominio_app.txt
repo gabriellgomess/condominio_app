@@ -1,0 +1,597 @@
+Sindico APP
+Atualização 08 08 2025
+Versão 1
+Gestão financeira
+1. Receitas:
+As receitas definidas como fixas e variáveis, devem ser classificadas sobre quais são suas origens se da cota ou da PO e sobre quais são as destinações, se serão destinadas a pagar despesas da cota ou da PO). Com esta informação teremos condições de avaliar se a arrecadação da cota e PO estão corretas. As receitas, em regra, são destinadas a subcontas diferentes.
+A cota e a PO devem ser totalizadas no que se refere as receitas mês a mês demonstrando o que se arrecada como cota condominial e o que se arrecada como PO.
+Definição de valor oriundo da Cota condominial, definição de valor oriundo da PO.
+Esse campo deve ter capacidade de aumentar ou diminuir conforme subcontas de cada condomínio.
+> Origem da informação da Cota e PO é do resumo dos boletos e extrato mensal. Existe a necessidade de compatibilização com software das administradoras para que tenhamos informações atualizadas.
+a. Receitas da subconta principal.
+1.) Arrecadação mensal (cota).
+2.) Juros/ multas/ correção monetária referentes a atrasos de boletos de moradores.
+3.) Juros e correção monetária do saldo positivo.
+4.) Acordos de inadimplência.
+5.) Receitas extras/ variáveis. (Estas receitas são as de origem diversas que não aquelas pagas por morador, tipo locação de espaço de aluguel de antenas de celular (espaço locado), receitas de mercados de container, receitas de lavanderia (espaço locado), receitas de vagas de garagem (aquelas locadas pelo condomínio), locação de espaço para supermercado/container (espaço locado), , rendimentos de aplicações financeiras do condomínio, indenizações recebidas, ou outras.
+b. Receitas da subconta salão de festas.
+1.) Taxa.
+2.) Ressarcimentos de reposição de materiais quebrados e/ou extraviados.
+3.) Multas decorrente de pagamento atrasado.
+c. Receitas da subconta quiosques.
+1.) Taxa.
+2.) Ressarcimentos de reposição de materiais quebrados e/ou extraviados.
+3.) Multas decorrente de pagamento atrasado.
+d. Receitas da subconta Churrasqueiras.
+1.) Taxa.
+2.) Ressarcimentos de reposição de materiais quebrados e/ou extraviados.
+3.) Multas decorrente de pagamento atrasado.
+e. Receitas da subconta locação de vagas/ Box.
+1.) Taxa.
+2.) Multas decorrente de pagamento atrasado.
+f. Receitas da subconta fundo de reserva.
+1.) Valor definido.
+2.) Multas decorrente de pagamento atrasado.
+g. Receitas fundo de manutenção.
+1.) Valor definido.
+2.) Multas decorrente de pagamento atrasado.
+h. Receitas de multas.
+1. Previsão de receita. Informação oriunda do resumo de boletos.
+2. Receita real. Informação oriunda do extrato.
+
+2. Despesas:
+As despesas definidas como fixas e variáveis devem ser definidas sobre quais são suas origens se da cota ou da PO e quais são as destinações, se serão pagas com receitas da cota ou da PO). Com esta informação teremos condições de avaliar se a arrecadação da cota e PO estão corretas. O número de subcontas vai variar de acordo com a organização do condomínio.
+As despesas da cota e a PO devem ser totalizadas no que se refere as despesas mês a mês demonstrando o que se arrecada e o que se gasta como cota condominial e o que se gasta da PO.
+> origem da informação notas de serviço, ou aquisições de materiais, pagamento de contratos, pagamentos de impostos ou obrigações legais. Exige a necessidade de compatibilização com software das administradoras para que se tenha a informação atualizada.
+a. Subconta principal;
+1.) Consumo de água área comum.
+2.) Consumo de água unidade, quando pago conta e rateado entre as unidades.
+3.) Consumo de energia área comum.
+4.) Consumo de energia por unidade, quando pago conta e rateado entre as unidades.
+5.) Consumo de gás.
+6.) Seguro do Condomínio.
+7.) Limpeza das caixas de água.
+8.) Execução de PPCI, prazo, em regra de cinco anos.
+9.) Recarga de extintores, anual.
+10.) Portões.
+a.) Custo do contrato mensal.
+b.) Custo de material para manutenções mensais.
+11.) Interfones.
+a.) Custo do contrato mensal.
+b.) Custo de material para manutenções mensais.
+12.) Elevador.
+a.) Custo do contrato mensal.
+b.) Custo de peças para manutenções mensais.
+13.) Produtos de limpeza mensal.
+14.) Zeladoria e limpeza mensal.
+15.) Portaria mensal.
+16.) Síndico mensal.
+17.) Jardinagem mensal.
+18.) Dedetização/ desinsetização/ desratização em períodos, em regra de seis meses.
+19.) Materiais de manutenção e conservação.
+20.) Materiais de expediente.
+21.) Piscina.
+a.) Químico.
+b.) ART.
+c.) Técnico de limpeza mensal, em regra com valor menor fora da temporada de uso da piscina e maior no período de temporada.
+d.) Materiais de limpeza e conservação da água, em regra com valor menor fora da temporada de uso da piscina e maior no período de temporada.
+e.) Materiais de manutenção diversas da piscina que não o tratamento da água.
+f.) Manutenção de motores.
+g.) Custo de reposição de areia dos filtros.
+h.) Compra de móveis para piscina.
+i.) Compra de guarda-sol.
+22.) Academia.
+a.) Contrato de manutenção.
+b.) Materiais de manutenção.
+c.) Compra, ou reposição de equipamentos.
+23.) Brinquedoteca.
+a.) Compra de materiais e brinquedos.
+b.) Manutenções diversas.
+24.) Espaço Pet.
+a.) Compra de materiais.
+b.) Manutenções diversas.
+25.) Administradora.
+a.) Custo da taxa.
+b.) Guias, taxas e tributos.
+c.) Guias e tributos manuais.
+a.) Transferência eletrônica.
+b.) Taxa de PIX.
+c.) AGO assessoria.
+d.) Registros de ata.
+e.) Guarda de volumes.
+f.) Motoboy.
+g.) Material de expediente.
+h.) Cópias.
+i.) Despesas de correios.
+j.) Despesas de condução.
+k.) Juros saldo devedor.
+l.) Declaração de INSS.
+m.) Declaração de ISSQN.
+n.) DIRF/RAIS.
+o.) VLR.REF.COFINS/PIS.
+p.) EFD_REINF.
+q.) INSS terceiros.
+r.) Processamento CND'S.
+s.) Lei 10.833 – Guarida.
+t.) Certificado digital. (PESSOAL)
+u.) E-Social. (PESSOAL)
+v.) SECOVI.
+
+
+
+3. Inadimplência.
+Ocorre quando um condômino deixa de cumprir, total ou parcialmente, com suas obrigações financeiras relacionadas ao condomínio, principalmente o pagamento da taxa condominial. Essa situação pode incluir o atraso ou a falta de pagamento da taxa mensal, bem como de outras despesas como taxas extras aprovadas em assembleia. A inadimplência compromete a saúde financeira do condomínio, afetando a manutenção das áreas comuns, o pagamento de funcionários e outras despesas essenciais.
+> origem da informação administradora, baseado na previsão de receita (resumo de boletos) e receita efetivada no mês (extrato mensal), necessidade de compatibilização com software. Com essa informação facilitaremos o acompanhamento da inadimplência mês a mês.
+a. Receita.
+ 1.) Previsão de arrecadação, origem da informação resumo de boletos.
+ 2.) Arrecadação real, origem da informação extrato mensal.
+ 3.) Inadimplência.
+b. Cobrança extra judicial.
+1. Unidades.
+2. Parcelas.
+3. Valor final. Essa informação tem que ser atualizada mensalmente, no início de cada mês pelo escritório de cobrança.
+c. Cobrança judicial.
+1. Unidades.
+2. Parcelas.
+3. Valor final. Essa informação tem que ser atualizada mensalmente, no início de cada mês pelo escritório de cobrança.
+4. Número do processo. Essa informação tem que ser atualizada mensalmente, no início de cada mês pelo escritório de cobrança.
+5. Situação do processo.
+
+4. Saldos.
+> Origem da informação administradora. Com essa informação teremos condições de controlar se existe alguma divergência entre o que está sendo arrecadado e o que está sendo gasto. Esses saldos irão variar de acordo com o condomínio e suas subcontas.
+a. Conta principal.
+b. Salão de festas.
+c. Quiosques.
+d. Churrasqueiras.
+e. Vagas de locação/ Box.
+f. Fundo de reserva.
+* A cota e a PO devem ser totalizadas no que se refere a receita e despesa mês a mês demonstrando o que se arrecada e se gasta de cada categoria.
+
+5. Análises, alertas e documentos a serem expedidos.
+> Origem da análise ferramenta de IA de análise do aplicativo, com base nas receitas e despesas inseridas.
+a. Arrecadação e despesa individualizada de PO e cota condominial, se estão sendo arrecadadas de cordo com o necessário. Esse campo tem por objetivo definir se o que sendo arrecado está atendendo a necessidade para pagamento das despesas.
+b. Avaliação de gastos previstos na cota condominial e PO.
+c. Projeção financeira. Com base nas receitas e despesas a projeção financeira dentro do ano.
+d. Previsão estabelecida na convenção sobre procedimentos para o caso de inadimplência. Origem da informação convenção do condomínio. Nesse campo é necessário definir regra de cobrança conforme convenção de cada condomínio.
+e. Expedição de gráficos comparativos temporal, gasto com manutenção de portões. Essa informação tem por objetivo identificar se está ocorrendo gasto acima do previsto na PO.
+f. Expedição de gráficos comparativos temporal, gasto com manutenção de interfones. Essa informação tem por objetivo identificar se está ocorrendo gasto acima do previsto na PO.
+g. Expedição de gráficos temporal, gastos com piscina. Essa informação tem por objetivo identificar se está ocorrendo gastos acima do previsto na PO, assim como o custo mensal com a piscina na temporada e fora dela.
+h. Expedição de gráficos temporal, gastos com manutenções gerais. Essa informação tem por objetivo identificar se está ocorrendo gastos acima do previsto na PO.
+i. Expedição de gráficos temporal comparativos, gastos com produtos de limpeza.
+j. Expedição de gráficos temporal, por despesa, entre despesas e receitas.
+k. Expedição de gráficos comparativos temporal geral, por despesa, entre despesas e receitas.
+l. Expedição de gráficos representativos de cada despesa no total de gastos.
+m. Expedição de gráficos representativos das receitas e despesas sobre a cota e da PO.
+n. Expedição de gráfico representativo do impacto da inadimplência sobre a arrecadação da cota e de PO.
+o. Alerta de pagamento de pagamento parcial ou total de inadimplência. Nesse alerta indicará se houver quebra de contrato pelo não pagamento da parcela do acordo, ou quitação do acordo. A informação sairá do resumo de boleto e extrato do condomínio (Essa informação será totalização do número de unidades inadimplentes, a partir do número de acordos em andamento, ou quitação da dívida).
+p. Alerta de aumento de consumo de água e energia em alteração de consumo acima de 10%.
+q. Alerta de multas a serem cobradas.
+
+Gestão administrativa
+1. Contratos.
+> origem da informação administradoras e/ou síndicos.
+a. Contrato com empresa de fornecimento de gás.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+5) Data de notificação de rescisão.
+b. Contrato com empresa de manutenção de portões.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+5) Data de notificação de rescisão.
+c. Contrato com empresa de manutenção de interfones.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+5) Data de notificação de rescisão.
+d. Contrato com empresa de zeladoria e limpeza.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+5) Data de notificação de rescisão.
+e. Contrato com empresa de portaria.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+5) Data de notificação de rescisão.
+f. Contrato com empresa de controle de acesso.
+1) Prestador/empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+5) Data de notificação de rescisão.
+g. Contrato com empresa de jardinagem.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+5) Data de notificação de rescisão.
+h. Contrato com empresa de manutenção de elevador.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+5) Data de notificação de rescisão.
+i. Contrato com empresa de manutenção da academia.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+5) Data de notificação de rescisão.
+j. Contrato com empresa de garantidora.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de cobrança da taxa de administração.
+4) Identificação de taxas cobradas.
+5) Vencimento do contrato.
+6) Data de notificação de rescisão.
+k. Contrato com empresa de administração.
+1) Nome da administradora.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+l. Contrato com empresa de síndico.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Vencimento do contrato.
+5) Data de notificação de rescisão.
+m. Contrato com empresa de dedetização/desinsetização/desratização.
+1) Prestador/ empresa.
+2) Data do contrato.
+3) Índice de reajuste.
+4) Data de notificação de rescisão.
+5) Data da dedetização.
+6) Prazo de validade.
+n. Contrato com empresa de limpeza de reservatórios de água.
+1) Prestador/ empresa.
+2) Quantidade de reservatórios.
+3) Tamanho do(s) reservatório(s).
+4) Data da limpeza.
+5) Prazo de validade.
+
+2. Controles.
+> origem da informação manual do proprietário e/ou informações da construtora.
+a. PPCI.
+1.) Validade do PPCI – quinquenal.
+2.) Validade dos testes hidrostáticos de mangueiras – anual.
+3.) Quantidade e especificação das mangueiras
+b. Extintores - anual.
+1.) Número de extintores.
+2.) Tipo de extintores.
+3.) Validade do casco.
+4.) Validade da carga.
+c. Sistema de alarme de incêndio, luzes de emergência e hidrantes – semestral.
+Validade
+d. Teste de estanqueidade da central de gás – anual.
+Validade
+e. Reguladores de gás – quinquenal.
+Validade
+f. Medidores de gás – decenal.
+Validade
+g. Limpezas de fossas e sistema de esgoto – anual.
+Validade
+h. Desinsetização/dedetização e desratização – semestral.
+Validade
+i. Sistema Contra Descarga Elétrica – anual.
+Validade
+j. Calhas e telhados – trimestral.
+Validade
+k. Reservatórios de água - anual.
+1.) Quantidade de reservatórios.
+2.) Capacidade de litros por reservatório.
+l. Limpezas de fossas e sistema de esgoto – anual.
+1.) Quantidade de reservatórios
+2.) Capacidade de litros por reservatório
+m. Desinsetização/dedetização e desratização – semestral.
+n. Laudo técnico de Inspeção Predial: LTIP – anual.
+o. Laudo de marquises e sacadas – anual.
+p. Sistema Contra Descarga Elétrica – anual.
+q. Seguro do prédio - anual.
+1.) N.º da apólice.
+2.) Validade da apólice: de __/__/2025 `a __/__/2026.
+3.) Vencimento da apólice.
+r. Seguro de funcionários – anual.
+s. Medicina do trabalho – anual.
+t. Orçamentos.
+
+3. Tabela de controle de ações a realizar.
+> origem da informação conselho e/ou síndicos. Nesse campo precisa ter a identificação de quem realizou o serviço e garantia desse serviço. Este campo deve integrar com plano de ação/execução.
+> Este campo deve identificar a manutenção a ser realizada, o prazo para realização desta manutenção, no mínimo mias um campo para nova data de previsão de realização de manutenção e a sua conclusão/status;
+> Essa mesma metodologia deve ser empregada para registro das melhorias a serem implementadas.
+CondomínioTabela de controle das ações a realizar - Atualização: __/__/2025.NºEspecificação do itemPrevisão 1Previsão 2Status1.Manutenções/ações: 
+2.Melhorias: 
+
+4. Padrões do condomínio.
+> origem da informação manual do proprietário e/ou alterações estabelecidas na convenção.
+a. Especificação das cores de fachada (paredes e portas).
+b. Especificação do tipo de aberturas.
+c. Especificações de tipo de telha.
+d. Especificação da central de interfones.
+e. Especificação do tipo de motores dos portões utilizados.
+f. Especificação do tipo de motores da piscina.
+g. Plantas do Condomínio.
+h. Outras especificações.
+
+5. Controle de notificações e multas expedidas.
+> origem da informação síndicos e administrativo.
+1. Notificações. Este espaço deve conter informações sobre a notificação que a unidade recebeu. Definindo a data, o horário e fato. Quando disponível foto.
+2. Multa. Este espaço deve conter informações sobre a multa que a unidade recebeu. Definindo a data, o horário e fato e dados sobre as notificações anteriores sobre o mesmo fato. Quando disponível foto.
+
+6. Documentos do condomínio.
+> origem da informação síndico, administrativo e administradoras.
+a. Cadastro de moradores.
+b. Cadastro de PET’s.
+c. Convenção.
+d. Regulamento interno – RI.
+e. Atas.
+f. Apólice de seguro.
+g. Projetos.
+h. Laudos.
+i. ART do Condomínio.
+j. ART das unidades.
+k. Inventários.
+l. Manual do proprietário.
+m. Plantas do condomínio.
+n. Plantas das unidades.
+o. Notas fiscais.
+p. Contratos.
+
+7. Chatbot.
+> origem da informação desenvolvimento do aplicativo.
+Robô que responde perguntas sobre administração condominial. Ver quais aplicações podem ser utilizadas pelo Chatbot.
+
+8. Contatos.
+> origem da informação administradoras e/ou síndicos.
+a. Água.
+b. Energia.
+c. Abastecimento de gás.
+d. Manutenção de portões.
+e. Manutenção de interfones.
+f. Manutenção de câmeras.
+g. Manutenção de elevadores.
+h. Manutenção elétrica.
+i. Manutenção hidráulica.
+j. Manutenção da piscina.
+k. Manutenção de academia.
+l. Manutenção de controle de acesso.
+m. Jardinagem ou corte de grama.
+n. Outros.
+
+9. Registro de senhas diversas.
+> origem da informação síndicos. (Esse campo se destina a registro de senhas diversas que o condomínio possui. Ele poderá ficar a cargo do síndico, do conselho e da administração do condomínio, isso poderá ser definido por definição do condomínio.)
+
+10. Documentos expedidos pelo aplicativo.
+> origem da informação aplicativo ferramenta de IA, com base nos modelos criados.
+a. Ficha de atualização cadastral.
+b. Ficha de autorização de cobrança.
+c. Regras de uso do salão de festas.
+d. Regras de uso da piscina.
+e. Regras de uso dos quiosques.
+f. Regras de uso da academia.
+g. Regras de uso da quadra de futebol.
+h. Planilha de controle e/ou realização dos serviços de portaria.
+i. Planilha de controle e/ou realização dos serviços de ronda.
+j. Planilha de controle e/ou realização dos serviços de zeladoria.
+k. Planilha de controle e/ou realização dos serviços de limpeza.
+l. Planilha de controle e/ou realização dos serviços administrativos.
+m. Planilha de controle de cobranças mensais.
+n. Planilha de controle de alterações da convenção/RI por assembleia.
+o. Termo de controle do salão de festas.
+p. Planilha de controle de uso dos quiosques.
+q. Planilha de controle de uso das churrasqueiras.
+r. Termo de compromisso de confidencialidade de informações e proteção de dados pessoais e sensíveis.
+s. Termo de controle dos terceirizados e manutenções.
+t. Termo de controle de manutenções e/ou serviços.
+u. Procurações.
+v. Orçamentos.
+w. Pedidos de materiais de limpeza.
+x. Pedido de materiais de manutenção de piscina.
+y. Notificação extra judicial prestadores de serviço.
+z. Checklist de preparação para assembleia.
+aa. Previsão orçamentária – PO.
+bb. Apresentação da AGO parte financeira, manutenções, notificações e multas, das ações a realizar, das obrigatoriedades.
+
+11. Realização de assembleia e enquetes online e reuniões diversas.
+> Ferramenta a ser usada Zoom e outras.
+A enquete precisa ser acessada, preferencialmente pelo aplicativo e, se possível pelo WhatsApp, porém com a habilitação apenas a moradores adimplentes.
+12. Análises e ações a realizar pelo sistema e por usuários.
+a. Expedição de alertas de notificação de prazo de vencimento de contratos e rescisão.
+b. Expedição de alertas sobre controle de validade do PPCI
+c. Expedição de alertas sobre controle de validade dos testes hidrostáticos de mangueiras
+d. Expedição de alertas sobre controle de validade da carga dos extintores
+e. Expedição de alertas sobre controle de validade do reteste dos cascos dos extintores
+f. Expedição de alerta sobre o vencimento do sistema de alarme de incêndio, luzes de emergência e hidrantes
+g. Expedição de alerta sobre o vencimento do teste de estanqueidade da central de gás
+h. Expedição de alerta sobre o vencimento de medidores de gás
+i. Expedição de alerta sobre a necessidade de efetuar limpeza nos reservatórios de água
+j. Expedição de alerta sobre o vencimento da limpeza de fossas e sistema de esgoto
+k. Expedição de alerta sobre a necessidade de Desinsetização/ dedetização e desratização
+l. Expedição de alerta sobre o vencimento do seguro;
+m. Expedição de alerta sobre o vencimento do seguro de funcionários
+n. Expedição de alerta sobre o vencimento do exame de medicina do trabalho dos funcionários
+o. Expedição de alertas sobre a necessidade de limpeza das caixas de água
+p. Expedição de alerta sobre o vencimento do Sistema Contra Descarga Elétrica
+q. Expedição de alerta sobre o vencimento do Laudo de marquises e sacadas
+r. Expedição de alerta sobre o vencimento do Laudo técnico de Inspeção Predial: LTIP
+s. Expedição de alerta sobre a necessidade de limpeza das calhas e telhados
+t. Expedição de controle de alteração de convenção ou RI aprovado em assembleia.
+u. Expedição de alerta de documento mensal a ser expedido, planilha de cobrança mensal e boletos.
+v. Expedição de gráfico de infrações mais incidentes.
+w. Expedição de solicitação de orçamento para produtos de limpeza.
+x. Expedição de solicitação de orçamento para produtos de piscina.
+y. Expedição de solicitação de orçamentos para realização de obras.
+z. Expedição de solicitação de orçamento de materiais para administração.
+aa. Expedição de gráfico totalizando o número de manutenções nos portões.
+bb. Expedição de gráfico totalizando o número de manutenção dos interfones.
+cc. Expedição de gráfico totalizando o número de lâmpadas substituídas. É importante constar a localização da lâmpada e se houve manutenção em outros itens nessa troca.
+
+Gestão Operacional.
+> origem da informação desenvolvimento do aplicativo e síndicos.
+1. Serviço de portaria.
+O Serviço de portaria deve ser realizado vinte e quatro horas por dia, sete dias por semana, trezentos e sessenta e cinco dias por ano. O porteiro é o responsável pelo controle de acesso ao condomínio. Suas funções incluem:
+a. Controle de Acesso: registro de entrada e saída de visitantes, prestadores de serviço e entregadores, além de verificação da identidade, registro no sistema de dados das pessoas e veículos (visitantes ou terceirizados) que entrem no condomínio e autorização de acesso conforme norma do condomínio, com a prévia autorização de moradores quando a visita, ou terceirizado se destine a uma unidade específica. Observar o cumprimento do estabelecido no condomínio para que o morador ingresse no condomínio. A entrada de morador por veículos de terceiros, taxi ou aplicativos se dará com a devida identificação do morador, confirmando seus dados (nome, RG e unidade) e a identificação e registro dos dados do motorista e veículo.
+b. Segurança: monitoramento dos sistemas de segurança, câmeras e alarmes instaladas nas diferentes áreas comuns do condomínio, deve comunicar imediatamente ao zelador ou síndico qualquer situação suspeita ou falha de sistema, iluminação ou comunicação. A visualização e/ou disponibilização de imagens do sistema de monitoramento do condomínio se dará exclusivamente pelo síndico.
+c. Recepção e atendimento: atendimento aos condôminos e visitantes, fornecendo informações e orientações necessárias.
+d. Recepção e registro de manutenções: o porteiro registrará informações sobre manutenções necessárias em todas as áreas, tipo, substituições de lâmpadas, manutenções em interfones, ou em alguma instalação que cheguem ao seu conhecimento. Essa informação deverá ser repassada ao síndico.
+e. Cadastro de moradores, com dados e fotos/ selfies, sem óculos para uso em sistema de reconhecimento facial. Este campo será enviado pelo morador, mas precisará de validação do síndico ou administrativo.
+f. Correspondências: recebimento e distribuição de correspondências e encomendas protocolada aos moradores.
+g. Entrega e recepção de chaves: entregar e receber chaves de salões, quiosques, churrasqueiras, brinquedoteca, academias, piscinas e outras repartições coletivas do condomínio.
+h. Registrar fatos de descumprimento de Convenção ou RI: cabe ao porteiro reportar ao síndico, através de notificação de fatos, ou ações adotadas por moradores, visitantes ou terceirizados que contrariem a convenção ou RI.
+i. Registro de chegada de correspondências protocoladas e encomendas.
+
+2. Serviço de ronda.
+Os vigias e seguranças são responsáveis pela segurança do condomínio, garantindo a proteção dos moradores e do patrimônio e o cumprimento das normas do condomínio. Suas funções incluem:
+a. Monitoramento: vigilância das áreas comuns e monitoramento dos sistemas de segurança.
+b. Cumprimento de normas do condomínio: controle do cumprimento de normas estabelecidas na convenção e RI por moradores, visitantes e terceirizados.
+c. Rondas: realização de rondas periódicas para prevenir e identificar situações de risco e cumprimento de normas.
+d. Apoio emergencial: atuação em situações de emergência, como incêndios e acidentes, ou auxílio excepcional a moradores, isso em comum acordo com o síndico.
+e. O Serviço de Ronda tem por objetivo preservar a segurança, garantir a ordem interna e o bem-estar dos moradores, seus visitantes e terceirizados, assim como proteger o patrimônio dos moradores.
+f. Registrar fatos de descumprimento de Convenção ou RI: cabe ao servidor da ronda reportar ao síndico, através de notificação de fatos, ou ações adotadas por moradores, visitantes ou terceirizados que contrariem a convenção ou RI.
+
+3. Serviço de zeladoria.
+O zelador é o responsável pela supervisão das áreas comuns do condomínio e pela coordenação das atividades dos demais funcionários. Suas funções incluem:
+a. Supervisão e manutenção: inspecionar as áreas comuns, identificar necessidades de limpeza e/ou realizações destas, reparos e manutenções, garantir o funcionamento das rotinas, elevadores, portões, piscinas, sistemas elétricos e hidráulicos e acompanhamento dos serviços realizados.
+b. Supervisão de funcionários: coordenação das atividades de porteiros, faxineiros e demais funcionários, garantindo que suas tarefas sejam realizadas adequadamente.
+c. Segurança e Normas: assegurar o cumprimento das normas internas e orientar os funcionários sobre procedimentos de segurança.
+d. Comunicação: comunicar incidentes, problemas na execução das rotinas e necessidades de reparo ao síndico.
+
+4. Serviço de limpeza.
+O auxiliar de serviços gerais desempenha funções de apoio na manutenção e limpeza do condomínio. Suas funções incluem:
+a. Limpeza e conservação: realização de limpeza e conservação das áreas comuns do condomínio.
+b. Manutenção: auxílio em pequenos reparos e manutenções necessárias nas áreas comuns.
+c. Apoio operacional: suporte nas atividades diárias do condomínio, como organização de eventos e mudanças.
+d. Recolhimento de lixo: coleta e destinação adequada do lixo nas áreas comuns.
+
+5. Serviço administrativo.
+Essa função apoia as atividades administrativas do condomínio. Suas funções incluem:
+a. Documentação: organização e controle de documentos e arquivos do condomínio.
+b. Inserção no aplicativo todos os documentos do condomínio.
+c. Atendimento ao público: atendimento telefônico e presencial aos condôminos, visitantes e terceirizados.
+d. Controle de correspondências: recebimento, registro e distribuição de correspondências registradas.
+e. Controle das notificações expedidas à moradores. Com identificação da pessoa apontada, se morador ou visitante da casa. Identificação do carro pertencente a unidade apontada. Confirmar dados de registro do dia, horário do fato, pessoa envolvida e o fato em si.
+f. Suporte administrativo: auxílio na elaboração de relatórios, atas de reuniões, orçamentos e comunicados.
+g. Sempre que tiver que ser realizada uma obra o Administrativo juntará os três orçamentos. Solicitará fotos do antes do serviço realizado, durante a realização e depois de concluído.
+h. Reservas do salão de festas, quando esta é feita no condomínio.
+i. Registrar no aplicativo de lâmpadas queimadas para substituição.
+j. Registrar no aplicativo pedi de manutenção.
+k. Registrar no aplicativo solicitação de manutenção de interfone.
+l. Registrar no aplicativo descumprimento de convenção ou RI por parte de moradores, de visitantes ou de terceirizado.
+m. Receber e encaminhar ao síndico citação para audiência judicial para o condomínio.
+n. Serviço de limpeza de piscina.
+1.) Periodicidade.
+2.) Irregularidades observadas no serviço.
+o. Serviço de corte de grama.
+1.) Periodicidade.
+2.) Irregularidades observadas no serviço.
+6. Controle de recurso humanos.
+> origem da informação prestadora de serviço e legislação trabalhista. Esse campo visa auxiliar em futuras ações trabalhistas.
+b. Nome e RG do funcionário.
+c. Função desempenhada.
+d. Período de prestação de serviço.
+e. Equipamento de proteção individual necessário.
+f. Carga horária.
+g. Escala de serviço do funcionário.
+
+7. Análise, expedição de documentos, gráficos e controles:
+a. Desenvolvimento de planilha de controle do serviço de portaria.
+b. Desenvolvimento de planilha de controle de ações do serviço de ronda.
+c. Expedição de gráfico de controle de correspondências e encomendas chegadas.
+d. Expedição de gráfico do número de terceirizados que estiveram no condomínio;
+e. Expedição de gráfico do número de visitantes que estiveram no condomínio.
+f. Desenvolvimento de planilha de controle de ações do serviço de ronda.
+g. Estabelecimento de sistema de monitoramento de parâmetros de normalidade e anormalidade.
+h. Desenvolvimento de planilha de controle de ações do serviço de limpeza.
+
+Área de interação com moradores.
+> origem da informação desenvolvimento do aplicativo, síndico e administrativo.
+1. Cadastro de moradores, com dados e fotos/ selfies, sem óculos para uso em sistema de reconhecimento facial. Este campo será enviado pelo morador, mas precisará de validação do síndico ou administrativo.
+2. Cadastro de veículos.
+3. Cadastro de PETs, com dados e fotos.
+4. Cadastro de visitantes.
+5. Recebimento de documentos e comunicados.
+6. Visualização da gestão financeira, da gestão administrativa e jurídica, da gestão operacional, da área de serviços e fornecedores.
+7. Calendário de eventos.
+8. Recepção de aviso sobre chegada de encomenda. Neste item a recepção deverá ser finalizada com algum tipo de certificação dada pelo morador, tipo assinatura.
+9. Anúncios: este espaço objetiva a divulgação de produtos ou serviços por parte dos moradores de forma gratuita.
+
+Área de Serviços e Fornecedores.
+> origem da informação desenvolvimento do aplicativo.
+1. Esta área destina-se a divulgação de contatos de fornecedores e prestadores de serviços que ofereçam serviços ao condomínio e/ou aos moradores.
+2. Deverá identificar a empresa o tipo de produto e/ou serviço disponível.
+3. Contato da empresa e/ou responsável e forma de solicitação de orçamento.
+4. Orçamento.
+5. Fornecedores e terceirizados.
+b. Cleanex Distribuidora de Produtos de Limpeza.
+1.) Soluções em limpeza & higiene que você precisa para seu condomínio.
+2.) Instagram: cleanxdistribuidora
+3.) Telefone para contato: 51 9998 1599
+c. Alfa City Administradora de condomínios.
+1.) Pioneira em gestão financeira individualizada.
+2.) Instagram:
+3.) Telefone para contato: 3361 35 00.
+d. Garantidora Bella Investimentos – BV.
+e. CODESEG.
+
+Legislação pertinente.
+> origem da informação escritório de advocacia parceiro.
+a. Código civil, no que se refere a condomínio.
+b. Artigo 1346 do Código Civil de 1964, ele é obrigatório para qualquer tipo de edificação e deve ter cobertura mínima contra risco de incêndio ou destruição, total ou parcial.
+c. Lei Geral de Proteção de dados – LGPD.
+d. Lei estadual e municipal sobre limpeza de caixa de água.
+e. Lei Complementar nº 806/2016., de Porto Alegre, sobre LTIP - Laudo Técnico de Inspeção Predial.
+f. Lei Complementar Nº 14.376, de 26 de dezembro de 2013. Estabelece a obrigatoriedade do PPCI. Recarga dos Extintores. Teste Hidrostático de Mangueiras. Sistema de alarme, luzes emergência e hidrantes.
+g. Lei Municipal nº 6.323/88 e o Decreto nº 9.425/89, de Porto Alegre, estabelece o laudo de estabilidade assinado por um responsável técnico.
+h. Segundo o INMETRO, apesar de não haver mais uma obrigatoriedade nas normas estaduais, estabelece prazos específicos para a substituição da válvula reguladores no prazo de cinco anos para medidores de gás no prazo de dez anos.
+i. Teste de Estanqueidade, uma exigência crucial da Norma Regulamentadora 13 (NR13)
+j. Sistema contra descargas atmosféricas (SPDA). Para-raios.
+k. Portaria 3.214 de 8 de junho de 1978 estabelece o Programa de Prevenção de Riscos Ambientais (PPRA). Instituído através da, ele é um marco para a segurança e a medicina do trabalho no Brasil
+l. Outras legislações pertinentes.
+
+Conceitos e capacitações.
+> origem da informação aplicativo, síndico, administrativo, administradoras e parceiros.
+a. Convenção de condomínio é um documento legal que estabelece as regras e normas para o funcionamento de um condomínio. Define como será a administração do condomínio. Funções do síndico, conselho consultivo, regras para assembleias e tomadas de decisão. Taxas condominiais seu valor, forma de pagamento e multas por atraso. Finalidade das unidades e destinação se serão residenciais, comerciais ou mistas, se é permitido sublocação ou cessão gratuita. Uso de vagas de garagem, se serão fixas, rotativas ou permitidas para aluguel. Tipos e forma das penalidades, quais seja multas e outras sanções para quem descumprir as normas estabelecidas. A convenção deve estar de acordo com a legislação brasileira, como o Código Civil. Precisa ser registrada para ter validade contra terceiros, porém ela tem validade, mesmo sem registro para moradores, visitantes e terceirizado que estejam no condomínio. Para ser alterada, em regra, precisa de quórum qualificado.
+b. Regulamento interno é um documento complementar à convenção, com regras de convivência mais detalhadas sobre o dia a dia do condomínio, sobre barulho, animais de estimação, uso de áreas de lazer e comuns, definindo direitos, deveres dos moradores, bem como regras de convivência no condomínio. É como um "manual interno" do condomínio, que deve ser seguido por todos, incluindo proprietários, inquilinos e outros ocupantes. Serve como base para a tomada de decisões e resolução de conflitos. Pode ser alterada, em regra com quórum presente na assembleia.
+c. Assembleia Geral Ordinária – AGO. É uma assembleia anual obrigatória, conforme previsto no Código Civil e nas convenções condominiais. Seu objetivo principal é a eleição, ou reeleição de síndico, eleição, ou reeleição de conselhos, prestação de contas da gestão anterior e a aprovação da previsão orçamentária para o próximo ano. A AGO pode tratar de outros assuntos de interesse geral do condomínio, como a aprovação de obras, reformas, alterações no regimento interno, entre outros.
+d. Assembleia Geral Extraordinária – AGE é uma assembleia que permite ao condomínio deliberar sobre situações emergenciais, decisões importantes ou alterações relevantes que precisam ser discutidas e aprovadas pelos condôminos de forma rápida. Essas assembleias são realizadas quando surge a necessidade de deliberar sobre temas que requerem atenção imediata. Não possuem periodicidade fixa, pode ser convocada a qualquer tempo pelo síndico, conselho ou por um grupo de condôminos. A AGE é utilizada para deliberar sobre assuntos como obras, problemas de segurança, alterações no regulamento interno, contratação ou substituição de prestadores de serviço, entre outros. As decisões de uma AGE têm a mesma força legal que as decisões da AGO, desde que respeitados os procedimentos corretos de convocação e deliberação.
+e. Receitas fixas: resultam da atividade principal do condomínio, que é a gestão e manutenção do edifício. São aquelas que entram regularmente no caixa do condomínio para cobrir os custos de operação, oriundas da cota condominial.
+f. Receitas variáveis: são aquelas que oscilam em função do volume de uso ou consumo de serviços. Tais como água, gás, energia elétrica das áreas comuns, multas por infrações condominiais, taxas de uso de áreas comuns, salão de festas, quiosques, churrasqueiras, receitas de lavanderia (espaço locado), receitas de vagas de garagem (aquelas locadas pelo condomínio), locação de espaço para supermercado/container (espaço locado), receitas de aluguel de antenas de celular (espaço locado), rendimentos de aplicações financeiras do condomínio, indenizações recebidas.
+g. Despesas fixas: despesas essenciais para a manutenção e funcionamento do condomínio, como salários, encargos sociais, impostos, E-social, certificado digital, seguros, contratos de síndico, administradora, manutenção portões, câmeras, elevadores, interfones, jardinagem, serviço de portaria, serviço de limpeza
+h. Despesas variáveis: despesas que variam de acordo com o consumo ou uso, como água, energia elétrica, gás, serviços de terceiros, tais como dedetização, pequenas reformas, obras, benfeitorias, manutenção do elevador, manutenção de interfones, manutenção de portões. Multas por infrações a legislações diversas, indenizações por danos causados. Taxas de registros diversos, custos com projetos e consultorias, taxas iniciais, despesas com instalação de equipamentos.
+i. Inadimplência ocorre quando um condômino deixa de cumprir, total ou parcialmente, com suas obrigações financeiras relacionadas ao condomínio, principalmente o pagamento da taxa condominial. Essa situação pode incluir o atraso ou a falta de pagamento da taxa mensal, bem como de outras despesas como taxas extras aprovadas em assembleia. A inadimplência compromete a saúde financeira do condomínio, afetando a manutenção das áreas comuns, o pagamento de funcionários e outras despesas essenciais.
+j. Fração ideal de condomínio representa a porcentagem ou fração que cada unidade autônoma (casa, apartamento, ou sala comercial) sobre a área total do terreno e das áreas comuns do condomínio. É uma proporção que determina o quinhão de cada condômino sobre o todo, sendo usada para calcular a participação nas despesas comuns e o peso de cada voto em assembleias. Ela não se refere a uma área física específica, mas sim a uma quota de propriedade sobre o terreno e as áreas comuns. Essa fração é usada para dividir despesas como manutenção, reformas, e para determinar o poder de voto nas decisões do condomínio. Quanto maior a fração ideal, maior a participação e responsabilidade do condômino.
+k. Previsão orçamentária – PO é uma previsão das despesas futuras do condomínio baseada nos custos dos meses anteriores. É um processo estratégico fundamental para a gestão financeira. Trata-se de uma estimativa detalhada dos gastos e receitas que uma organização espera ter em um determinado período de tempo, geralmente anual.
+l. Fundo de reserva é um recurso financeiro coletivo, composto por contribuições mensais dos condôminos, que são adicionadas à taxa condominial. Essas contribuições são separadas do orçamento operacional do condomínio e destinadas a uma conta específica para emergências. É uma reserva financeira destinada a cobrir despesas extraordinárias ou emergenciais que não estão previstas no orçamento regular do condomínio, que visa garantir a segurança financeira e o bom funcionamento do edifício em situações inesperadas. A convenção do condomínio define o percentual da taxa condominial destinado ao fundo de reserva, geralmente entre 5% e 10%. O uso do fundo de reserva deve ser aprovado em assembleia
+m. Instalação de condomínios.
+n. Quóruns: Quórum pode ser definido como o número mínimo de pessoas para um determinado fim, como o início de uma reunião, abertura da sessão ou aprovação de uma proposição. Em razão dessa definição ampla, há vários tipos de quóruns no Regimento.
+1.) Quórum necessário: maioria simples (maioria dos presentes na assembleia). Votação: mais de 50% dos votos dos presentes.
+2.) Para acontecerem, exige um quórum de maioria absoluta, ou seja, 50% + 1 dos votos de todos os condôminos do condomínio, independentemente se estiverem presentes na reunião ou não.
+o. Passos para notificação e multa. O processo de notificação e aplicação de multa em condomínios envolve etapas claras para garantir a legalidade e a justiça. A infração deve ser identificada e documentada com provas concretas, como fotos ou testemunhos. Sugere-se que inicialmente o condômino deve ser notificado formalmente, com detalhes do descumprimento de norma da convenção ou regulamento interno e a base legal, para que este exerça o direito de defesa, previsto na constituição federal. Na reincidência pode se optar por nova notificação ou multa.
+p. Direito e deveres do proprietário. O proprietário tem o direito de usar e fruir da sua unidade e das áreas comuns do condomínio, respeitadas as regras de uso. O direito de participar, discutir sobre os assuntos de interesse do condomínio, votar e ser votado em assembleias condominiais. Alienar, locar, onerar ou dispor de sua residência, independente do consentimento dos demais Condôminos, respeitados os termos da presente Convenção. Executar às reformas internas em sua respectiva unidade autônoma, independente de consentimento dos demais Condôminos, respeitadas as restrições construtivas previstas na convenção do condomínio e códigos de posturas ou legislações pertinentes. Examinar a qualquer tempo, os livros e arquivos da Administração e pedir esclarecimento à administração do condomínio. Exigir o cumprimento das normas do condomínio. E outros definidos na convenção ou regulamento do condomínio.
+q. Direitos e deveres do inquilino. O inquilino de uma unidade autônoma em condomínio possui direitos e deveres previstos na convenção e regulamento interno tanto em relação ao proprietário, quanto a sua pessoa enquanto ocupante de unidade autônoma do condomínio. Também os direitos e deveres do inquilino são estabelecidos na Lei nº 8.245/91 do Inquilinato. O inquilino tem direito ao uso exclusivo da unidade, desde que respeite a finalidade estabelecida no contrato e as normas do condomínio. O inquilino tem direito à sua privacidade dentro do imóvel. O inquilino tem direito a informações sobre as regras do condomínio e a participar de assembleias, desde que com procuração do proprietário. O inquilino tem direito à reparação de danos que não foram causados por ele. O inquilino deve pagar o aluguel e os encargos da locação, como condomínio, água, luz, gás e outras taxas, conforme estabelecido no contrato. O inquilino deve zelar pela conservação do imóvel e informar o proprietário sobre qualquer dano ou defeito. O inquilino deve realizar os reparos de pequenos danos causados por ele ou por seus dependentes. O inquilino não pode realizar modificações no imóvel ou na propriedade sem o consentimento prévio e por escrito do proprietário. O inquilino deve respeitar a convenção e o regimento interno do condomínio. O inquilino deve informar o proprietário sobre qualquer problema que surgir no imóvel. O inquilino deve informar o proprietário sobre multas e notificações que receber relacionadas ao imóvel. E outros definidos na convenção ou regulamento do condomínio.
+r. O termo de confidencialidade e o termo da LGPD são documentos distintos com propósitos diferentes, embora ambos envolvam a proteção de dados, mas de maneiras distintas. O termo de confidencialidade foca em informações específicas, acordadas entre partes, que devem ser mantidas em segredo. Já o termo da LGPD, ou o termo de consentimento previsto na Lei Geral de Proteção de Dados, trata da proteção de dados pessoais de indivíduos, estabelecendo regras para o tratamento desses dados.
+
+Feedback:
+> origem da informação usuários do aplicativo.
+1. Este espaço destina-se a colher sugestões dos usuários para aprimoramento do aplicativo.
+2. Insira sua avaliação do aplicativo.
+3. Insira sua necessidade de análise.
+4. Insira sua necessidade de controle.
+5. Insira sugestões que aplicativo necessita.
+
+Notas explicativas:
+> origem da informação aplicativo.
+1. Este espaço se destina a informações de interação com o aplicativo e de funcionamento deste, com os respectivos resumos.
+2. Recursos disponíveis.
+3. Análises que são disponibilizadas pelo aplicativo, e funcionalidades destas.
+4. Informações sobre as análises.
+5. Metodologia de inserção de dados e pesquisas.
+2
+
+

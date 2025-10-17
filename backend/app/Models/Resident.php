@@ -19,6 +19,7 @@ class Resident extends Model
         'owner_email',
         'owner_phone',
         'owner_cpf',
+        'owner_user_id',
         'owner_status',
         'owner_notes',
 
@@ -28,6 +29,7 @@ class Resident extends Model
         'tenant_email',
         'tenant_phone',
         'tenant_cpf',
+        'tenant_user_id',
         'tenant_status',
         'tenant_lease_start',
         'tenant_lease_end',
@@ -60,6 +62,16 @@ class Resident extends Model
     public function unit()
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function ownerUser()
+    {
+        return $this->belongsTo(User::class, 'owner_user_id');
+    }
+
+    public function tenantUser()
+    {
+        return $this->belongsTo(User::class, 'tenant_user_id');
     }
 
     // Accessors para compatibilidade com frontend

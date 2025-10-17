@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Resident;
 use App\Models\Condominium;
 use App\Models\Unit;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ResidentController extends Controller
 {
@@ -100,22 +103,46 @@ class ResidentController extends Controller
             // Preparar dados para criação
             $residentData = $this->prepareResidentData($request);
 
+            // Criar usuário para o proprietário
+            $ownerUser = $this->createUserForResident(
+                $residentData['owner_name'],
+                $residentData['owner_email'],
+                $request->condominium_id
+            );
+            $residentData['owner_user_id'] = $ownerUser->id;
+
+            // Criar usuário para o inquilino (se houver)
+            if ($residentData['has_tenant'] && $residentData['tenant_email']) {
+                $tenantUser = $this->createUserForResident(
+                    $residentData['tenant_name'],
+                    $residentData['tenant_email'],
+                    $request->condominium_id
+                );
+                $residentData['tenant_user_id'] = $tenantUser->id;
+            }
+
             // Criar o morador
             $resident = Resident::create($residentData);
 
             // Carregar relacionamentos
-            $resident->load(['condominium', 'unit.block']);
+            $resident->load(['condominium', 'unit.block', 'ownerUser', 'tenantUser']);
 
             Log::info('Resident created successfully', [
                 'resident_id' => $resident->id,
                 'unit_id' => $resident->unit_id,
-                'has_tenant' => $resident->has_tenant
+                'has_tenant' => $resident->has_tenant,
+                'owner_user_id' => $resident->owner_user_id,
+                'tenant_user_id' => $resident->tenant_user_id
             ]);
+
+            // Preparar mensagem com senha padrão
+            $message = 'Morador criado com sucesso. Senha padrão: Condo@123';
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Morador criado com sucesso',
-                'data' => $resident
+                'message' => $message,
+                'data' => $resident,
+                'default_password' => 'Condo@123'
             ], 201);
         } catch (\Exception $e) {
             Log::error('Error creating resident', [
@@ -380,5 +407,40 @@ class ResidentController extends Controller
         ];
 
         return $data;
+    }
+
+    /**
+     * Create a user account for a resident (owner or tenant)
+     */
+    private function createUserForResident($name, $email, $condominiumId)
+    {
+        // Verificar se já existe um usuário com este e-mail
+        $existingUser = User::where('email', $email)->first();
+
+        if ($existingUser) {
+            Log::info('User already exists, reusing', ['email' => $email]);
+            return $existingUser;
+        }
+
+        // Senha padrão
+        $defaultPassword = 'Condo@123';
+
+        // Criar novo usuário
+        $user = User::create([
+            'name' => $name,
+            'email' => $email,
+            'password' => Hash::make($defaultPassword),
+            'access_level' => 'morador',
+            'access_level_name' => 'Morador',
+            'condominium_id' => $condominiumId,
+        ]);
+
+        Log::info('User created for resident', [
+            'user_id' => $user->id,
+            'email' => $email,
+            'access_level' => 'morador'
+        ]);
+
+        return $user;
     }
 }

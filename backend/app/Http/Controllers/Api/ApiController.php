@@ -367,11 +367,35 @@ class ApiController extends Controller
             // Determinar área de redirecionamento baseada no nível de acesso
             $redirectInfo = $this->getRedirectInfo($user->access_level);
 
+            // Buscar dados do morador se for um morador
+            $residentData = null;
+            if ($user->access_level === 'morador') {
+                $resident = \App\Models\Resident::where('owner_user_id', $user->id)
+                    ->orWhere('tenant_user_id', $user->id)
+                    ->with(['unit.block', 'condominium'])
+                    ->first();
+
+                if ($resident) {
+                    $residentData = [
+                        'resident_id' => $resident->id,
+                        'condominium_id' => $resident->condominium_id,
+                        'condominium_name' => $resident->condominium->name ?? null,
+                        'block_id' => $resident->unit->block_id ?? null,
+                        'block_name' => $resident->unit->block->name ?? null,
+                        'unit_id' => $resident->unit_id,
+                        'unit_number' => $resident->unit->number ?? null,
+                        'is_owner' => $resident->owner_user_id === $user->id,
+                        'is_tenant' => $resident->tenant_user_id === $user->id,
+                    ];
+                }
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Usuário logado com sucesso',
                 'token' => $user->createToken('token')->plainTextToken,
                 'data' => $user,
+                'resident_data' => $residentData,
                 'redirect_info' => $redirectInfo
             ], 200);
         } catch (\Throwable $th) {
@@ -834,6 +858,57 @@ class ApiController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Erro interno do servidor',
+                'error' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Change user password
+     */
+    public function changePassword(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'current_password' => 'required|string',
+                'new_password' => 'required|string|min:8|confirmed',
+            ], [
+                'current_password.required' => 'A senha atual é obrigatória',
+                'new_password.required' => 'A nova senha é obrigatória',
+                'new_password.min' => 'A nova senha deve ter no mínimo 8 caracteres',
+                'new_password.confirmed' => 'A confirmação da nova senha não confere',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Dados inválidos',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $user = Auth::user();
+
+            // Verificar se a senha atual está correta
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Senha atual incorreta'
+                ], 400);
+            }
+
+            // Atualizar a senha
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Senha alterada com sucesso'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Erro ao alterar senha',
                 'error' => $th->getMessage()
             ], 500);
         }

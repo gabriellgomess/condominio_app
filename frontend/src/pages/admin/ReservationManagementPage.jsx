@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Layout from '../../components/Layout';
+import { useTheme } from '../../contexts/ThemeContext';
 import { Calendar, Clock, Settings, Plus, Edit, Eye, Trash2, Search, Building } from 'lucide-react';
 import ReservationConfigModal from '../../components/modals/ReservationConfigModal';
 import Pagination from '../../components/Pagination';
@@ -7,6 +8,7 @@ import { reservationConfigService } from '../../services/reservationService';
 import api from '../../services/api';
 
 const ReservationManagementPage = () => {
+  const { isDarkMode } = useTheme();
   const [configs, setConfigs] = useState([]);
   const [reservableSpaces, setReservableSpaces] = useState([]);
   const [condominiums, setCondominiums] = useState([]);
@@ -27,16 +29,7 @@ const ReservationManagementPage = () => {
     data: null
   });
 
-  // Carregar dados iniciais
-  useEffect(() => {
-    loadCondominiums();
-    if (selectedCondominium) {
-      loadConfigs();
-      loadReservableSpaces();
-    }
-  }, [selectedCondominium]);
-
-  const loadCondominiums = async () => {
+  const loadCondominiums = useCallback(async () => {
     try {
       const response = await api.get('/condominiums');
       if (response.status === 'success') {
@@ -48,9 +41,9 @@ const ReservationManagementPage = () => {
     } catch (error) {
       console.error('Erro ao carregar condomínios:', error);
     }
-  };
+  }, [selectedCondominium]);
 
-  const loadConfigs = async () => {
+  const loadConfigs = useCallback(async () => {
     if (!selectedCondominium) return;
     
     setLoading(true);
@@ -64,9 +57,9 @@ const ReservationManagementPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCondominium]);
 
-  const loadReservableSpaces = async () => {
+  const loadReservableSpaces = useCallback(async () => {
     if (!selectedCondominium) return;
     
     console.log('🏢 ReservationManagementPage - Carregando espaços reserváveis para condomínio:', selectedCondominium);
@@ -80,7 +73,16 @@ const ReservationManagementPage = () => {
     } catch (error) {
       console.error('Erro ao carregar espaços reserváveis:', error);
     }
-  };
+  }, [selectedCondominium]);
+
+  // Carregar dados iniciais
+  useEffect(() => {
+    loadCondominiums();
+    if (selectedCondominium) {
+      loadConfigs();
+      loadReservableSpaces();
+    }
+  }, [selectedCondominium, loadCondominiums, loadConfigs, loadReservableSpaces]);
 
   // Funções do modal
   const openConfigModal = async (mode, data = null) => {
@@ -104,7 +106,7 @@ const ReservationManagementPage = () => {
     });
   };
 
-  const handleConfigSave = async (savedConfig) => {
+  const handleConfigSave = async () => {
     try {
       closeConfigModal();
       await loadConfigs();
@@ -198,18 +200,18 @@ const ReservationManagementPage = () => {
         {/* Cabeçalho */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-2 flex items-center">
+            <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2 flex items-center`}>
               <Calendar className="w-8 h-8 mr-3 text-[#ff6600]" />
               Gerenciamento de Reservas
             </h1>
-            <p className="text-gray-400">
+            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Configure os espaços reserváveis e defina horários de disponibilidade
             </p>
           </div>
           
           <button
             onClick={() => openConfigModal('create')}
-            className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors flex items-center space-x-2"
+            className={`px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-white'} rounded-lg hover:bg-[#ff6600]/80 transition-colors flex items-center space-x-2`}
           >
             <Plus className="w-4 h-4" />
             <span>Nova Configuração</span>
@@ -217,16 +219,16 @@ const ReservationManagementPage = () => {
         </div>
 
         {/* Filtros */}
-        <div className="bg-[#1a1a1a] rounded-lg p-4 mb-6">
+        <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-4 mb-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                 Condomínio
               </label>
               <select
                 value={selectedCondominium}
                 onChange={(e) => setSelectedCondominium(e.target.value)}
-                className="w-full px-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
               >
                 <option value="">Selecione um condomínio</option>
                 {condominiums.map(condominium => (
@@ -238,7 +240,7 @@ const ReservationManagementPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                 Buscar
               </label>
               <div className="relative">
@@ -248,7 +250,7 @@ const ReservationManagementPage = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Buscar por espaço..."
-                  className="w-full pl-10 pr-3 py-2 bg-[#2a2a2a] border border-gray-600 rounded-lg text-white focus:border-[#ff6600] focus:outline-none"
+                  className={`w-full pl-10 pr-3 py-2 ${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                 />
               </div>
             </div>
@@ -259,7 +261,7 @@ const ReservationManagementPage = () => {
                   setSearchTerm('');
                   loadConfigs();
                 }}
-                className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                className="w-full px-4 py-2 bg-gray-600 ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-gray-700 transition-colors"
               >
                 Limpar Filtros
               </button>
@@ -269,11 +271,11 @@ const ReservationManagementPage = () => {
 
         {/* Estatísticas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-[#1a1a1a] rounded-lg p-6">
+          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">Configurações Ativas</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}">
                   {configs.filter(c => c.active).length}
                 </p>
               </div>
@@ -281,11 +283,11 @@ const ReservationManagementPage = () => {
             </div>
           </div>
 
-          <div className="bg-[#1a1a1a] rounded-lg p-6">
+          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">Espaços Reserváveis</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}">
                   {reservableSpaces.length}
                 </p>
               </div>
@@ -293,11 +295,11 @@ const ReservationManagementPage = () => {
             </div>
           </div>
 
-          <div className="bg-[#1a1a1a] rounded-lg p-6">
+          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">Total Configurado</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}">
                   {configs.length}
                 </p>
               </div>
@@ -313,7 +315,7 @@ const ReservationManagementPage = () => {
           </div>
         ) : filteredConfigs.length > 0 ? (
           <>
-            <div className="bg-[#1a1a1a] rounded-lg overflow-hidden">
+            <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg overflow-hidden border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -330,19 +332,19 @@ const ReservationManagementPage = () => {
                   <tbody>
                     {paginatedConfigs.map((config) => (
                       <tr key={config.id} className="border-b border-[#ff6600]/10 hover:bg-[#ff6600]/5 transition-colors">
-                        <td className="py-4 px-4 text-white font-medium">
+                        <td className="py-4 px-4 ${isDarkMode ? 'text-white' : 'text-gray-900'} font-medium">
                           {config.space?.number || 'N/A'}
                         </td>
-                        <td className="py-4 px-4 text-[#f3f7f1]">
+                        <td className="py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}">
                           {getSpaceTypeLabel(config.space?.space_type)}
                         </td>
-                        <td className="py-4 px-4 text-[#f3f7f1]">
+                        <td className="py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}">
                           {getDaysFormatted(config.available_days)}
                         </td>
-                        <td className="py-4 px-4 text-[#f3f7f1]">
+                        <td className="py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}">
                           {config.start_time} - {config.end_time}
                         </td>
-                        <td className="py-4 px-4 text-[#f3f7f1]">
+                        <td className="py-4 px-4 ${isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-600'}">
                           {config.duration_minutes} min
                         </td>
                         <td className="py-4 px-4">
@@ -392,7 +394,7 @@ const ReservationManagementPage = () => {
         ) : (
           <div className="text-center py-12">
             <Calendar className="w-12 h-12 text-[#ff6600]/40 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-white mb-2">
+            <h3 className="text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2">
               {selectedCondominium ? 'Nenhuma configuração encontrada' : 'Selecione um condomínio'}
             </h3>
             <p className="text-gray-400 mb-6">
@@ -404,7 +406,7 @@ const ReservationManagementPage = () => {
             {selectedCondominium && (
               <button
                 onClick={() => openConfigModal('create')}
-                className="px-4 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#ff6600]/80 transition-colors"
+                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors"
               >
                 Criar Primeira Configuração
               </button>
