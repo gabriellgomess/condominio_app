@@ -101,6 +101,15 @@ const Sidebar = () => {
       ]
     },
     {
+      title: 'Cobrança',
+      icon: <FileText className="w-5 h-5" />,
+      path: '/admin/billing',
+      submenu: [
+        { title: 'Mensalidades', path: '/admin/billing/monthly-fees' },
+        { title: 'Boletos', path: '/admin/billing/unit-billings' }
+      ]
+    },
+    {
       title: 'Documentos',
       icon: <FileText className="w-5 h-5" />,
       path: '/documentos',
@@ -116,7 +125,7 @@ const Sidebar = () => {
       path: '/portaria',
       submenu: [
         { title: 'Visitantes', path: '/portaria/visitantes' },
-        { title: 'Entregas', path: '/portaria/entregas' },
+        { title: 'Entregas', path: '/admin/gate/deliveries' },
         { title: 'Registro de Entrada', path: '/portaria/registro' }
       ]
     },
@@ -134,7 +143,7 @@ const Sidebar = () => {
           fixed lg:static inset-y-0 left-0 z-50
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           ${isMobile && isSidebarOpen ? 'w-80' : 'w-64'}
-          ${isDarkMode ? 'bg-gray-800 ' : 'bg-gray-400'}          
+          ${isDarkMode ? 'bg-gray-800 ' : 'bg-stone-700'}          
           transition-all duration-300 ease-in-out
           flex flex-col
           ${isMobile ? 'backdrop-blur-sm' : ''}
@@ -181,7 +190,7 @@ const Sidebar = () => {
                     ? 'bg-gradient-to-r from-[#ff6600] to-[#fa7a25] text-white shadow-lg shadow-[#ff6600]/25'
                     : isDarkMode
                       ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      : 'text-gray-300 hover:bg-gray-100 hover:text-gray-900'
                   }
                 `}
               >
@@ -204,7 +213,7 @@ const Sidebar = () => {
                     ? 'bg-gradient-to-r from-[#ff6600] to-[#fa7a25] text-white shadow-lg shadow-[#ff6600]/25'
                     : isDarkMode
                       ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      : 'text-gray-300 hover:bg-gray-100 hover:text-gray-900'
                   }
                 `}
               >
@@ -235,7 +244,7 @@ const Sidebar = () => {
                         ? 'bg-[#ff6600]/15 text-[#ff6600] font-medium border-l-2 border-[#ff6600]'
                         : isDarkMode
                           ? 'text-gray-400 hover:bg-gray-700 hover:text-gray-200'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          : 'text-gray-200 hover:bg-gray-50 hover:text-gray-900'
                       }
                     `}
                   >

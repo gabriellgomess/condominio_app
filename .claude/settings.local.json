@@ -15,7 +15,8 @@
       "Bash(findstr:*)",
       "Bash(curl:*)",
       "Bash(dir:*)",
-      "Bash(tasklist)"
+      "Bash(tasklist)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

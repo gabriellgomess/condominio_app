@@ -1,5 +1,7 @@
+import config from './environment.js';
+
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+const API_BASE_URL = config.API_BASE_URL;
 
 export const api = {
   baseURL: API_BASE_URL,
@@ -37,8 +39,8 @@ export const api = {
     condominiums: '/api/condominiums',
 
     // Incidents
-    incidents: '/api/incidents',
-    incidentStats: '/api/incidents-stats',
+    incidents: '/incidents',
+    incidentStats: '/incidents-stats',
     incidentStatsByCondominium: (condominiumId) => `/api/condominiums/${condominiumId}/incidents/stats`,
     incidentTypes: '/api/incident-types',
     incidentPriorities: '/api/incident-priorities',

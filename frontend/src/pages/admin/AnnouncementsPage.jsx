@@ -214,7 +214,7 @@ const AnnouncementsPage = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Total</p>
@@ -225,7 +225,7 @@ const AnnouncementsPage = () => {
               <FileText className="w-8 h-8 text-[#ff6600]" />
             </div>
           </div>
-          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Publicados</p>
@@ -236,7 +236,7 @@ const AnnouncementsPage = () => {
               <Send className="w-8 h-8 text-[#ff6600]" />
             </div>
           </div>
-          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Rascunhos</p>
@@ -247,7 +247,7 @@ const AnnouncementsPage = () => {
               <Edit className="w-8 h-8 text-[#ff6600]" />
             </div>
           </div>
-          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Urgentes</p>
@@ -261,7 +261,7 @@ const AnnouncementsPage = () => {
         </div>
 
         {/* Filters */}
-        <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 mb-8 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 mb-8 border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
           <form onSubmit={handleSearch} className="flex flex-wrap gap-6">
             <div className="flex-1 min-w-80">
               <div className="relative">
@@ -307,7 +307,7 @@ const AnnouncementsPage = () => {
         </div>
 
         {/* Table */}
-        <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg overflow-hidden border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg overflow-hidden border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

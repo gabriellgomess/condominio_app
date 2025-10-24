@@ -930,7 +930,7 @@ const StructureManagementPage = () => {
                   ? 'bg-[#ff6600] text-white'
                   : isDarkMode 
                     ? 'bg-[#080d08]/80 text-[#f3f7f1] hover:bg-[#ff6600]/20'
-                    : 'bg-white/80 text-gray-700 hover:bg-gray-100 border border-gray-200'
+                    : 'bg-white/80 text-gray-700 hover:bg-gray-100 border border-orange-500 rounded-xl'
               }`}
             >
               <Icon className="w-4 h-4 mr-2" />
@@ -944,7 +944,7 @@ const StructureManagementPage = () => {
       </div>
 
       {/* Filters */}
-      <div className={`card mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+      <div className={`card mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
         <div className='p-4'>
           <div className="flex flex-wrap gap-4">
             <div className="flex-1 min-w-[200px]">
@@ -980,7 +980,7 @@ const StructureManagementPage = () => {
       </div>
 
       {/* Table */}
-      <div className={`card ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+      <div className={`card ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
         <div className="p-6">
           {loading ? (
             <div className="flex justify-center items-center py-12">

@@ -9,12 +9,31 @@ use App\Http\Controllers\Finance\CategoryController;
 use App\Http\Controllers\Finance\RevenueController;
 use App\Http\Controllers\Finance\ExpenseController;
 
+// Billing - Gestão de Mensalidades
+use App\Http\Controllers\Billing\MonthlyFeeController;
+use App\Http\Controllers\Billing\UnitBillingController;
+use App\Http\Controllers\Billing\PaymentController;
+
 Route::middleware('auth:sanctum')->group(function () {
+    // Finance
     Route::apiResource('finance/subaccounts', SubaccountController::class);
     Route::apiResource('finance/categories', CategoryController::class);
     Route::get('finance/subaccounts/{subaccount}/categories', [CategoryController::class, 'getBySubaccount']);
     Route::apiResource('finance/revenues', RevenueController::class);
     Route::apiResource('finance/expenses', ExpenseController::class);
+
+    // Billing - Mensalidades
+    Route::apiResource('billing/monthly-fees', MonthlyFeeController::class);
+    Route::get('billing/monthly-fees/{id}/statistics', [MonthlyFeeController::class, 'statistics']);
+
+    // Billing - Cobranças por Unidade
+    Route::apiResource('billing/unit-billings', UnitBillingController::class);
+    Route::post('billing/unit-billings/generate', [UnitBillingController::class, 'generateBillings']);
+    Route::put('billing/unit-billings/{id}/update-status', [UnitBillingController::class, 'updateStatus']);
+
+    // Billing - Pagamentos
+    Route::apiResource('billing/payments', PaymentController::class);
+    Route::get('billing/payments/statistics', [PaymentController::class, 'statistics']);
 });
 
 use App\Http\Controllers\Api\ApiController;
@@ -41,6 +60,7 @@ use App\Http\Controllers\Supplier\SupplierController;
 use App\Http\Controllers\Announcement\AnnouncementController;
 use App\Http\Controllers\Incident\IncidentController;
 use App\Http\Controllers\Api\CepController;
+use App\Http\Controllers\Gate\DeliveryController;
 
 
 // Rotas públicas - não precisam de autenticação
@@ -145,6 +165,12 @@ Route::group([
     // Ocorrências do morador logado (mobile app)
     Route::get('my-incidents', [IncidentController::class, 'myIncidents']);
     Route::get('my-incidents-stats', [IncidentController::class, 'myStats']);
+
+    // Entregas (Portaria)
+    Route::apiResource('deliveries', DeliveryController::class);
+    Route::get('deliveries-stats', [DeliveryController::class, 'stats']);
+    Route::post('deliveries/find-by-code', [DeliveryController::class, 'findByCode']);
+    Route::post('deliveries/{id}/collect', [DeliveryController::class, 'collect']);
 
     // Troca de senha
     Route::post('change-password', [ApiController::class, 'changePassword']);

@@ -264,23 +264,23 @@ const SuppliersPage = () => {
 
       {/* Stats Cards */}
       <div className="grid md:grid-cols-5 gap-6 mb-8">
-        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
           <div className="text-3xl font-bold text-[#ff6600] mb-2">{stats.total}</div>
           <div className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'}>Total</div>
         </div>
-        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
           <div className="text-3xl font-bold text-green-400 mb-2">{stats.active}</div>
           <div className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'}>Ativos</div>
         </div>
-        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
           <div className="text-3xl font-bold text-gray-400 mb-2">{stats.inactive}</div>
           <div className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'}>Inativos</div>
         </div>
-        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
           <div className="text-3xl font-bold text-yellow-400 mb-2">{stats.contracts_expiring}</div>
           <div className={isDarkMode ? 'text-[#f3f7f1]' : 'text-gray-700'}>Contratos Vencendo</div>
         </div>
-        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className={`card p-6 text-center ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
           <div className="text-3xl font-bold text-[#ff6600] mb-2">
             {stats.evaluation_stats?.average ? stats.evaluation_stats.average.toFixed(1) : '0.0'}
           </div>
@@ -293,7 +293,7 @@ const SuppliersPage = () => {
 
       {/* Detailed Evaluation Stats */}
       {stats.evaluation_stats && stats.evaluation_stats.total_evaluated > 100000000 && (
-        <div className={`card p-6 mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className={`card p-6 mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
           <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center`}>
             <Star className='w-5 h-5 mr-2 text-[#ff6600]' />
             Estatísticas de Avaliação
@@ -377,7 +377,7 @@ const SuppliersPage = () => {
       )}
 
       {/* Filters */}
-      <div className={`card p-6 mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+      <div className={`card p-6 mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
         <div className="grid md:grid-cols-4 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#ff6600] w-5 h-5" />
@@ -428,7 +428,7 @@ const SuppliersPage = () => {
       </div>
 
       {/* Suppliers Table */}
-      <div className={`card ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+      <div className={`card ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
         <div className='p-6'>
           <div className="flex justify-between items-center mb-6">
             <h3 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Lista de Fornecedores</h3>

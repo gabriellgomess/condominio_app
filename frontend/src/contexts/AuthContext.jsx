@@ -4,6 +4,10 @@ import cacheService from '../services/cacheService';
 
 const AuthContext = createContext();
 
+import config from '../config/environment.js';
+
+const API_BASE_URL = config.API_BASE_URL;
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -24,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     if (token) {
       try {
-        const response = await fetch('http://localhost:8000/api/redirect-info', {
+        const response = await fetch(`${API_BASE_URL}/redirect-info`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -61,7 +65,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:8000/api/login', {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -19,6 +19,9 @@ import SubaccountsPage from './pages/admin/SubaccountsPage';
 import CategoriesPage from './pages/admin/CategoriesPage';
 import RevenuesPage from './pages/admin/RevenuesPage';
 import ExpensesPage from './pages/admin/ExpensesPage';
+import MonthlyFeesPage from './pages/admin/MonthlyFeesPage';
+import UnitBillingsPage from './pages/admin/UnitBillingsPage';
+import DeliveriesPage from './pages/admin/DeliveriesPage';
 
 function App() {
   return (
@@ -54,6 +57,9 @@ function App() {
                     <Route path="finance/categories" element={<CategoriesPage />} />
                     <Route path="finance/revenues" element={<RevenuesPage />} />
                     <Route path="finance/expenses" element={<ExpensesPage />} />
+                    <Route path="billing/monthly-fees" element={<MonthlyFeesPage />} />
+                    <Route path="billing/unit-billings" element={<UnitBillingsPage />} />
+                    <Route path="gate/deliveries" element={<DeliveriesPage />} />
                     <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                   </Routes>
                 </ProtectedRoute>

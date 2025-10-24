@@ -113,7 +113,7 @@ const Header = () => {
     <header className={`${
       isDarkMode
         ? 'bg-gray-800 border-gray-700'
-        : 'bg-gray-400 border-gray-200'
+        : 'bg-stone-700 border-stone-700'
     } shadow-sm border-b h-16 flex-shrink-0 z-10`}>
       <div className="px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex justify-between items-center h-full">
@@ -248,7 +248,7 @@ const Header = () => {
                   </span>
                 </div>
                 <div className="hidden md:block text-left">
-                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-300'}`}>
                     {user?.name || 'Usuário'}
                   </p>
                   <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>

@@ -209,7 +209,7 @@ const IncidentsPageContent = () => {
 
   const handleSave = async (formData, incidentId = null) => {
     try {
-      const url = incidentId ? `/api/incidents/${incidentId}` : '/api/incidents';
+      const url = incidentId ? `/incidents/${incidentId}` : '/incidents';
       const method = incidentId ? 'POST' : 'POST';
 
       if (incidentId) {
@@ -249,7 +249,7 @@ const IncidentsPageContent = () => {
     if (!confirm('Tem certeza que deseja excluir esta ocorrência?')) return;
 
     try {
-      const response = await fetch(`/api/incidents/${id}`, {
+      const response = await fetch(`/incidents/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -354,7 +354,7 @@ const IncidentsPageContent = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 shadow-sm`}>
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white border border-orange-500'} rounded-lg p-4 shadow-sm`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Total</p>
@@ -366,7 +366,7 @@ const IncidentsPageContent = () => {
             </div>
           </div>
 
-          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 shadow-sm`}>
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white border border-orange-500'} rounded-lg p-4 shadow-sm`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Abertas</p>
@@ -376,7 +376,7 @@ const IncidentsPageContent = () => {
             </div>
           </div>
 
-          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 shadow-sm`}>
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white border border-orange-500'} rounded-lg p-4 shadow-sm`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Em Andamento</p>
@@ -386,7 +386,7 @@ const IncidentsPageContent = () => {
             </div>
           </div>
 
-          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 shadow-sm`}>
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white border border-orange-500'} rounded-lg p-4 shadow-sm`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Resolvidas</p>
@@ -396,7 +396,7 @@ const IncidentsPageContent = () => {
             </div>
           </div>
 
-          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 shadow-sm`}>
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white border border-orange-500'} rounded-lg p-4 shadow-sm`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Fechadas</p>
@@ -408,7 +408,7 @@ const IncidentsPageContent = () => {
             </div>
           </div>
 
-          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 shadow-sm`}>
+          <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white border border-orange-500'} rounded-lg p-4 shadow-sm`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Recentes</p>
@@ -420,7 +420,7 @@ const IncidentsPageContent = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm mb-6`}>
+        <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white border border-orange-500'} rounded-lg shadow-sm mb-6`}>
           <div className="p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 sm:space-x-4">
               {/* Search */}
@@ -557,7 +557,7 @@ const IncidentsPageContent = () => {
         </div>
 
         {/* Incidents List */}
-        <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm`}>
+        <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white border border-orange-500'} rounded-lg shadow-sm`}>
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>

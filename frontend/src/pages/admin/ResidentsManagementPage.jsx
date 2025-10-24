@@ -411,7 +411,7 @@ const ResidentsManagementPage = () => {
       </div>
 
       {/* Filtros Avançados */}
-      <div className={`card mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+      <div className={`card mb-6 ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} flex items-center`}>
@@ -559,7 +559,7 @@ const ResidentsManagementPage = () => {
       </div>
 
       {/* Tabela */}
-      <div className={`card ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+      <div className={`card ${isDarkMode ? 'bg-gray-800/50' : 'bg-white/80'} border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
         <div className='p-6'>
           {(loading || loadingResidents) ? (
             <div className="flex justify-center items-center py-12">

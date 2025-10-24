@@ -219,7 +219,7 @@ const ReservationManagementPage = () => {
         </div>
 
         {/* Filtros */}
-        <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-4 mb-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-4 mb-6 border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
@@ -261,7 +261,7 @@ const ReservationManagementPage = () => {
                   setSearchTerm('');
                   loadConfigs();
                 }}
-                className="w-full px-4 py-2 bg-gray-600 ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-gray-700 transition-colors"
+                className={`w-full px-4 py-2 ${isDarkMode ? 'text-white bg-gray-600' : 'text-white bg-orange-500'} rounded-lg hover:bg-gray-700 transition-colors`}
               >
                 Limpar Filtros
               </button>
@@ -271,7 +271,7 @@ const ReservationManagementPage = () => {
 
         {/* Estatísticas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">Configurações Ativas</p>
@@ -283,7 +283,7 @@ const ReservationManagementPage = () => {
             </div>
           </div>
 
-          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">Espaços Reserváveis</p>
@@ -295,7 +295,7 @@ const ReservationManagementPage = () => {
             </div>
           </div>
 
-          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm">Total Configurado</p>
@@ -315,7 +315,7 @@ const ReservationManagementPage = () => {
           </div>
         ) : filteredConfigs.length > 0 ? (
           <>
-            <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg overflow-hidden border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg overflow-hidden border ${isDarkMode ? 'border-gray-700' : 'border-orange-500'} rounded-xl`}>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -406,7 +406,7 @@ const ReservationManagementPage = () => {
             {selectedCondominium && (
               <button
                 onClick={() => openConfigModal('create')}
-                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors"
+                className={`px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-white'} rounded-lg hover:bg-[#ff6600]/80 transition-colors`}
               >
                 Criar Primeira Configuração
               </button>

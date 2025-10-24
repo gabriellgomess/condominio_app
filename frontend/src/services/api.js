@@ -1,5 +1,7 @@
+import config from '../config/environment.js';
+
 // Configuração base da API
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = config.API_BASE_URL;
 
 // Função para obter o token de autenticação
 const getAuthToken = () => {
@@ -34,7 +36,7 @@ const apiRequest = async (endpoint, options = {}) => {
     let data;
     try {
       data = await response.json();
-    } catch (jsonError) {
+    } catch {
       // Se não conseguir fazer parse do JSON, usar o texto da resposta clonada
       try {
         const text = await responseClone.text();

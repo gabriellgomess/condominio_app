@@ -1,4 +1,5 @@
 import { api } from './api.js';
+import config from '../config/environment.js';
 
 // Serviços para Fornecedores
 export const supplierService = {
@@ -55,7 +56,7 @@ export const supplierService = {
     try {
       // Criar um link temporário com href absoluto
       const link = document.createElement('a');
-      link.href = `http://localhost:8000/api/suppliers/${id}/contract`;
+      link.href = config.getContractUrl(id);
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       
