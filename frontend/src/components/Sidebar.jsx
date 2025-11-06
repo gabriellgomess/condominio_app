@@ -90,25 +90,26 @@ const Sidebar = () => {
       submenu: []
     },
     {
-      title: 'Financeiro',
+      title: 'Gestão Financeira',
       icon: <DollarSign className="w-5 h-5" />,
       path: '/admin/finance',
       submenu: [
         { title: 'Subcontas', path: '/admin/finance/subaccounts' },
         { title: 'Categorias', path: '/admin/finance/categories' },
         { title: 'Receitas', path: '/admin/finance/revenues' },
-        { title: 'Despesas', path: '/admin/finance/expenses' }
-      ]
-    },
-    {
-      title: 'Cobrança',
-      icon: <FileText className="w-5 h-5" />,
-      path: '/admin/billing',
-      submenu: [
+        { title: 'Despesas', path: '/admin/finance/expenses' },
         { title: 'Mensalidades', path: '/admin/billing/monthly-fees' },
         { title: 'Boletos', path: '/admin/billing/unit-billings' }
       ]
     },
+    // {
+    //   title: 'Cobrança',
+    //   icon: <FileText className="w-5 h-5" />,
+    //   path: '/admin/billing',
+    //   submenu: [
+        
+    //   ]
+    // },
     {
       title: 'Documentos',
       icon: <FileText className="w-5 h-5" />,
