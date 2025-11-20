@@ -22,6 +22,7 @@ import ExpensesPage from './pages/admin/ExpensesPage';
 import MonthlyFeesPage from './pages/admin/MonthlyFeesPage';
 import UnitBillingsPage from './pages/admin/UnitBillingsPage';
 import DeliveriesPage from './pages/admin/DeliveriesPage';
+import ContractsPage from './pages/admin/ContractsPage';
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
                     <Route path="billing/monthly-fees" element={<MonthlyFeesPage />} />
                     <Route path="billing/unit-billings" element={<UnitBillingsPage />} />
                     <Route path="gate/deliveries" element={<DeliveriesPage />} />
+                    <Route path="administrative/contracts" element={<ContractsPage />} />
                     <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                   </Routes>
                 </ProtectedRoute>

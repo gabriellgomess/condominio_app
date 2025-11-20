@@ -14,6 +14,9 @@ use App\Http\Controllers\Billing\MonthlyFeeController;
 use App\Http\Controllers\Billing\UnitBillingController;
 use App\Http\Controllers\Billing\PaymentController;
 
+// Administrative - Gestão Administrativa
+use App\Http\Controllers\Administrative\ContractController;
+
 Route::middleware('auth:sanctum')->group(function () {
     // Finance
     Route::apiResource('finance/subaccounts', SubaccountController::class);
@@ -34,6 +37,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Billing - Pagamentos
     Route::apiResource('billing/payments', PaymentController::class);
     Route::get('billing/payments/statistics', [PaymentController::class, 'statistics']);
+
+    // Administrative - Contratos
+    Route::apiResource('administrative/contracts', ContractController::class);
 });
 
 use App\Http\Controllers\Api\ApiController;

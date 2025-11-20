@@ -5,20 +5,19 @@ import {
   Users,
   Building,
   Calendar,
-  MessageSquare,
-  FileText,
   Settings,
   Bell,
   DollarSign,
   Shield,
-  Menu,
   X,
-  User,
-  LogOut,
   ChevronDown,
   ChevronRight,
-  ChevronLeft,
-  Truck
+  Truck,
+  Briefcase,
+  Scale,
+  GraduationCap,
+  MessageCircle,
+  UserCog
 } from 'lucide-react';
 import { useLayout } from './Layout';
 import Logo from './ui/Logo';
@@ -45,50 +44,7 @@ const Sidebar = () => {
       path: '/dashboard',
       submenu: []
     },
-    {
-      title: 'Moradores',
-      icon: <Users className="w-5 h-5" />,
-      path: '/admin/residents',
-      submenu: []
-    },
-
-    {
-      title: 'Estrutura',
-      icon: <Building className="w-5 h-5" />,
-      path: '/admin/structure',
-      submenu: []
-    },
-    {
-      title: 'Fornecedores',
-      icon: <Truck className="w-5 h-5" />,
-      path: '/admin/suppliers',
-      submenu: []
-    },
-    {
-      title: 'Reservas',
-      icon: <Calendar className="w-5 h-5" />,
-      path: '/admin/reservations',
-      submenu: [
-        { title: 'Gerenciar Configurações', path: '/admin/reservations' },
-        { title: 'Gerenciar Reservas', path: '/admin/bookings' },
-        // { title: 'Minhas Reservas', path: '/reservas/minhas' },
-        // { title: 'Nova Reserva', path: '/reservas/nova' }
-      ]
-    },
-    {
-      title: 'Comunicados',
-      icon: <MessageSquare className="w-5 h-5" />,
-      path: '/admin/announcements',
-      submenu: [
-        { title: 'Gerenciar Comunicados', path: '/admin/announcements' }
-      ]
-    },
-    {
-      title: 'Ocorrências',
-      icon: <Bell className="w-5 h-5" />,
-      path: '/admin/incidents',
-      submenu: []
-    },
+    // GESTÃO FINANCEIRA
     {
       title: 'Gestão Financeira',
       icon: <DollarSign className="w-5 h-5" />,
@@ -98,38 +54,141 @@ const Sidebar = () => {
         { title: 'Categorias', path: '/admin/finance/categories' },
         { title: 'Receitas', path: '/admin/finance/revenues' },
         { title: 'Despesas', path: '/admin/finance/expenses' },
+        { title: 'Inadimplência', path: '/admin/finance/defaults' },
+        { title: 'Saldos', path: '/admin/finance/balances' },
         { title: 'Mensalidades', path: '/admin/billing/monthly-fees' },
-        { title: 'Boletos', path: '/admin/billing/unit-billings' }
+        { title: 'Boletos', path: '/admin/billing/unit-billings' },
+        { title: 'Análises e Alertas', path: '/admin/finance/analysis' }
       ]
     },
-    // {
-    //   title: 'Cobrança',
-    //   icon: <FileText className="w-5 h-5" />,
-    //   path: '/admin/billing',
-    //   submenu: [
-        
-    //   ]
-    // },
+    // GESTÃO ADMINISTRATIVA
     {
-      title: 'Documentos',
-      icon: <FileText className="w-5 h-5" />,
-      path: '/documentos',
+      title: 'Gestão Administrativa',
+      icon: <Briefcase className="w-5 h-5" />,
+      path: '/admin/administrative',
       submenu: [
-        { title: 'Atas', path: '/documentos/atas' },
-        { title: 'Regimento', path: '/documentos/regimento' },
-        { title: 'Contratos', path: '/documentos/contratos' }
+        { title: 'Contratos', path: '/admin/administrative/contracts' },
+        { title: 'Controles', path: '/admin/administrative/controls' },
+        { title: 'Ações a Realizar', path: '/admin/administrative/actions' },
+        { title: 'Padrões do Condomínio', path: '/admin/administrative/standards' },
+        { title: 'Notificações e Multas', path: '/admin/administrative/notifications' },
+        { title: 'Documentos', path: '/admin/administrative/documents' },
+        { title: 'Chatbot', path: '/admin/administrative/chatbot' },
+        { title: 'Contatos', path: '/admin/administrative/contacts' },
+        { title: 'Senhas', path: '/admin/administrative/passwords' },
+        { title: 'Assembleias e Enquetes', path: '/admin/administrative/assemblies' }
       ]
     },
+    // GESTÃO OPERACIONAL
+    {
+      title: 'Gestão Operacional',
+      icon: <UserCog className="w-5 h-5" />,
+      path: '/admin/operational',
+      submenu: [
+        { title: 'Serviço de Portaria', path: '/admin/operational/gate-service' },
+        { title: 'Serviço de Ronda', path: '/admin/operational/patrol-service' },
+        { title: 'Serviço de Zeladoria', path: '/admin/operational/maintenance-service' },
+        { title: 'Serviço de Limpeza', path: '/admin/operational/cleaning-service' },
+        { title: 'Serviço Administrativo', path: '/admin/operational/admin-service' },
+        { title: 'Recursos Humanos', path: '/admin/operational/hr' },
+        { title: 'Relatórios e Gráficos', path: '/admin/operational/reports' }
+      ]
+    },
+    // ÁREA DE INTERAÇÃO COM MORADORES
+    {
+      title: 'Moradores',
+      icon: <Users className="w-5 h-5" />,
+      path: '/admin/residents',
+      submenu: [
+        { title: 'Cadastro de Moradores', path: '/admin/residents' },
+        { title: 'Cadastro de Veículos', path: '/admin/residents/vehicles' },
+        { title: 'Cadastro de PETs', path: '/admin/residents/pets' },
+        { title: 'Cadastro de Visitantes', path: '/admin/residents/visitors' },
+        { title: 'Comunicados', path: '/admin/announcements' },
+        { title: 'Calendário de Eventos', path: '/admin/residents/calendar' },
+        { title: 'Encomendas', path: '/admin/gate/deliveries' },
+        { title: 'Anúncios', path: '/admin/residents/ads' }
+      ]
+    },
+    // PORTARIA
     {
       title: 'Portaria',
       icon: <Shield className="w-5 h-5" />,
       path: '/portaria',
       submenu: [
+        { title: 'Controle de Acesso', path: '/portaria/access-control' },
         { title: 'Visitantes', path: '/portaria/visitantes' },
         { title: 'Entregas', path: '/admin/gate/deliveries' },
-        { title: 'Registro de Entrada', path: '/portaria/registro' }
+        { title: 'Registro de Entrada', path: '/portaria/registro' },
+        { title: 'Correspondências', path: '/portaria/mail' }
       ]
     },
+    // ESTRUTURA E RESERVAS
+    {
+      title: 'Estrutura',
+      icon: <Building className="w-5 h-5" />,
+      path: '/admin/structure',
+      submenu: []
+    },
+    {
+      title: 'Reservas',
+      icon: <Calendar className="w-5 h-5" />,
+      path: '/admin/reservations',
+      submenu: [
+        { title: 'Gerenciar Configurações', path: '/admin/reservations' },
+        { title: 'Gerenciar Reservas', path: '/admin/bookings' }
+      ]
+    },
+    // OCORRÊNCIAS
+    {
+      title: 'Ocorrências',
+      icon: <Bell className="w-5 h-5" />,
+      path: '/admin/incidents',
+      submenu: []
+    },
+    // SERVIÇOS E FORNECEDORES
+    {
+      title: 'Serviços e Fornecedores',
+      icon: <Truck className="w-5 h-5" />,
+      path: '/admin/suppliers',
+      submenu: [
+        { title: 'Fornecedores', path: '/admin/suppliers' },
+        { title: 'Orçamentos', path: '/admin/suppliers/quotes' }
+      ]
+    },
+    // LEGISLAÇÃO
+    {
+      title: 'Legislação',
+      icon: <Scale className="w-5 h-5" />,
+      path: '/admin/legislation',
+      submenu: [
+        { title: 'Código Civil', path: '/admin/legislation/civil-code' },
+        { title: 'LGPD', path: '/admin/legislation/lgpd' },
+        { title: 'Legislações Municipais', path: '/admin/legislation/municipal' },
+        { title: 'Outras Legislações', path: '/admin/legislation/others' }
+      ]
+    },
+    // CONCEITOS E CAPACITAÇÕES
+    {
+      title: 'Conceitos e Capacitações',
+      icon: <GraduationCap className="w-5 h-5" />,
+      path: '/admin/training',
+      submenu: [
+        { title: 'Convenção de Condomínio', path: '/admin/training/convention' },
+        { title: 'Regulamento Interno', path: '/admin/training/internal-rules' },
+        { title: 'Assembleias', path: '/admin/training/assemblies' },
+        { title: 'Gestão Financeira', path: '/admin/training/financial' },
+        { title: 'Direitos e Deveres', path: '/admin/training/rights-duties' }
+      ]
+    },
+    // FEEDBACK
+    {
+      title: 'Feedback',
+      icon: <MessageCircle className="w-5 h-5" />,
+      path: '/admin/feedback',
+      submenu: []
+    },
+    // CONFIGURAÇÕES
     {
       title: 'Configurações',
       icon: <Settings className="w-5 h-5" />,

@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { api } from '../config/api';
+import contractService from '../services/contractService';
 
 
 // Context para gerenciar o estado do layout
@@ -59,46 +60,79 @@ const Layout = ({ children }) => {
     role: 'SuperAdmin'
   };
 
-  // Carregar notificações de ocorrências
+  // Verificar se contrato está vencido
+  const isContractExpired = (endDate) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const contractEnd = new Date(endDate);
+    contractEnd.setHours(0, 0, 0, 0);
+    return contractEnd < today;
+  };
+
+  // Carregar notificações de ocorrências e contratos
   const loadNotifications = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await api.request(`${api.endpoints.incidents}?per_page=10&status=aberta`);
+      const allNotifications = [];
 
-      if (response.ok) {
-        const data = await response.json();
-        const incidents = data.data.data || [];
+      // 1. Carregar notificações de ocorrências
+      try {
+        const response = await api.request(`${api.endpoints.incidents}?per_page=10&status=aberta`);
 
-        // Converter ocorrências para notificações, excluindo as já visualizadas
-        const incidentNotifications = incidents
-          .filter(incident => !viewedIncidents.includes(incident.id))
-          .map(incident => {
-            const timeAgo = formatTimeAgo(incident.created_at);
-            const priorityText = getPriorityText(incident.priority);
+        if (response.ok) {
+          const data = await response.json();
+          const incidents = data.data.data || [];
 
-            return {
-              id: `incident_${incident.id}`,
-              title: `${priorityText}: ${incident.title}`,
-              time: timeAgo,
-              unread: true,
-              type: 'incident',
-              data: incident
-            };
-          });
+          // Converter ocorrências para notificações, excluindo as já visualizadas
+          const incidentNotifications = incidents
+            .filter(incident => !viewedIncidents.includes(incident.id))
+            .map(incident => {
+              const timeAgo = formatTimeAgo(incident.created_at);
+              const priorityText = getPriorityText(incident.priority);
 
-        setNotifications(incidentNotifications);
-        setUnreadCount(incidentNotifications.length);
+              return {
+                id: `incident_${incident.id}`,
+                title: `${priorityText}: ${incident.title}`,
+                time: timeAgo,
+                unread: true,
+                type: 'incident',
+                data: incident
+              };
+            });
+
+          allNotifications.push(...incidentNotifications);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar ocorrências:', error);
       }
+
+      // 2. Carregar notificações de contratos vencidos
+      try {
+        const contractsResponse = await contractService.getAll();
+        const contracts = contractsResponse.data || [];
+
+        const expiredContractNotifications = contracts
+          .filter(contract => contract.status === 'active' && isContractExpired(contract.end_date))
+          .map(contract => ({
+            id: `contract_${contract.id}`,
+            title: `🔴 Contrato Vencido: ${contract.contract_type} - ${contract.company_name}`,
+            time: `Venceu em ${new Date(contract.end_date).toLocaleDateString('pt-BR')}`,
+            unread: true,
+            type: 'contract_expired',
+            data: contract
+          }));
+
+        allNotifications.push(...expiredContractNotifications);
+      } catch (error) {
+        console.error('Erro ao carregar contratos:', error);
+      }
+
+      setNotifications(allNotifications);
+      setUnreadCount(allNotifications.length);
     } catch (error) {
       console.error('Erro ao carregar notificações:', error);
-      // Fallback para notificações mockadas
-      setNotifications([
-        { id: 1, title: 'Nova ocorrência registrada', time: '2 min atrás', unread: true, type: 'incident' },
-        { id: 2, title: 'Reserva de área comum aprovada', time: '1 hora atrás', unread: true, type: 'reservation' },
-      ]);
-      setUnreadCount(2);
     }
   };
 

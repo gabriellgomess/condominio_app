@@ -61,6 +61,16 @@ const Header = () => {
           openReservationId: notification.data?.id
         }
       });
+    } else if (notification.type === 'contract_expired') {
+      // Fechar notificações
+      setShowNotifications(false);
+
+      // Navegar para a página de contratos
+      navigate('/admin/administrative/contracts', {
+        state: {
+          highlightContractId: notification.data?.id
+        }
+      });
     }
   };
 
