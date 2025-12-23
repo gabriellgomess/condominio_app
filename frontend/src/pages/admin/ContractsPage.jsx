@@ -33,6 +33,8 @@ const ContractsPage = () => {
     end_date: '',
     adjustment_index: '',
     termination_notice_date: '',
+    notice_period_days: 30,
+    auto_renew: true,
     contract_value: '',
     status: 'active',
     notes: ''
@@ -101,15 +103,28 @@ const ContractsPage = () => {
 
   const handleEdit = (contract) => {
     setEditingContract(contract);
+
+    // Formatar data para o formato YYYY-MM-DD que o input date aceita
+    const formatDateForInput = (dateString) => {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
     setFormData({
       condominium_id: contract.condominium_id || '',
       contract_type: contract.contract_type || '',
       company_name: contract.company_name || '',
       description: contract.description || '',
-      start_date: contract.start_date || '',
-      end_date: contract.end_date || '',
+      start_date: formatDateForInput(contract.start_date),
+      end_date: formatDateForInput(contract.end_date),
       adjustment_index: contract.adjustment_index || '',
-      termination_notice_date: contract.termination_notice_date || '',
+      termination_notice_date: formatDateForInput(contract.termination_notice_date),
+      notice_period_days: contract.notice_period_days || 30,
+      auto_renew: contract.auto_renew !== undefined ? contract.auto_renew : true,
       contract_value: contract.contract_value || '',
       status: contract.status || 'active',
       notes: contract.notes || ''
@@ -129,6 +144,8 @@ const ContractsPage = () => {
       end_date: '',
       adjustment_index: '',
       termination_notice_date: '',
+      notice_period_days: 30,
+      auto_renew: true,
       contract_value: '',
       status: 'active',
       notes: ''
@@ -141,30 +158,46 @@ const ContractsPage = () => {
     return condo ? condo.name : `ID: ${condominiumId}`;
   };
 
-  const isContractExpired = (endDate) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const contractEnd = new Date(endDate);
-    contractEnd.setHours(0, 0, 0, 0);
-    return contractEnd < today;
+  // Calcula a data limite para enviar o ofício de não renovação
+  const getNoticeLimitDate = (contract) => {
+    if (contract.end_date && contract.notice_period_days) {
+      const endDate = new Date(contract.end_date);
+      endDate.setDate(endDate.getDate() - contract.notice_period_days);
+      return endDate;
+    }
+    return null;
   };
 
-  const isContractExpiringSoon = (endDate) => {
+  // Verifica se o prazo para enviar o ofício já passou
+  const isNoticePeriodExpired = (contract) => {
+    const noticeLimitDate = getNoticeLimitDate(contract);
+    if (!noticeLimitDate) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    noticeLimitDate.setHours(0, 0, 0, 0);
+    return noticeLimitDate < today;
+  };
+
+  // Verifica se o prazo para enviar o ofício está próximo (10 dias)
+  const isNoticePeriodApproaching = (contract) => {
+    const noticeLimitDate = getNoticeLimitDate(contract);
+    if (!noticeLimitDate) return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tenDaysFromNow = new Date(today);
     tenDaysFromNow.setDate(tenDaysFromNow.getDate() + 10);
-    const contractEnd = new Date(endDate);
-    contractEnd.setHours(0, 0, 0, 0);
-    return contractEnd >= today && contractEnd <= tenDaysFromNow;
+    noticeLimitDate.setHours(0, 0, 0, 0);
+    return noticeLimitDate >= today && noticeLimitDate <= tenDaysFromNow;
   };
 
-  const expiredContracts = contracts.filter(contract =>
-    contract.status === 'active' && isContractExpired(contract.end_date)
+  // Contratos com prazo de notificação vencido (perdeu o prazo para cancelar)
+  const noticePeriodExpiredContracts = contracts.filter(contract =>
+    contract.status === 'active' && contract.auto_renew && isNoticePeriodExpired(contract)
   );
 
-  const expiringSoonContracts = contracts.filter(contract =>
-    contract.status === 'active' && isContractExpiringSoon(contract.end_date)
+  // Contratos com prazo de notificação se aproximando
+  const noticePeriodApproachingContracts = contracts.filter(contract =>
+    contract.status === 'active' && contract.auto_renew && isNoticePeriodApproaching(contract)
   );
 
   const filteredContracts = contracts.filter(contract =>
@@ -235,21 +268,24 @@ const ContractsPage = () => {
         </div>
       )}
 
-      {/* Alertas de Contratos Vencidos */}
-      {expiredContracts.length > 0 && (
+      {/* Alertas de Prazo de Notificação Vencido */}
+      {noticePeriodExpiredContracts.length > 0 && (
         <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
           <div className="flex items-start">
             <AlertTriangle className="w-5 h-5 text-red-500 mr-3 mt-0.5" />
             <div className="flex-1">
               <h3 className="text-sm font-semibold text-red-800 mb-2">
-                Atenção: {expiredContracts.length} {expiredContracts.length === 1 ? 'contrato vencido' : 'contratos vencidos'}
+                Atenção: Prazo para cancelamento expirado em {noticePeriodExpiredContracts.length} {noticePeriodExpiredContracts.length === 1 ? 'contrato' : 'contratos'}
               </h3>
+              <p className="text-xs text-red-600 mb-2">
+                O prazo para enviar o ofício de não renovação já passou. Estes contratos serão renovados automaticamente.
+              </p>
               <ul className="text-sm text-red-700 space-y-1">
-                {expiredContracts.map(contract => (
+                {noticePeriodExpiredContracts.map(contract => (
                   <li key={contract.id}>
                     <strong>{contract.contract_type}</strong> - {contract.company_name}
                     <span className="text-red-600 ml-2">
-                      (Vencido em {new Date(contract.end_date).toLocaleDateString('pt-BR')})
+                      (Prazo era {getNoticeLimitDate(contract)?.toLocaleDateString('pt-BR')} - Vence em {new Date(contract.end_date).toLocaleDateString('pt-BR')})
                     </span>
                   </li>
                 ))}
@@ -259,21 +295,24 @@ const ContractsPage = () => {
         </div>
       )}
 
-      {/* Alertas de Contratos Vencendo em Breve */}
-      {expiringSoonContracts.length > 0 && (
+      {/* Alertas de Prazo de Notificação se Aproximando */}
+      {noticePeriodApproachingContracts.length > 0 && (
         <div className="mb-4 bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg">
           <div className="flex items-start">
             <Clock className="w-5 h-5 text-yellow-600 mr-3 mt-0.5" />
             <div className="flex-1">
               <h3 className="text-sm font-semibold text-yellow-800 mb-2">
-                {expiringSoonContracts.length} {expiringSoonContracts.length === 1 ? 'contrato vence' : 'contratos vencem'} nos próximos 10 dias
+                {noticePeriodApproachingContracts.length} {noticePeriodApproachingContracts.length === 1 ? 'contrato precisa' : 'contratos precisam'} de decisão nos próximos 10 dias
               </h3>
+              <p className="text-xs text-yellow-600 mb-2">
+                Envie o ofício de não renovação até a data limite se desejar cancelar.
+              </p>
               <ul className="text-sm text-yellow-700 space-y-1">
-                {expiringSoonContracts.map(contract => (
+                {noticePeriodApproachingContracts.map(contract => (
                   <li key={contract.id}>
                     <strong>{contract.contract_type}</strong> - {contract.company_name}
                     <span className="text-yellow-600 ml-2">
-                      (Vence em {new Date(contract.end_date).toLocaleDateString('pt-BR')})
+                      (Prazo até {getNoticeLimitDate(contract)?.toLocaleDateString('pt-BR')} - Aviso prévio de {contract.notice_period_days} dias)
                     </span>
                   </li>
                 ))}
@@ -538,6 +577,37 @@ const ContractsPage = () => {
                       placeholder="0.00"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Prazo de Aviso Prévio (dias)
+                    </label>
+                    <select
+                      value={formData.notice_period_days}
+                      onChange={(e) => setFormData({ ...formData, notice_period_days: parseInt(e.target.value) })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    >
+                      <option value={30}>30 dias</option>
+                      <option value={60}>60 dias</option>
+                      <option value={90}>90 dias</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Renovação Automática
+                    </label>
+                    <select
+                      value={formData.auto_renew ? 'true' : 'false'}
+                      onChange={(e) => setFormData({ ...formData, auto_renew: e.target.value === 'true' })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    >
+                      <option value="true">Sim</option>
+                      <option value="false">Não</option>
+                    </select>
                   </div>
                 </div>
 

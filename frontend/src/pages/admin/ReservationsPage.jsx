@@ -101,13 +101,29 @@ const ReservationsPage = () => {
   const loadConfiguredSpaces = async () => {
     if (!selectedCondominium) return;
     
+    console.log('🏢 ReservationsPage - loadConfiguredSpaces iniciado para condomínio:', selectedCondominium);
     try {
       const response = await reservationService.getConfiguredSpaces(selectedCondominium);
+      console.log('🏢 ReservationsPage - Resposta de getConfiguredSpaces:', response);
+      console.log('🏢 ReservationsPage - response.status:', response.status);
+      console.log('🏢 ReservationsPage - response.data:', response.data);
+      
       if (response.status === 'success') {
+        console.log('✅ ReservationsPage - Espaços configurados carregados:', response.data?.length || 0);
+        response.data?.forEach((config, index) => {
+          console.log(`  📍 Config ${index + 1}:`, {
+            id: config.id,
+            space_id: config.space_id,
+            space: config.space,
+            active: config.active
+          });
+        });
         setConfiguredSpaces(response.data);
+      } else {
+        console.log('⚠️ ReservationsPage - Status não é success:', response.status);
       }
     } catch (error) {
-      console.error('Erro ao carregar espaços configurados:', error);
+      console.error('❌ Erro ao carregar espaços configurados:', error);
     }
   };
 

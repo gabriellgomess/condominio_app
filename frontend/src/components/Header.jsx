@@ -61,7 +61,9 @@ const Header = () => {
           openReservationId: notification.data?.id
         }
       });
-    } else if (notification.type === 'contract_expired') {
+    } else if (notification.type === 'contract_expired' ||
+               notification.type === 'contract_notice_expired' ||
+               notification.type === 'contract_notice_approaching') {
       // Fechar notificações
       setShowNotifications(false);
 

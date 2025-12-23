@@ -3,7 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Configurar a URL base da API - altere conforme seu ambiente
 // Use 10.0.2.2 para emulador Android, ou o IP da sua máquina para dispositivo físico
-const API_URL = 'http://10.120.1.11:8000/api';
+// const API_URL = 'http://10.120.1.11:8000/api';
+const API_URL = 'https://sindicoapp.com/api';
 
 const api = axios.create({
   baseURL: API_URL,

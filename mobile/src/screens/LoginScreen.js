@@ -10,14 +10,17 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  StatusBar,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { colors, spacing, borderRadius, fontSize } from '../utils/theme';
+
+const logoFull = require('../../assets/logo_full.png');
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
 
   const handleLogin = async () => {
@@ -31,7 +34,6 @@ export default function LoginScreen() {
     setLoading(false);
 
     if (!result.success) {
-      // Mostrar mensagem de erro detalhada
       const errorMessage = result.message || 'Erro ao fazer login';
       const errorDetail = result.error ? `\n\nDetalhes: ${result.error}` : '';
       Alert.alert('Erro no Login', errorMessage + errorDetail);
@@ -39,28 +41,30 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <View style={styles.content}>
-        {/* Logo ou Título */}
-        <View style={styles.header}>
-          <Image
-            source={require('../../assets/logo_full.png')}
-            style={styles.logo}
-          />
-          {/* <Text style={styles.title}>Condomínio App</Text> */}
-          <Text style={styles.subtitle}>Bem-vindo de volta!</Text>
-        </View>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+      
+      {/* Header Preto */}
+      <View style={styles.header}>
+        <Text style={styles.headerWelcome}>Boas-vindas ao</Text>
+        <Image source={logoFull} style={styles.headerLogo} resizeMode="contain" />
+        <Text style={styles.headerSubtext}>Faça login abaixo para acessar sua conta</Text>
+      </View>
 
-        {/* Formulário */}
-        <View style={styles.form}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>E-mail</Text>
+      {/* Conteúdo */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.content}
+      >
+        <View style={styles.cardContainer}>
+          {/* Card de Login */}
+          <View style={styles.loginCard}>
+            <Text style={styles.loginTitle}>Login</Text>
+
             <TextInput
               style={styles.input}
-              placeholder="seu@email.com"
+              placeholder="CPF ou Email"
+              placeholderTextColor={colors.gray[400]}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -68,143 +72,129 @@ export default function LoginScreen() {
               autoCorrect={false}
               editable={!loading}
             />
-          </View>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Senha</Text>
             <TextInput
               style={styles.input}
-              placeholder="••••••••"
+              placeholder="Senha"
+              placeholderTextColor={colors.gray[400]}
               value={password}
               onChangeText={setPassword}
-              secureTextEntry={!showPassword}
+              secureTextEntry
               autoCapitalize="none"
               editable={!loading}
             />
+
             <TouchableOpacity
-              style={styles.passwordToggle}
-              onPress={() => setShowPassword((prev) => !prev)}
-              accessibilityRole="button"
-              accessibilityLabel={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+              style={[styles.button, loading && styles.buttonDisabled]}
+              onPress={handleLogin}
               disabled={loading}
             >
-              <Text style={styles.passwordToggleText}>
-                {showPassword ? 'Ocultar' : 'Mostrar'}
-              </Text>
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>Entrar</Text>
+              )}
             </TouchableOpacity>
-          </View>
 
-          <TouchableOpacity
-            style={[styles.button, loading && styles.buttonDisabled]}
-            onPress={handleLogin}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Entrar</Text>
-            )}
-          </TouchableOpacity>
-
-          {/* Links auxiliares */}
-          <View style={styles.links}>
-            <TouchableOpacity>
-              <Text style={styles.linkText}>Esqueceu a senha?</Text>
+            <TouchableOpacity style={styles.forgotPassword}>
+              <Text style={styles.forgotPasswordText}>Esqueci minha senha</Text>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#faddc3',
+    backgroundColor: colors.white,
+  },
+  header: {
+    backgroundColor: colors.primary,
+    paddingTop: 60,
+    paddingBottom: 30,
+    paddingHorizontal: spacing.lg,
+    alignItems: 'center',
+  },
+  headerWelcome: {
+    fontSize: fontSize.lg,
+    color: colors.white,
+    fontFamily: 'Grift',
+    marginBottom: spacing.sm,
+  },
+  headerLogo: {
+    width: 200,
+    height: 50,
+  },
+  headerSubtext: {
+    fontSize: fontSize.sm,
+    color: colors.gray[400],
+    fontFamily: 'Grift',
+    marginTop: spacing.md,
   },
   content: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    paddingHorizontal: spacing.lg,
   },
-  header: {
+  cardContainer: {
     alignItems: 'center',
-    marginBottom: 40,
   },
-  logo: {
-    width: 300,
-    // height: 120,
-    resizeMode: 'contain',
-    marginBottom: 12,
-    filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.3))',
-    
-  },
-  title: {
-    fontSize: 32,
-    color: '#333',
-    fontFamily: 'GriftBold',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    fontFamily: 'Grift',
-  },
-  form: {
+  loginCard: {
     width: '100%',
+    maxWidth: 350,
+    backgroundColor: colors.white,
+    borderRadius: borderRadius.xl,
+    borderWidth: 1,
+    borderColor: colors.secondary,
+    padding: spacing.lg,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
   },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 14,
-    color: '#333',
-    fontFamily: 'Grift',
-    marginBottom: 8,
+  loginTitle: {
+    fontSize: fontSize.xl,
+    color: colors.primary,
+    fontFamily: 'GriftBold',
+    marginBottom: spacing.lg,
   },
   input: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 15,
-    fontSize: 16,
+    backgroundColor: colors.white,
+    borderRadius: borderRadius.md,
     borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  passwordToggle: {
-    position: 'absolute',
-    right: 12,
-    top: 38,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-  },
-  passwordToggleText: {
-    color: '#FF6A00',
-    fontSize: 13,
-    fontFamily: 'GriftBold',
+    borderColor: colors.gray[300],
+    padding: spacing.md,
+    fontSize: fontSize.base,
+    fontFamily: 'Grift',
+    marginBottom: spacing.md,
+    color: colors.primary,
   },
   button: {
-    backgroundColor: '#FF6A00',
-    borderRadius: 8,
-    padding: 16,
+    backgroundColor: colors.secondary,
+    borderRadius: borderRadius.lg,
+    padding: spacing.md,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: spacing.sm,
   },
   buttonDisabled: {
     opacity: 0.6,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: colors.white,
+    fontSize: fontSize.base,
     fontFamily: 'GriftBold',
   },
-  links: {
-    marginTop: 20,
+  forgotPassword: {
+    marginTop: spacing.md,
     alignItems: 'center',
   },
-  linkText: {
-    color: '#FF6A00',
-    fontSize: 14,
+  forgotPasswordText: {
+    color: colors.secondary,
+    fontSize: fontSize.sm,
     fontFamily: 'Grift',
   },
 });

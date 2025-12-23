@@ -17,14 +17,24 @@ const defaultHeaders = {
 // Função para fazer requisições HTTP
 const apiRequest = async (endpoint, options = {}) => {
   const token = getAuthToken();
-  
+
+  // Combinar headers e filtrar valores undefined
+  const headers = {
+    ...defaultHeaders,
+    ...(token && { Authorization: `Bearer ${token}` }),
+    ...options.headers,
+  };
+
+  // Remover headers com valor undefined
+  Object.keys(headers).forEach(key => {
+    if (headers[key] === undefined) {
+      delete headers[key];
+    }
+  });
+
   const config = {
-    headers: {
-      ...defaultHeaders,
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
     ...options,
+    headers,
   };
 
   try {
@@ -72,17 +82,45 @@ export const api = {
     return apiRequest(url, { method: 'GET' });
   },
 
-  post: (endpoint, data = {}) => {
+  post: (endpoint, data = {}, options = {}) => {
+    // Se data for FormData, não fazer stringify e não definir Content-Type
+    if (data instanceof FormData) {
+      return apiRequest(endpoint, {
+        method: 'POST',
+        body: data,
+        headers: {
+          // Remover Content-Type para deixar o browser definir com o boundary correto
+          'Content-Type': undefined,
+        },
+        ...options,
+      });
+    }
+
     return apiRequest(endpoint, {
       method: 'POST',
       body: JSON.stringify(data),
+      ...options,
     });
   },
 
-  put: (endpoint, data = {}) => {
+  put: (endpoint, data = {}, options = {}) => {
+    // Se data for FormData, não fazer stringify e não definir Content-Type
+    if (data instanceof FormData) {
+      return apiRequest(endpoint, {
+        method: 'PUT',
+        body: data,
+        headers: {
+          // Remover Content-Type para deixar o browser definir com o boundary correto
+          'Content-Type': undefined,
+        },
+        ...options,
+      });
+    }
+
     return apiRequest(endpoint, {
       method: 'PUT',
       body: JSON.stringify(data),
+      ...options,
     });
   },
 

@@ -128,6 +128,18 @@ class Supplier extends Model
         return $query->whereNotNull('contract_start');
     }
 
+    // Relacionamento com publicações
+    public function posts()
+    {
+        return $this->hasMany(SupplierPost::class);
+    }
+
+    // Publicações ativas
+    public function activePosts()
+    {
+        return $this->posts()->active();
+    }
+
     public function scopeContractExpiring($query, $days = 30)
     {
         return $query->whereNotNull('contract_end')

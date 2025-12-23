@@ -31,41 +31,50 @@ export const api = {
   // API endpoints
   endpoints: {
     // Auth
-    login: '/api/auth/login',
-    logout: '/api/auth/logout',
-    me: '/api/auth/me',
+    login: '/auth/login',
+    logout: '/auth/logout',
+    me: '/auth/me',
 
     // Condominiums
-    condominiums: '/api/condominiums',
+    condominiums: '/condominiums',
 
     // Incidents
     incidents: '/incidents',
     incidentStats: '/incidents-stats',
-    incidentStatsByCondominium: (condominiumId) => `/api/condominiums/${condominiumId}/incidents/stats`,
-    incidentTypes: '/api/incident-types',
-    incidentPriorities: '/api/incident-priorities',
-    incidentStatuses: '/api/incident-statuses',
+    incidentStatsByCondominium: (condominiumId) => `/condominiums/${condominiumId}/incidents/stats`,
+    incidentTypes: '/incident-types',
+    incidentPriorities: '/incident-priorities',
+    incidentStatuses: '/incident-statuses',
 
     // Blocks
-    condominiumBlocks: (condominiumId) => `/api/condominiums/${condominiumId}/blocks`,
+    condominiumBlocks: (condominiumId) => `/condominiums/${condominiumId}/blocks`,
 
     // Units
-    condominiumUnits: (condominiumId) => `/api/condominiums/${condominiumId}/units`,
+    condominiumUnits: (condominiumId) => `/condominiums/${condominiumId}/units`,
 
     // Residents
-    condominiumResidents: (condominiumId) => `/api/condominiums/${condominiumId}/residents`,
+    condominiumResidents: (condominiumId) => `/condominiums/${condominiumId}/residents`,
 
     // Announcements
-    announcements: '/api/announcements',
+    announcements: '/announcements',
 
     // Spaces
-    spaces: '/api/spaces',
+    spaces: '/spaces',
 
     // Reservations
-    reservations: '/api/reservations',
+    reservations: '/reservations',
 
     // Suppliers
-    suppliers: '/api/suppliers',
+    suppliers: '/suppliers',
+
+    // Administrative - Contracts
+    contracts: '/administrative/contracts',
+
+    // Administrative - Controls
+    controls: '/administrative/controls',
+
+    // Administrative - Actions
+    actions: '/administrative/actions',
   }
 };
 

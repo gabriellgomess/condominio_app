@@ -3,6 +3,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { X, Save, Eye, Edit, Building2, Loader2, Star, Phone, Mail, MapPin } from 'lucide-react';
 import supplierService from '../../services/supplierService';
 import cepService from '../../services/cepService';
+import { condominiumService } from '../../services/structureService';
 
 const SupplierModal = ({ 
   isOpen, 
@@ -119,15 +120,15 @@ const SupplierModal = ({
 
   const loadCondominiums = async () => {
     try {
-      // Aqui você carregaria os condomínios disponíveis
-      // Por simplicidade, vou usar dados fictícios
-      setCondominiums([
-        { id: 1, name: 'Residencial Verde' },
-        { id: 2, name: 'Condomínio Solar' },
-        { id: 3, name: 'Jardim das Palmeiras' }
-      ]);
+      const response = await condominiumService.getAll();
+      if (response && response.status === 'success') {
+        setCondominiums(response.data || []);
+      } else {
+        setCondominiums([]);
+      }
     } catch (error) {
       console.error('Erro ao carregar condomínios:', error);
+      setCondominiums([]);
     }
   };
 
@@ -200,23 +201,57 @@ const SupplierModal = ({
 
   const validateForm = () => {
     const validation = supplierService.validateSupplierData(formData);
-    setErrors(validation.errors.reduce((acc, error) => {
-      const field = error.split(' ')[0].toLowerCase();
-      acc[field] = error;
-      return acc;
-    }, {}));
+
+    if (!validation.isValid) {
+      // Mapear erros para os campos
+      const fieldErrors = {};
+      validation.errors.forEach(error => {
+        // Tentar extrair o nome do campo do erro
+        const errorLower = error.toLowerCase();
+        if (errorLower.includes('condomínio')) {
+          fieldErrors.condominium_id = error;
+        } else if (errorLower.includes('nome da empresa') || errorLower.includes('nome do contato')) {
+          if (errorLower.includes('contato')) {
+            fieldErrors.contact_name = error;
+          } else {
+            fieldErrors.company_name = error;
+          }
+        } else if (errorLower.includes('email')) {
+          fieldErrors.email = error;
+        } else if (errorLower.includes('telefone')) {
+          fieldErrors.phone = error;
+        } else if (errorLower.includes('categoria')) {
+          fieldErrors.category = error;
+        } else if (errorLower.includes('cnpj')) {
+          fieldErrors.cnpj = error;
+        } else if (errorLower.includes('cpf')) {
+          fieldErrors.cpf = error;
+        } else if (errorLower.includes('endereço')) {
+          fieldErrors.address = error;
+        } else if (errorLower.includes('cep')) {
+          fieldErrors.cep = error;
+        } else if (errorLower.includes('cidade')) {
+          fieldErrors.city = error;
+        } else if (errorLower.includes('estado')) {
+          fieldErrors.state = error;
+        }
+      });
+
+      setErrors(fieldErrors);
+    }
+
     return validation.isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     setLoading(true);
-    
+
     try {
       let result;
       if (mode === 'create') {
@@ -224,12 +259,14 @@ const SupplierModal = ({
       } else if (mode === 'edit') {
         result = await supplierService.update(supplier.id, formData);
       }
-      
-      if (result.status === 'success') {
+
+      if (result && result.status === 'success') {
         if (onSave) {
           onSave(result.data);
         }
         onClose();
+      } else {
+        setErrors({ submit: result?.message || 'Erro ao salvar fornecedor. Tente novamente.' });
       }
     } catch (error) {
       console.error('Erro ao salvar fornecedor:', error);
@@ -338,7 +375,7 @@ const SupplierModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Tipo de Fornecedor *
                 </label>
                 <select
@@ -357,7 +394,7 @@ const SupplierModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Razão Social / Nome *
                 </label>
                 <input
@@ -377,7 +414,7 @@ const SupplierModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Nome Fantasia
                 </label>
                 <input
@@ -386,35 +423,14 @@ const SupplierModal = ({
                   value={formData.trade_name}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                  className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                   placeholder="Ex: Manutenção Rápida"
                 />
               </div>
 
-              {formData.supplier_type === 'company' ? (
+              {formData.supplier_type === 'individual' ? (
                 <div>
-                  <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
-                    CNPJ *
-                  </label>
-                  <input
-                    type="text"
-                    name="cnpj"
-                    value={formData.cnpj}
-                    onChange={handleInputChange}
-                    disabled={mode === 'view'}
-                    maxLength={18}
-                    className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a] text-white' : 'bg-white text-gray-900'} border rounded-lg ${
-                      errors.cnpj ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
-                    } focus:border-[#ff6600] focus:outline-none`}
-                    placeholder="00.000.000/0000-00"
-                  />
-                  {errors.cnpj && (
-                    <p className="text-red-400 text-sm mt-1">{errors.cnpj}</p>
-                  )}
-                </div>
-              ) : (
-                <div>
-                  <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                  <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                     CPF *
                   </label>
                   <input
@@ -433,10 +449,31 @@ const SupplierModal = ({
                     <p className="text-red-400 text-sm mt-1">{errors.cpf}</p>
                   )}
                 </div>
+              ) : (
+                <div>
+                  <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                    CNPJ *
+                  </label>
+                  <input
+                    type="text"
+                    name="cnpj"
+                    value={formData.cnpj}
+                    onChange={handleInputChange}
+                    disabled={mode === 'view'}
+                    maxLength={18}
+                    className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a] text-white' : 'bg-white text-gray-900'} border rounded-lg ${
+                      errors.cnpj ? 'border-red-500' : isDarkMode ? 'border-gray-600' : 'border-gray-300'
+                    } focus:border-[#ff6600] focus:outline-none`}
+                    placeholder="00.000.000/0000-00"
+                  />
+                  {errors.cnpj && (
+                    <p className="text-red-400 text-sm mt-1">{errors.cnpj}</p>
+                  )}
+                </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Categoria *
                 </label>
                 <select
@@ -461,15 +498,15 @@ const SupplierModal = ({
           </div>
 
           {/* Seção 2: Contato */}
-          <div className="${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} rounded-lg p-4">
-            <h3 className="text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center">
+          <div className={`${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} rounded-lg p-4`}>
+            <h3 className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center`}>
               <Phone className="w-5 h-5 mr-2 text-[#ff6600]" />
               Informações de Contato
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Nome do Contato *
                 </label>
                 <input
@@ -489,7 +526,7 @@ const SupplierModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Email *
                 </label>
                 <input
@@ -509,7 +546,7 @@ const SupplierModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Telefone *
                 </label>
                 <input
@@ -529,7 +566,7 @@ const SupplierModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Celular / WhatsApp
                 </label>
                 <input
@@ -538,13 +575,13 @@ const SupplierModal = ({
                   value={formData.mobile}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                  className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                   placeholder="(11) 99999-9999"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Contato de Emergência
                 </label>
                 <input
@@ -553,7 +590,7 @@ const SupplierModal = ({
                   value={formData.emergency_contact}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                  className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                   placeholder="(11) 99999-9999"
                 />
               </div>
@@ -561,15 +598,15 @@ const SupplierModal = ({
           </div>
 
           {/* Seção 3: Endereço */}
-          <div className="${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} rounded-lg p-4">
-            <h3 className="text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center">
+          <div className={`${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} rounded-lg p-4`}>
+            <h3 className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center`}>
               <MapPin className="w-5 h-5 mr-2 text-[#ff6600]" />
               Endereço
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   CEP *
                 </label>
                 <div className="relative">
@@ -600,7 +637,7 @@ const SupplierModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Cidade *
                 </label>
                 <input
@@ -620,7 +657,7 @@ const SupplierModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Estado *
                 </label>
                 <input
@@ -643,7 +680,7 @@ const SupplierModal = ({
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Endereço *
                 </label>
                 <input
@@ -663,7 +700,7 @@ const SupplierModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Número
                 </label>
                 <input
@@ -672,13 +709,13 @@ const SupplierModal = ({
                   value={formData.number}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                  className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                   placeholder="123"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Bairro
                 </label>
                 <input
@@ -687,7 +724,7 @@ const SupplierModal = ({
                   value={formData.district}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                  className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                   placeholder="Centro"
                 />
               </div>
@@ -695,12 +732,12 @@ const SupplierModal = ({
           </div>
 
           {/* Seção 4: Serviços e Valores */}
-          <div className="${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} rounded-lg p-4">
-            <h3 className="text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4">Serviços e Valores</h3>
+          <div className={`${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} rounded-lg p-4`}>
+            <h3 className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4`}>Serviços e Valores</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Descrição dos Serviços
                 </label>
                 <textarea
@@ -709,14 +746,14 @@ const SupplierModal = ({
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
                   rows={3}
-                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                  className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                   placeholder="Descreva os serviços oferecidos..."
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                  <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                     Valor por Hora (R$)
                   </label>
                   <input
@@ -727,13 +764,13 @@ const SupplierModal = ({
                     disabled={mode === 'view'}
                     step="0.01"
                     min="0"
-                    className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                    className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                     placeholder="0.00"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                  <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                     Valor Mensal (R$)
                   </label>
                   <input
@@ -744,7 +781,7 @@ const SupplierModal = ({
                     disabled={mode === 'view'}
                     step="0.01"
                     min="0"
-                    className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                    className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                     placeholder="0.00"
                   />
                 </div>
@@ -753,12 +790,12 @@ const SupplierModal = ({
           </div>
 
           {/* Seção 5: Contrato e Status */}
-          <div className="${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} rounded-lg p-4">
-            <h3 className="text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4">Contrato e Status</h3>
+          <div className={`${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-gray-50'} rounded-lg p-4`}>
+            <h3 className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4`}>Contrato e Status</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Início do Contrato
                 </label>
                 <input
@@ -767,12 +804,12 @@ const SupplierModal = ({
                   value={formData.contract_start}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                  className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Fim do Contrato
                 </label>
                 <input
@@ -781,12 +818,12 @@ const SupplierModal = ({
                   value={formData.contract_end}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                  className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Status *
                 </label>
                 <select
@@ -794,7 +831,7 @@ const SupplierModal = ({
                   value={formData.status}
                   onChange={handleInputChange}
                   disabled={mode === 'view'}
-                  className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                  className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                 >
                   <option value="active">Ativo</option>
                   <option value="inactive">Inativo</option>
@@ -806,7 +843,7 @@ const SupplierModal = ({
 
             {mode === 'view' && formData.evaluation && (
               <div>
-                <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Avaliação
                 </label>
                 {renderStars(formData.evaluation)}
@@ -814,7 +851,7 @@ const SupplierModal = ({
             )}
 
             <div>
-              <label className="block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2">
+              <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                 Observações
               </label>
               <textarea
@@ -823,7 +860,7 @@ const SupplierModal = ({
                 onChange={handleInputChange}
                 disabled={mode === 'view'}
                 rows={3}
-                className="w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none"
+                className={`w-full px-3 py-2 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-lg ${isDarkMode ? 'text-white' : 'text-gray-900'} focus:border-[#ff6600] focus:outline-none`}
                 placeholder="Observações internas sobre o fornecedor..."
               />
             </div>
@@ -849,7 +886,7 @@ const SupplierModal = ({
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className={`px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2`}
               >
                 {loading ? (
                   <>
@@ -870,7 +907,7 @@ const SupplierModal = ({
             <div className="flex justify-end pt-4">
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors"
+                className={`px-4 py-2 bg-[#ff6600] ${isDarkMode ? 'text-white' : 'text-gray-900'} rounded-lg hover:bg-[#ff6600]/80 transition-colors`}
               >
                 Fechar
               </button>

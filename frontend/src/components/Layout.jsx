@@ -60,13 +60,36 @@ const Layout = ({ children }) => {
     role: 'SuperAdmin'
   };
 
-  // Verificar se contrato está vencido
-  const isContractExpired = (endDate) => {
+  // Calcula a data limite para enviar o ofício de não renovação
+  const getNoticeLimitDate = (contract) => {
+    if (contract.end_date && contract.notice_period_days) {
+      const endDate = new Date(contract.end_date);
+      endDate.setDate(endDate.getDate() - contract.notice_period_days);
+      return endDate;
+    }
+    return null;
+  };
+
+  // Verifica se o prazo para enviar o ofício já passou
+  const isNoticePeriodExpired = (contract) => {
+    const noticeLimitDate = getNoticeLimitDate(contract);
+    if (!noticeLimitDate) return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const contractEnd = new Date(endDate);
-    contractEnd.setHours(0, 0, 0, 0);
-    return contractEnd < today;
+    noticeLimitDate.setHours(0, 0, 0, 0);
+    return noticeLimitDate < today;
+  };
+
+  // Verifica se o prazo para enviar o ofício está próximo (10 dias)
+  const isNoticePeriodApproaching = (contract) => {
+    const noticeLimitDate = getNoticeLimitDate(contract);
+    if (!noticeLimitDate) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tenDaysFromNow = new Date(today);
+    tenDaysFromNow.setDate(tenDaysFromNow.getDate() + 10);
+    noticeLimitDate.setHours(0, 0, 0, 0);
+    return noticeLimitDate >= today && noticeLimitDate <= tenDaysFromNow;
   };
 
   // Carregar notificações de ocorrências e contratos
@@ -108,23 +131,36 @@ const Layout = ({ children }) => {
         console.error('Erro ao carregar ocorrências:', error);
       }
 
-      // 2. Carregar notificações de contratos vencidos
+      // 2. Carregar notificações de contratos com prazo de notificação vencido ou se aproximando
       try {
         const contractsResponse = await contractService.getAll();
         const contracts = contractsResponse.data || [];
 
-        const expiredContractNotifications = contracts
-          .filter(contract => contract.status === 'active' && isContractExpired(contract.end_date))
+        // Contratos com prazo de notificação vencido (perdeu o prazo para cancelar)
+        const expiredNoticeNotifications = contracts
+          .filter(contract => contract.status === 'active' && contract.auto_renew && isNoticePeriodExpired(contract))
           .map(contract => ({
-            id: `contract_${contract.id}`,
-            title: `🔴 Contrato Vencido: ${contract.contract_type} - ${contract.company_name}`,
-            time: `Venceu em ${new Date(contract.end_date).toLocaleDateString('pt-BR')}`,
+            id: `contract_notice_expired_${contract.id}`,
+            title: `🔴 Prazo Expirado: ${contract.contract_type} - ${contract.company_name}`,
+            time: `Prazo era ${getNoticeLimitDate(contract)?.toLocaleDateString('pt-BR')} - Contrato renovará automaticamente`,
             unread: true,
-            type: 'contract_expired',
+            type: 'contract_notice_expired',
             data: contract
           }));
 
-        allNotifications.push(...expiredContractNotifications);
+        // Contratos com prazo de notificação se aproximando
+        const approachingNoticeNotifications = contracts
+          .filter(contract => contract.status === 'active' && contract.auto_renew && isNoticePeriodApproaching(contract))
+          .map(contract => ({
+            id: `contract_notice_approaching_${contract.id}`,
+            title: `🟡 Prazo Próximo: ${contract.contract_type} - ${contract.company_name}`,
+            time: `Enviar ofício até ${getNoticeLimitDate(contract)?.toLocaleDateString('pt-BR')} (${contract.notice_period_days} dias antes)`,
+            unread: true,
+            type: 'contract_notice_approaching',
+            data: contract
+          }));
+
+        allNotifications.push(...expiredNoticeNotifications, ...approachingNoticeNotifications);
       } catch (error) {
         console.error('Erro ao carregar contratos:', error);
       }
@@ -203,9 +239,9 @@ const Layout = ({ children }) => {
 
 
 
-  // Verificar rota ativa
+  // Verificar rota ativa - apenas correspondência exata
   const isActiveRoute = (path) => {
-    return location.pathname === path || location.pathname.startsWith(path + '/');
+    return location.pathname === path;
   };
 
   // Controlar submenu
@@ -249,12 +285,40 @@ const Layout = ({ children }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Fechar sidebar ao mudar de rota em mobile
+  // Fechar sidebar ao mudar de rota em mobile (mas manter submenu aberto)
   useEffect(() => {
     if (isMobile) {
       setIsSidebarOpen(false);
     }
   }, [location.pathname, isMobile]);
+
+  // Manter o submenu aberto baseado na rota atual
+  useEffect(() => {
+    const menuItems = [
+      { path: '/dashboard', index: 0 },
+      { path: '/admin/finance', index: 1 },
+      { path: '/admin/administrative', index: 2 },
+      { path: '/admin/operational', index: 3 },
+      { path: '/admin/residents', index: 4 },
+      { path: '/portaria', index: 5 },
+      { path: '/admin/structure', index: 6 },
+      { path: '/admin/reservations', index: 7 },
+      { path: '/admin/incidents', index: 8 },
+      { path: '/admin/suppliers', index: 9 },
+      { path: '/admin/legislation', index: 10 },
+      { path: '/admin/training', index: 11 },
+      { path: '/admin/feedback', index: 12 },
+      { path: '/configuracoes', index: 13 }
+    ];
+
+    // Encontrar qual menu deve estar aberto baseado na rota atual
+    for (const item of menuItems) {
+      if (location.pathname.startsWith(item.path)) {
+        setOpenSubmenu(item.index);
+        break;
+      }
+    }
+  }, [location.pathname]);
 
   // Classes de tema
   const themeClasses = isDarkMode

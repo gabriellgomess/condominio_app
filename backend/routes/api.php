@@ -16,6 +16,8 @@ use App\Http\Controllers\Billing\PaymentController;
 
 // Administrative - Gestão Administrativa
 use App\Http\Controllers\Administrative\ContractController;
+use App\Http\Controllers\Administrative\ControlController;
+use App\Http\Controllers\Administrative\ActionController;
 
 Route::middleware('auth:sanctum')->group(function () {
     // Finance
@@ -40,6 +42,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Administrative - Contratos
     Route::apiResource('administrative/contracts', ContractController::class);
+
+    // Administrative - Controles
+    Route::apiResource('administrative/controls', ControlController::class);
+    Route::get('administrative/controls/expiring/list', [ControlController::class, 'expiring']);
+    Route::get('administrative/controls/expired/list', [ControlController::class, 'expired']);
+
+    // Administrative - Ações a Realizar
+    Route::apiResource('administrative/actions', ActionController::class);
+    Route::get('administrative/actions/overdue/list', [ActionController::class, 'overdue']);
+    Route::get('administrative/actions/statistics/data', [ActionController::class, 'statistics']);
 });
 
 use App\Http\Controllers\Api\ApiController;
@@ -63,6 +75,7 @@ use App\Http\Controllers\Resident\ResidentController;
 use App\Http\Controllers\Reservation\ReservationConfigController;
 use App\Http\Controllers\Reservation\ReservationController;
 use App\Http\Controllers\Supplier\SupplierController;
+use App\Http\Controllers\Supplier\SupplierPostController;
 use App\Http\Controllers\Announcement\AnnouncementController;
 use App\Http\Controllers\Incident\IncidentController;
 use App\Http\Controllers\Api\CepController;
@@ -150,6 +163,10 @@ Route::group([
     Route::get('suppliers-stats', [SupplierController::class, 'getStats']);
     Route::get('supplier-categories', [SupplierController::class, 'getCategories']);
     Route::get('supplier-types', [SupplierController::class, 'getSupplierTypes']);
+
+    // Publicações de Fornecedores
+    Route::apiResource('supplier-posts', SupplierPostController::class);
+    Route::get('suppliers/{supplier_id}/posts', [SupplierPostController::class, 'index']);
 
     // Comunicados
     Route::apiResource('announcements', AnnouncementController::class);

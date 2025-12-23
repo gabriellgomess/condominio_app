@@ -1,0 +1,28 @@
+# Ignorar pastas do projeto pai
+../backend
+../frontend
+../documentacao_condominio_app.txt
+../.claude
+../.trae
+../README.md
+../start-mobile.bat
+
+# Ignorar arquivos de desenvolvimento
+node_modules
+.git
+.expo
+dist
+web-build
+
+# Arquivos de configuração local
+*.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo

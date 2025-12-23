@@ -153,6 +153,7 @@ const Sidebar = () => {
       path: '/admin/suppliers',
       submenu: [
         { title: 'Fornecedores', path: '/admin/suppliers' },
+        { title: 'Publicações', path: '/admin/suppliers/posts' },
         { title: 'Orçamentos', path: '/admin/suppliers/quotes' }
       ]
     },
@@ -288,7 +289,7 @@ const Sidebar = () => {
             {/* Submenu com animação */}
             <div className={`overflow-hidden transition-all duration-300 ${
               item.submenu.length > 0 && openSubmenu === index
-                ? 'max-h-96 opacity-100'
+                ? 'max-h-[500px] opacity-100'
                 : 'max-h-0 opacity-0'
             }`}>
               <div className="ml-6 mt-1 space-y-1">

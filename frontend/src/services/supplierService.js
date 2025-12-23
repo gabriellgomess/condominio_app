@@ -140,6 +140,10 @@ export const supplierService = {
     const errors = [];
 
     // Validações básicas
+    if (!data.condominium_id) {
+      errors.push('Condomínio é obrigatório');
+    }
+
     if (!data.company_name || data.company_name.trim() === '') {
       errors.push('Nome da empresa é obrigatório');
     }
@@ -167,17 +171,19 @@ export const supplierService = {
     }
 
     // Validações condicionais baseadas no tipo
-    if (data.supplier_type === 'company') {
-      if (!data.cnpj || data.cnpj.trim() === '') {
-        errors.push('CNPJ é obrigatório para empresas');
-      } else if (!/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(data.cnpj)) {
-        errors.push('CNPJ deve ter o formato 00.000.000/0000-00');
-      }
-    } else if (data.supplier_type === 'individual' || data.supplier_type === 'mei') {
+    if (data.supplier_type === 'individual') {
+      // Apenas pessoa física usa CPF
       if (!data.cpf || data.cpf.trim() === '') {
         errors.push('CPF é obrigatório');
       } else if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(data.cpf)) {
         errors.push('CPF deve ter o formato 000.000.000-00');
+      }
+    } else if (data.supplier_type === 'company' || data.supplier_type === 'mei') {
+      // Empresa e MEI usam CNPJ
+      if (!data.cnpj || data.cnpj.trim() === '') {
+        errors.push('CNPJ é obrigatório');
+      } else if (!/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(data.cnpj)) {
+        errors.push('CNPJ deve ter o formato 00.000.000/0000-00');
       }
     }
 
@@ -212,7 +218,7 @@ export const supplierService = {
     }
 
     // Validar avaliação se fornecida
-    if (data.evaluation !== null && data.evaluation !== undefined) {
+    if (data.evaluation !== null && data.evaluation !== undefined && data.evaluation !== '') {
       const eval_num = parseFloat(data.evaluation);
       if (isNaN(eval_num) || eval_num < 1 || eval_num > 5) {
         errors.push('Avaliação deve ser um número entre 1 e 5');
@@ -220,11 +226,11 @@ export const supplierService = {
     }
 
     // Validar valores se fornecidos
-    if (data.hourly_rate && (isNaN(data.hourly_rate) || data.hourly_rate < 0)) {
+    if (data.hourly_rate && data.hourly_rate !== '' && (isNaN(data.hourly_rate) || data.hourly_rate < 0)) {
       errors.push('Valor por hora deve ser um número positivo');
     }
 
-    if (data.monthly_rate && (isNaN(data.monthly_rate) || data.monthly_rate < 0)) {
+    if (data.monthly_rate && data.monthly_rate !== '' && (isNaN(data.monthly_rate) || data.monthly_rate < 0)) {
       errors.push('Valor mensal deve ser um número positivo');
     }
 
@@ -349,13 +355,203 @@ export const supplierService = {
   // Calcular dias restantes do contrato
   getContractDaysRemaining: (contractEnd) => {
     if (!contractEnd) return null;
-    
+
     const endDate = new Date(contractEnd);
     const today = new Date();
     const diffTime = endDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     return diffDays > 0 ? diffDays : 0;
+  },
+
+  // ===== PUBLICAÇÕES DE FORNECEDORES =====
+
+  // Listar todas as publicações
+  getPosts: async (params = {}) => {
+    try {
+      return await api.get('/supplier-posts', params);
+    } catch (error) {
+      console.error('Erro ao buscar publicações:', error);
+      return {
+        status: 'error',
+        message: 'Erro ao buscar publicações',
+        data: []
+      };
+    }
+  },
+
+  // Listar publicações de um fornecedor específico
+  getPostsBySupplier: async (supplierId, params = {}) => {
+    try {
+      return await api.get(`/suppliers/${supplierId}/posts`, params);
+    } catch (error) {
+      console.error('Erro ao buscar publicações do fornecedor:', error);
+      return {
+        status: 'error',
+        message: 'Erro ao buscar publicações do fornecedor',
+        data: []
+      };
+    }
+  },
+
+  // Obter publicação por ID
+  getPostById: async (id) => {
+    try {
+      return await api.get(`/supplier-posts/${id}`);
+    } catch (error) {
+      console.error('Erro ao buscar publicação:', error);
+      return {
+        status: 'error',
+        message: 'Erro ao buscar publicação'
+      };
+    }
+  },
+
+  // Criar nova publicação (com upload de imagem)
+  createPost: async (data) => {
+    try {
+      const formData = new FormData();
+
+      // Adicionar todos os campos ao FormData
+      Object.keys(data).forEach(key => {
+        if (data[key] !== null && data[key] !== undefined && data[key] !== '') {
+          // Para booleanos, converter para string '1' ou '0'
+          if (typeof data[key] === 'boolean') {
+            formData.append(key, data[key] ? '1' : '0');
+          } else {
+            formData.append(key, data[key]);
+          }
+        }
+      });
+
+      console.log('FormData entries:');
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
+
+      // Deixar o axios definir o Content-Type automaticamente com o boundary correto
+      return await api.post('/supplier-posts', formData);
+    } catch (error) {
+      console.error('Erro ao criar publicação:', error);
+      return {
+        status: 'error',
+        message: error.response?.data?.message || 'Erro ao criar publicação'
+      };
+    }
+  },
+
+  // Atualizar publicação (com upload de imagem)
+  updatePost: async (id, data) => {
+    try {
+      // Se houver imagem, enviar como FormData
+      if (data.image) {
+        const formData = new FormData();
+
+        // Adicionar todos os campos ao FormData
+        Object.keys(data).forEach(key => {
+          if (data[key] !== null && data[key] !== undefined) {
+            formData.append(key, data[key]);
+          }
+        });
+
+        // Laravel não aceita PUT/PATCH com FormData, então usamos POST com _method
+        formData.append('_method', 'PUT');
+
+        return await api.post(`/supplier-posts/${id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+      }
+
+      // Sem imagem, enviar como JSON normal
+      return await api.put(`/supplier-posts/${id}`, data);
+    } catch (error) {
+      console.error('Erro ao atualizar publicação:', error);
+      return {
+        status: 'error',
+        message: error.response?.data?.message || 'Erro ao atualizar publicação'
+      };
+    }
+  },
+
+  // Excluir publicação
+  deletePost: async (id) => {
+    try {
+      return await api.delete(`/supplier-posts/${id}`);
+    } catch (error) {
+      console.error('Erro ao excluir publicação:', error);
+      return {
+        status: 'error',
+        message: 'Erro ao excluir publicação'
+      };
+    }
+  },
+
+  // Validar dados da publicação
+  validatePostData: (data) => {
+    const errors = [];
+
+    if (!data.supplier_id) {
+      errors.push('Fornecedor é obrigatório');
+    }
+
+    if (!data.title || data.title.trim() === '') {
+      errors.push('Título é obrigatório');
+    }
+
+    if (!data.description || data.description.trim() === '') {
+      errors.push('Descrição é obrigatória');
+    }
+
+    if (data.price && (isNaN(data.price) || data.price < 0)) {
+      errors.push('Preço deve ser um número positivo');
+    }
+
+    if (data.image && data.image instanceof File) {
+      const maxSize = 2 * 1024 * 1024; // 2MB
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+
+      if (data.image.size > maxSize) {
+        errors.push('Imagem deve ter no máximo 2MB');
+      }
+
+      if (!allowedTypes.includes(data.image.type)) {
+        errors.push('Imagem deve ser JPEG, PNG, JPG ou GIF');
+      }
+    }
+
+    if (data.expires_at) {
+      const expiryDate = new Date(data.expires_at);
+      const today = new Date();
+
+      if (expiryDate <= today) {
+        errors.push('Data de expiração deve ser futura');
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  },
+
+  // Verificar se publicação está expirada
+  isPostExpired: (expiresAt) => {
+    if (!expiresAt) return false;
+
+    const expiryDate = new Date(expiresAt);
+    const today = new Date();
+
+    return expiryDate < today;
+  },
+
+  // Obter URL da imagem da publicação
+  getPostImageUrl: (imagePath) => {
+    if (!imagePath) return null;
+    // Remove /api do final da URL base para acessar storage
+    const baseUrl = config.API_BASE_URL.replace('/api', '');
+    return `${baseUrl}/storage/${imagePath}`;
   }
 };
 

@@ -477,10 +477,12 @@ class SupplierController extends Controller
         ];
 
         // Validações condicionais baseadas no tipo
-        if ($request->supplier_type === 'company') {
-            $rules['cnpj'] = 'required|string|max:18|unique:suppliers,cnpj' . ($id ? ",$id" : '');
-        } elseif ($request->supplier_type === 'individual' || $request->supplier_type === 'mei') {
+        if ($request->supplier_type === 'individual') {
+            // Apenas pessoa física usa CPF
             $rules['cpf'] = 'required|string|max:14|unique:suppliers,cpf' . ($id ? ",$id" : '');
+        } elseif ($request->supplier_type === 'company' || $request->supplier_type === 'mei') {
+            // Empresa e MEI usam CNPJ
+            $rules['cnpj'] = 'required|string|max:18|unique:suppliers,cnpj' . ($id ? ",$id" : '');
         }
 
         return Validator::make($request->all(), $rules);
@@ -520,12 +522,14 @@ class SupplierController extends Controller
         ];
 
         // Adicionar CNPJ ou CPF baseado no tipo
-        if ($request->supplier_type === 'company') {
-            $data['cnpj'] = $request->cnpj;
-            $data['cpf'] = null;
-        } else {
+        if ($request->supplier_type === 'individual') {
+            // Apenas pessoa física usa CPF
             $data['cpf'] = $request->cpf;
             $data['cnpj'] = null;
+        } else {
+            // Empresa e MEI usam CNPJ
+            $data['cnpj'] = $request->cnpj;
+            $data['cpf'] = null;
         }
 
         // Processar documentos e disponibilidade se fornecidos

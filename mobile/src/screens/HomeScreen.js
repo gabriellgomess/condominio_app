@@ -1,100 +1,134 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  StatusBar,
+  Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
-import { AlertTriangle, Megaphone, CalendarDays, ChevronRight } from 'lucide-react-native';
-import { colors, spacing, borderRadius, fontSize, fontWeight, shadows } from '../utils/theme';
+
+const logoFull = require('../../assets/logo_full.png');
+import {
+  Bell,
+  Users,
+  Calendar,
+  Megaphone,
+  UserPlus,
+  CalendarDays,
+  Building2,
+  FileText,
+  BookOpen,
+  Settings,
+  MessageCircle,
+  LogOut,
+} from 'lucide-react-native';
+import { colors, spacing, borderRadius, fontSize, shadows } from '../utils/theme';
+import BottomNavigation from '../components/BottomNavigation';
+
+// Dados do menu de funcionalidades
+const menuItems = [
+  { key: 'notifications', label: 'Notificações', icon: Bell, badge: 3 },
+  { key: 'visitors', label: 'Visitantes', icon: Users, badge: 4 },
+  { key: 'events', label: 'Eventos', icon: Calendar, badge: 2 },
+  { key: 'announcements', label: 'Comunicados', icon: Megaphone },
+  { key: 'registerVisitors', label: 'Cadastro de Visitantes', icon: UserPlus },
+  { key: 'calendar', label: 'Calendário de Eventos', icon: CalendarDays },
+  { key: 'services', label: 'Serviços do Condomínio', icon: Building2 },
+  { key: 'contracts', label: 'Contratos', icon: FileText },
+  { key: 'rules', label: 'Padrões do Condomínio', icon: BookOpen },
+];
 
 export default function HomeScreen({ navigation }) {
   const { user, logout } = useAuth();
   const insets = useSafeAreaInsets();
+  const [activeTab, setActiveTab] = useState('home');
 
-  const handleLogout = async () => {
-    await logout();
+  const handleMenuPress = (key) => {
+    // Navegação para as telas
+    switch (key) {
+      case 'notifications':
+        // navigation.navigate('Notifications');
+        break;
+      case 'announcements':
+        // navigation.navigate('Announcements');
+        break;
+      default:
+        break;
+    }
   };
 
+  const handleTabPress = (tab) => {
+    setActiveTab(tab);
+    // Navegação entre tabs
+  };
+
+  const renderMenuItem = (item) => (
+    <TouchableOpacity
+      key={item.key}
+      style={styles.menuItem}
+      onPress={() => handleMenuPress(item.key)}
+      activeOpacity={0.7}      
+    >
+      <View style={styles.menuIconContainer}>
+        <item.icon size={32} color={colors.secondary} />
+        {item.badge && (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{item.badge}</Text>
+          </View>
+        )}
+      </View>
+      <Text style={styles.menuLabel} numberOfLines={2}>
+        {item.label}
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Olá,</Text>
-          <Text style={styles.userName}>{user?.name || 'Usuário'}</Text>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+
+      {/* Header */}
+      <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
+        <Image source={logoFull} style={styles.headerLogo} resizeMode="contain" />
+        <View style={styles.headerActions}>
+          <TouchableOpacity style={styles.headerButton}>
+            <Settings size={24} color={colors.secondary} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerButton} onPress={logout}>
+            <LogOut size={24} color={colors.secondary} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Text style={styles.logoutText}>Sair</Text>
-        </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content}>
+      {/* Conteúdo */}
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Card de Boas-vindas */}
         <View style={styles.welcomeCard}>
-          <Text style={styles.welcomeTitle}>Bem-vindo ao Condomínio App!</Text>
-          <Text style={styles.welcomeText}>
-            Esta é a tela inicial do aplicativo. Aqui você terá acesso a todas as funcionalidades do condomínio.
+          <Text style={styles.welcomeGreeting}>
+            Olá, <Text style={styles.welcomeName}>{user?.name || 'Morador'}</Text>!
+          </Text>
+          <Text style={styles.welcomeCondominium}>
+            {user?.condominium_name || 'Condomínio Residencial Jardim das Flores'}
           </Text>
         </View>
 
-        <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Informações do Usuário</Text>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Nome:</Text>
-            <Text style={styles.infoValue}>{user?.name}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>E-mail:</Text>
-            <Text style={styles.infoValue}>{user?.email}</Text>
-          </View>
-          {/* <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Nível de Acesso:</Text>
-            <Text style={styles.infoValue}>{user?.access_level_name}</Text>
-          </View> */}
-        </View>
-
-        {/* Menu de Funcionalidades */}
-        <View style={styles.menuCard}>
-          <Text style={styles.menuTitle}>Funcionalidades</Text>
-
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={() => navigation.navigate('Incidents')}
-          >
-            <View style={styles.menuIcon}>
-              <AlertTriangle size={24} color={colors.secondary} />
-            </View>
-            <View style={styles.menuContent}>
-              <Text style={styles.menuItemTitle}>Ocorrências</Text>
-              <Text style={styles.menuItemDescription}>Registre e acompanhe ocorrências do condomínio</Text>
-            </View>
-            <ChevronRight size={24} color={colors.gray[400]} />
-          </TouchableOpacity>
-
-          {/* Outros itens do menu (em breve) */}
-          <View style={[styles.menuItem, styles.menuItemDisabled]}>
-            <View style={styles.menuIcon}>
-              <Megaphone size={24} color={colors.secondary} />
-            </View>
-            <View style={styles.menuContent}>
-              <Text style={styles.menuItemTitle}>Comunicados</Text>
-              <Text style={styles.menuItemDescription}>Em breve</Text>
-            </View>
-          </View>
-
-          <View style={[styles.menuItem, styles.menuItemDisabled]}>
-            <View style={styles.menuIcon}>
-              <CalendarDays size={24} color={colors.secondary} />
-            </View>
-            <View style={styles.menuContent}>
-              <Text style={styles.menuItemTitle}>Reservas</Text>
-              <Text style={styles.menuItemDescription}>Em breve</Text>
-            </View>
-          </View>
+        {/* Grid de Funcionalidades */}
+        <View style={styles.menuGrid}>
+          {menuItems.map(renderMenuItem)}
         </View>
       </ScrollView>
+
+      {/* FAB - Botão de Chat */}
+      <TouchableOpacity style={styles.fab}>
+        <MessageCircle size={28} color={colors.white} />
+      </TouchableOpacity>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation activeTab={activeTab} onTabPress={handleTabPress} />
     </View>
   );
 }
@@ -102,39 +136,27 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: colors.light,
-    backgroundColor: '#fae3cf',
+    backgroundColor: colors.gray[100],
   },
   header: {
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: spacing.md,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.gray[200],
-  },
-  greeting: {
-    fontSize: fontSize.sm,
-    color: colors.gray[600],
-    fontFamily: 'Grift',
-  },
-  userName: {
-    fontSize: fontSize.xl,
-    color: colors.primary,
-    fontFamily: 'GriftBold',
-  },
-  logoutButton: {
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    backgroundColor: colors.white,
-    borderRadius: borderRadius.sm,
-    borderWidth: 1,
-    borderColor: colors.error.main,
+    paddingVertical: spacing.md,
   },
-  logoutText: {
-    color: colors.error.main,
-    fontFamily: 'GriftBold',
+  headerLogo: {
+    width: 140,
+    height: 35,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  headerButton: {
+    padding: spacing.xs,
   },
   content: {
     flex: 1,
@@ -145,102 +167,84 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
     padding: spacing.md,
     marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.secondary,
     ...shadows.sm,
   },
-  welcomeTitle: {
+  welcomeGreeting: {
     fontSize: fontSize.xl,
     color: colors.primary,
-    marginBottom: spacing.sm,
-    fontFamily: 'GriftBold',
-  },
-  welcomeText: {
-    fontSize: fontSize.sm,
-    color: colors.gray[600],
-    lineHeight: 20,
     fontFamily: 'Grift',
   },
-  infoCard: {
-    backgroundColor: colors.white,
-    borderRadius: borderRadius.lg,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    ...shadows.sm,
-  },
-  infoTitle: {
-    fontSize: fontSize.lg,
-    color: colors.primary,
-    marginBottom: spacing.md,
+  welcomeName: {
+    color: colors.secondary,
     fontFamily: 'GriftBold',
   },
-  infoRow: {
+  welcomeCondominium: {
+    fontSize: fontSize.sm,
+    color: colors.gray[500],
+    fontFamily: 'Grift',
+    marginTop: spacing.xs,
+  },
+  menuGrid: {
     flexDirection: 'row',
-    marginBottom: spacing.sm,
-  },
-  infoLabel: {
-    fontSize: fontSize.sm,
-    color: colors.gray[600],
-    width: 120,
-    fontFamily: 'GriftBold',
-  },
-  infoValue: {
-    fontSize: fontSize.sm,
-    color: colors.primary,
-    flex: 1,
-    fontFamily: 'Grift',
-  },
-  menuCard: {
-    backgroundColor: colors.white,
-    borderRadius: borderRadius.lg,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    ...shadows.sm,
-  },
-  menuTitle: {
-    fontSize: fontSize.lg,
-    color: colors.primary,
-    marginBottom: spacing.md,
-    fontFamily: 'GriftBold',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: '31%',
+    backgroundColor: colors.white,
+    borderRadius: borderRadius.lg,
     padding: spacing.md,
-    backgroundColor: colors.gray[50],
-    borderRadius: borderRadius.md,
-    marginBottom: spacing.sm,
+    alignItems: 'center',
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.secondary,
+    ...shadows.sm,
   },
-  menuItemDisabled: {
-    opacity: 0.5,
-  },
-  menuIcon: {
-    width: 48,
-    height: 48,
+  menuIconContainer: {
+    width: 60,
+    height: 60,
     borderRadius: borderRadius.md,
-    backgroundColor: colors.secondary + '20',
+    backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: spacing.md,
+    marginBottom: spacing.sm,
+    position: 'relative',
   },
-  menuIconText: {
-    fontSize: 24,
+  badge: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: colors.secondary,
+    borderRadius: borderRadius.full,
+    minWidth: 22,
+    height: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 6,
   },
-  menuContent: {
-    flex: 1,
-  },
-  menuItemTitle: {
-    fontSize: fontSize.base,
-    color: colors.primary,
-    marginBottom: spacing.xs / 2,
+  badgeText: {
+    color: colors.white,
+    fontSize: fontSize.xs,
     fontFamily: 'GriftBold',
   },
-  menuItemDescription: {
+  menuLabel: {
     fontSize: fontSize.xs,
-    color: colors.gray[600],
+    color: colors.primary,
     fontFamily: 'Grift',
+    textAlign: 'center',
   },
-  menuArrow: {
-    fontSize: 32,
-    color: colors.gray[400],
-    marginLeft: spacing.sm,
+  fab: {
+    position: 'absolute',
+    right: spacing.md,
+    bottom: 135,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.secondary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...shadows.md,
   },
 });

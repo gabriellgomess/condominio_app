@@ -6,10 +6,11 @@ import { ActivityIndicator, View, StyleSheet } from 'react-native';
 
 // Screens
 import LoginScreen from '../screens/LoginScreen';
-import HomeScreen from '../screens/HomeScreen';
+import MainTabScreen from '../screens/MainTabScreen';
 import IncidentsScreen from '../screens/IncidentsScreen';
 import NewIncidentScreen from '../screens/NewIncidentScreen';
 import IncidentDetailScreen from '../screens/IncidentDetailScreen';
+import EventsScreen from '../screens/EventsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,10 +32,11 @@ export default function AppNavigator() {
           <Stack.Screen name="Login" component={LoginScreen} />
         ) : (
           <>
-            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Main" component={MainTabScreen} />
             <Stack.Screen name="Incidents" component={IncidentsScreen} />
             <Stack.Screen name="NewIncident" component={NewIncidentScreen} />
             <Stack.Screen name="IncidentDetail" component={IncidentDetailScreen} />
+            <Stack.Screen name="Events" component={EventsScreen} />
           </>
         )}
       </Stack.Navigator>

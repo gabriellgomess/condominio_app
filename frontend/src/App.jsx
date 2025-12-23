@@ -23,6 +23,9 @@ import MonthlyFeesPage from './pages/admin/MonthlyFeesPage';
 import UnitBillingsPage from './pages/admin/UnitBillingsPage';
 import DeliveriesPage from './pages/admin/DeliveriesPage';
 import ContractsPage from './pages/admin/ContractsPage';
+import ControlsPage from './pages/admin/ControlsPage';
+import ActionsPage from './pages/admin/ActionsPage';
+import SupplierPostsPage from './pages/suppliers/SupplierPostsPage';
 
 function App() {
   return (
@@ -50,6 +53,7 @@ function App() {
                     <Route path="structure" element={<StructureManagementPage />} />
                     <Route path="residents" element={<ResidentsManagementPage />} />
                     <Route path="suppliers" element={<SuppliersPage />} />
+                    <Route path="suppliers/posts" element={<SupplierPostsPage />} />
                     <Route path="reservations" element={<ReservationManagementPage />} />
                     <Route path="bookings" element={<ReservationsPage />} />
                     <Route path="announcements" element={<AnnouncementsPage />} />
@@ -62,6 +66,8 @@ function App() {
                     <Route path="billing/unit-billings" element={<UnitBillingsPage />} />
                     <Route path="gate/deliveries" element={<DeliveriesPage />} />
                     <Route path="administrative/contracts" element={<ContractsPage />} />
+                    <Route path="administrative/controls" element={<ControlsPage />} />
+                    <Route path="administrative/actions" element={<ActionsPage />} />
                     <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                   </Routes>
                 </ProtectedRoute>
