@@ -70,8 +70,8 @@ const VisitorsPage = () => {
   const [validateModal, setValidateModal] = useState({ isOpen: false, data: null });
   const [checkInOutModal, setCheckInOutModal] = useState({ isOpen: false, data: null, action: null });
 
-  // Verificar se é SuperAdmin
-  const isSuperAdmin = user?.access_level === 'superadmin';
+  // Verificar se é SuperAdmin (administrador é o nível mais alto)
+  const isSuperAdmin = user?.access_level === 'administrador';
 
   // Usar localSelectedCondominium se for SuperAdmin, senão usar selectedCondominium ou user.condominium_id
   const condominiumId = isSuperAdmin

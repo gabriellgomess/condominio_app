@@ -42,7 +42,7 @@ const ValidateVisitorModal = ({ visitor, onClose, onSuccess, isDarkMode }) => {
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Overlay */}
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm bg-opacity-50 transition-opacity"
           onClick={onClose}
         />
 

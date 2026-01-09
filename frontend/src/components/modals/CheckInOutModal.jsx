@@ -42,7 +42,7 @@ const CheckInOutModal = ({ visitor, action, onClose, onSuccess, isDarkMode }) =>
       <div className="flex min-h-screen items-center justify-center p-4">
         {/* Overlay */}
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm bg-opacity-50 transition-opacity"
           onClick={onClose}
         />
 
@@ -119,16 +119,12 @@ const CheckInOutModal = ({ visitor, action, onClose, onSuccess, isDarkMode }) =>
                   isCheckIn ? 'text-green-600' : 'text-orange-600'
                 }`} />
                 <div>
-                  <p className={`text-sm font-medium ${
-                    isCheckIn ? 'text-green-900 dark:text-green-100' : 'text-orange-900 dark:text-orange-100'
-                  }`}>
+                  <p className={`text-sm font-medium`}>
                     {isCheckIn
                       ? 'Confirme o registro de entrada do visitante'
                       : 'Confirme o registro de saída do visitante'}
                   </p>
-                  <p className={`text-xs mt-1 ${
-                    isCheckIn ? 'text-green-700 dark:text-green-200' : 'text-orange-700 dark:text-orange-200'
-                  }`}>
+                  <p className={`text-xs mt-1}`}>
                     {isCheckIn
                       ? 'A data e hora atuais serão registradas como entrada.'
                       : 'A data e hora atuais serão registradas como saída.'}
