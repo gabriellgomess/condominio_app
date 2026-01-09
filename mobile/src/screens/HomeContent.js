@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -17,30 +17,93 @@ import {
   Building2,
   FileText,
   BookOpen,
+  CheckSquare,
 } from 'lucide-react-native';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../utils/theme';
-
-// Dados do menu de funcionalidades
-const menuItems = [
-  { key: 'notifications', label: 'Notificações', icon: Bell, badge: 3 },
-  { key: 'visitors', label: 'Visitantes', icon: Users, badge: 4 },
-  { key: 'events', label: 'Eventos', icon: Calendar, badge: 2 },
-  { key: 'announcements', label: 'Comunicados', icon: Megaphone },
-  { key: 'registerVisitors', label: 'Cadastro de Visitantes', icon: UserPlus },
-  { key: 'calendar', label: 'Calendário de Eventos', icon: CalendarDays },
-  { key: 'services', label: 'Serviços do Condomínio', icon: Building2 },
-  { key: 'contracts', label: 'Contratos', icon: FileText },
-  { key: 'rules', label: 'Padrões do Condomínio', icon: BookOpen },
-];
+import reservationService from '../services/reservationService';
+import announcementService from '../services/announcementService';
+import api from '../services/api';
 
 export default function HomeContent({ navigation }) {
-  const { user } = useAuth();
+  const { user, resident } = useAuth();
+  const [counts, setCounts] = useState({
+    notifications: 0,
+    visitors: 0,
+    events: 0,
+  });
+
+  const condominiumId = resident?.condominium_id || user?.condominium_id;
+
+  const loadCounts = useCallback(async () => {
+    if (!condominiumId) return;
+
+    try {
+      // Buscar contagens em paralelo
+      const [reservationsRes, announcementsRes, visitorsRes] = await Promise.all([
+        // Reservas/Eventos - contar apenas futuras
+        reservationService.getReservations(condominiumId).catch(() => ({ success: false, data: [] })),
+
+        // Anúncios não lidos (notificações)
+        announcementService.getAnnouncements(condominiumId).catch(() => ({ success: false, data: [] })),
+
+        // Visitantes pendentes/agendados
+        api.get(`/condominiums/${condominiumId}/visitors`).catch(() => ({ data: { data: [] } })),
+      ]);
+
+      const newCounts = {
+        notifications: 0,
+        visitors: 0,
+        events: 0,
+      };
+
+      // Contar eventos futuros
+      if (reservationsRes.success && Array.isArray(reservationsRes.data)) {
+        const now = new Date();
+        newCounts.events = reservationsRes.data.filter(r => {
+          const reservationDate = new Date(r.reservation_date);
+          return reservationDate >= now && r.status !== 'cancelled';
+        }).length;
+      }
+
+      // Contar anúncios não lidos (últimos 7 dias como "novo")
+      if (announcementsRes.success && Array.isArray(announcementsRes.data)) {
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        newCounts.notifications = announcementsRes.data.filter(a => {
+          const announcementDate = new Date(a.created_at);
+          return announcementDate >= sevenDaysAgo;
+        }).length;
+      }
+
+      // Contar visitantes pendentes/agendados
+      if (visitorsRes.data?.data && Array.isArray(visitorsRes.data.data)) {
+        newCounts.visitors = visitorsRes.data.data.filter(v =>
+          v.status === 'pending' || v.status === 'scheduled'
+        ).length;
+      }
+
+      setCounts(newCounts);
+    } catch (error) {
+      console.error('Erro ao carregar contagens:', error);
+    }
+  }, [condominiumId]);
+
+  useEffect(() => {
+    loadCounts();
+  }, [loadCounts]);
 
   const handleMenuPress = (key) => {
     switch (key) {
       case 'events':
       case 'calendar':
         navigation.navigate('Events');
+        break;
+      case 'visitors':
+      case 'registerVisitors':
+        navigation.navigate('Visitors');
+        break;
+      case 'validateVisitors':
+        navigation.navigate('VisitorValidation');
         break;
       case 'notifications':
         // As notificações estão na aba de notificações do MainTabScreen
@@ -53,6 +116,23 @@ export default function HomeContent({ navigation }) {
     }
   };
 
+  // Verificar se o usuário tem permissão de administrador ou síndico
+  const hasAdminAccess = user?.access_level === 'sindico' || user?.access_level === 'administrador';
+
+  // Dados do menu de funcionalidades com badges dinâmicos
+  const menuItems = [
+    { key: 'notifications', label: 'Notificações', icon: Bell, badge: counts.notifications },
+    { key: 'visitors', label: 'Visitantes', icon: Users, badge: counts.visitors },
+    { key: 'events', label: 'Eventos', icon: Calendar, badge: counts.events },
+    { key: 'announcements', label: 'Comunicados', icon: Megaphone },
+    { key: 'registerVisitors', label: 'Cadastro de Visitantes', icon: UserPlus },
+    ...(hasAdminAccess ? [{ key: 'validateVisitors', label: 'Validar Visitantes', icon: CheckSquare, badge: counts.visitors }] : []),
+    { key: 'calendar', label: 'Calendário de Eventos', icon: CalendarDays },
+    { key: 'services', label: 'Serviços do Condomínio', icon: Building2 },
+    { key: 'contracts', label: 'Contratos', icon: FileText },
+    { key: 'rules', label: 'Padrões do Condomínio', icon: BookOpen },
+  ];
+
   const renderMenuItem = (item) => (
     <TouchableOpacity
       key={item.key}
@@ -60,13 +140,13 @@ export default function HomeContent({ navigation }) {
       onPress={() => handleMenuPress(item.key)}
       activeOpacity={0.7}
     >
+      {item.badge !== undefined && item.badge > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{item.badge}</Text>
+        </View>
+      )}
       <View style={styles.menuIconContainer}>
         <item.icon size={32} color={colors.secondary} />
-        {item.badge && (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{item.badge}</Text>
-          </View>
-        )}
       </View>
       <Text style={styles.menuLabel} numberOfLines={2}>
         {item.label}
@@ -143,7 +223,28 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     borderWidth: 0.8,
     borderColor: colors.secondary,
+    position: 'relative',
     ...shadows.sm,
+  },
+  badge: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: colors.secondary,
+    borderRadius: borderRadius.full,
+    minWidth: 28,
+    height: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    borderWidth: 2,
+    borderColor: colors.white,
+    ...shadows.md,
+  },
+  badgeText: {
+    color: colors.white,
+    fontSize: fontSize.sm,
+    fontFamily: 'GriftBold',
   },
   menuIconContainer: {
     width: 60,
@@ -153,24 +254,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.sm,
-    position: 'relative',
-  },
-  badge: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    backgroundColor: colors.secondary,
-    borderRadius: borderRadius.full,
-    minWidth: 22,
-    height: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 6,
-  },
-  badgeText: {
-    color: colors.white,
-    fontSize: fontSize.xs,
-    fontFamily: 'GriftBold',
   },
   menuLabel: {
     fontSize: fontSize.xs,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { residentService, api } from '../../services/api';
-import { X, Save, Eye, Edit, User, Phone, Mail, Home, Building, Calendar, Users, FileText } from 'lucide-react';
+import { X, Save, Eye, Edit, User, Phone, Mail, Home, Building, Calendar, Users, FileText, Smartphone, Copy, CheckCircle } from 'lucide-react';
 
 const ResidentModal = ({ 
   isOpen, 
@@ -48,6 +48,9 @@ const ResidentModal = ({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [filteredUnits, setFilteredUnits] = useState([]);
+  const [mobileCredentials, setMobileCredentials] = useState(null);
+  const [showCredentials, setShowCredentials] = useState(false);
+  const [copiedField, setCopiedField] = useState(null);
 
   useEffect(() => {
     if (resident && (mode === 'edit' || mode === 'view')) {
@@ -247,11 +250,23 @@ const ResidentModal = ({
       }
       
       console.log('🚀 ResidentModal - Resposta da API:', response);
-      
+
       if (response.status === 'success') {
         console.log('✅ ResidentModal - Sucesso, chamando onSave com:', response.data);
-        onSave(response.data);
-        onClose();
+
+        // Se for criação, mostrar credenciais de acesso mobile
+        if (mode === 'create' && response.default_password) {
+          setMobileCredentials({
+            owner_email: formData.owner.email,
+            owner_password: response.default_password,
+            tenant_email: formData.tenant.has_tenant ? formData.tenant.email : null,
+            tenant_password: formData.tenant.has_tenant ? response.default_password : null
+          });
+          setShowCredentials(true);
+        } else {
+          onSave(response.data);
+          onClose();
+        }
       } else {
         console.error('❌ ResidentModal - Erro da API:', response.message);
         setErrors({ submit: response.message || 'Erro ao salvar morador' });
@@ -282,7 +297,177 @@ const ResidentModal = ({
     return statuses[status] || status;
   };
 
+  const handleCopyToClipboard = async (text, field) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      console.error('Erro ao copiar:', err);
+    }
+  };
+
+  const handleCloseCredentials = () => {
+    setShowCredentials(false);
+    setMobileCredentials(null);
+    onSave(null);
+    onClose();
+  };
+
   if (!isOpen) return null;
+
+  // Modal de credenciais de acesso mobile
+  if (showCredentials && mobileCredentials) {
+    return (
+      <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
+        <div className={`${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'} rounded-lg p-6 w-full max-w-lg`}>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <Smartphone className="w-6 h-6 text-[#ff6600]" />
+              <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Acesso Mobile Criado
+              </h2>
+            </div>
+          </div>
+
+          <div className={`${isDarkMode ? 'bg-[#2a2a2a]' : 'bg-blue-50'} border ${isDarkMode ? 'border-[#ff6600]/30' : 'border-blue-200'} rounded-lg p-4 mb-6`}>
+            <p className={`text-sm ${isDarkMode ? 'text-[#f3f7f1]' : 'text-blue-800'} mb-2`}>
+              As credenciais de acesso ao aplicativo mobile foram criadas com sucesso.
+              Por favor, anote ou copie estas informações e envie aos moradores.
+            </p>
+          </div>
+
+          {/* Credenciais do Proprietário */}
+          <div className="mb-6">
+            <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-[#ff6600]' : 'text-gray-800'} mb-3`}>
+              Proprietário
+            </h3>
+            <div className="space-y-3">
+              <div>
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
+                  Email:
+                </label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    value={mobileCredentials.owner_email}
+                    readOnly
+                    className={`flex-1 px-3 py-2 rounded-lg ${isDarkMode ? 'bg-[#2a2a2a] text-white border-gray-600' : 'bg-gray-100 text-gray-900 border-gray-300'} border`}
+                  />
+                  <button
+                    onClick={() => handleCopyToClipboard(mobileCredentials.owner_email, 'owner_email')}
+                    className={`p-2 rounded-lg ${isDarkMode ? 'bg-[#2a2a2a] hover:bg-[#3a3a3a]' : 'bg-gray-200 hover:bg-gray-300'}`}
+                  >
+                    {copiedField === 'owner_email' ? (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <Copy className="w-5 h-5 text-gray-500" />
+                    )}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
+                  Senha:
+                </label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    value={mobileCredentials.owner_password}
+                    readOnly
+                    className={`flex-1 px-3 py-2 rounded-lg ${isDarkMode ? 'bg-[#2a2a2a] text-white border-gray-600' : 'bg-gray-100 text-gray-900 border-gray-300'} border font-mono`}
+                  />
+                  <button
+                    onClick={() => handleCopyToClipboard(mobileCredentials.owner_password, 'owner_password')}
+                    className={`p-2 rounded-lg ${isDarkMode ? 'bg-[#2a2a2a] hover:bg-[#3a3a3a]' : 'bg-gray-200 hover:bg-gray-300'}`}
+                  >
+                    {copiedField === 'owner_password' ? (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <Copy className="w-5 h-5 text-gray-500" />
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Credenciais do Inquilino (se houver) */}
+          {mobileCredentials.tenant_email && (
+            <div className="mb-6">
+              <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-[#ff6600]' : 'text-gray-800'} mb-3`}>
+                Inquilino
+              </h3>
+              <div className="space-y-3">
+                <div>
+                  <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
+                    Email:
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={mobileCredentials.tenant_email}
+                      readOnly
+                      className={`flex-1 px-3 py-2 rounded-lg ${isDarkMode ? 'bg-[#2a2a2a] text-white border-gray-600' : 'bg-gray-100 text-gray-900 border-gray-300'} border`}
+                    />
+                    <button
+                      onClick={() => handleCopyToClipboard(mobileCredentials.tenant_email, 'tenant_email')}
+                      className={`p-2 rounded-lg ${isDarkMode ? 'bg-[#2a2a2a] hover:bg-[#3a3a3a]' : 'bg-gray-200 hover:bg-gray-300'}`}
+                    >
+                      {copiedField === 'tenant_email' ? (
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                      ) : (
+                        <Copy className="w-5 h-5 text-gray-500" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
+                    Senha:
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={mobileCredentials.tenant_password}
+                      readOnly
+                      className={`flex-1 px-3 py-2 rounded-lg ${isDarkMode ? 'bg-[#2a2a2a] text-white border-gray-600' : 'bg-gray-100 text-gray-900 border-gray-300'} border font-mono`}
+                    />
+                    <button
+                      onClick={() => handleCopyToClipboard(mobileCredentials.tenant_password, 'tenant_password')}
+                      className={`p-2 rounded-lg ${isDarkMode ? 'bg-[#2a2a2a] hover:bg-[#3a3a3a]' : 'bg-gray-200 hover:bg-gray-300'}`}
+                    >
+                      {copiedField === 'tenant_password' ? (
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                      ) : (
+                        <Copy className="w-5 h-5 text-gray-500" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className={`${isDarkMode ? 'bg-yellow-900/20' : 'bg-yellow-50'} border ${isDarkMode ? 'border-yellow-700/50' : 'border-yellow-200'} rounded-lg p-4 mb-6`}>
+            <p className={`text-sm ${isDarkMode ? 'text-yellow-200' : 'text-yellow-800'}`}>
+              <strong>Importante:</strong> Envie estas credenciais aos moradores por email ou outro meio seguro.
+              Eles poderão alterar a senha no primeiro acesso ao aplicativo.
+            </p>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              onClick={handleCloseCredentials}
+              className="px-6 py-2 bg-[#ff6600] text-white rounded-lg hover:bg-[#e55a00] transition-colors"
+            >
+              Concluir
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">

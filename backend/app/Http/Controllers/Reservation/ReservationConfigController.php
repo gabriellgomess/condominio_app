@@ -420,22 +420,69 @@ class ReservationConfigController extends Controller
             // Verificar se o condomínio existe
             $condominium = Condominium::findOrFail($condominium_id);
 
-            // Buscar espaços reserváveis que não têm configuração ativa
-            $spaces = Space::where('condominium_id', $condominium_id)
-                ->where('reservable', true)
+            // Buscar configurações de reserva ativas com seus espaços
+            $configs = ReservationConfig::where('condominium_id', $condominium_id)
                 ->where('active', true)
-                ->whereDoesntHave('reservationConfigs', function ($query) {
-                    $query->where('active', true);
-                })
-                ->orderBy('number')
+                ->with(['space'])
                 ->get();
+
+            \Log::info('getReservableSpaces', [
+                'condominium_id' => $condominium_id,
+                'configs_count' => $configs->count(),
+                'configs' => $configs->map(function ($c) {
+                    return [
+                        'config_id' => $c->id,
+                        'space_id' => $c->space_id,
+                        'space_type' => $c->space->space_type ?? null,
+                        'space' => $c->space ? $c->space->toArray() : null
+                    ];
+                })
+            ]);
+
+            // Formatar dados para o mobile app
+            $formattedSpaces = $configs->map(function ($config) {
+                $space = $config->space;
+
+                if (!$space) {
+                    \Log::warning('Config sem espaço', ['config_id' => $config->id]);
+                    return null;
+                }
+
+                return [
+                    'id' => $config->id,
+                    'space_id' => $space->id,
+                    'name' => $space->type_name, // Usa o accessor do model Space
+                    'number' => $space->number,
+                    'location' => $space->location,
+                    'description' => $config->description ?? $space->description,
+                    'max_capacity' => $config->max_reservations_per_day ?? 0,
+                    'available_days' => $config->available_days,
+                    'start_time' => $config->start_time->format('H:i'),
+                    'end_time' => $config->end_time->format('H:i'),
+                    'duration_minutes' => $config->duration_minutes,
+                    'min_advance_hours' => $config->min_advance_hours,
+                    'max_advance_days' => $config->max_advance_days,
+                    'hourly_rate' => $config->hourly_rate,
+                    'daily_rate' => $config->daily_rate,
+                ];
+            })->filter(); // Remove nulls
+
+            \Log::info('getReservableSpaces - Dados formatados', [
+                'formatted_count' => $formattedSpaces->count(),
+                'formatted_data' => $formattedSpaces->values()->toArray()
+            ]);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Espaços reserváveis encontrados',
-                'data' => $spaces
+                'data' => $formattedSpaces->values() // Re-index array
             ], 200);
         } catch (\Throwable $th) {
+            \Log::error('Erro em getReservableSpaces', [
+                'message' => $th->getMessage(),
+                'trace' => $th->getTraceAsString()
+            ]);
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Erro ao buscar espaços reserváveis',

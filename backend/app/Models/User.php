@@ -28,6 +28,8 @@ class User extends Authenticatable
         'email',
         'password',
         'access_level',
+        'condominium_id',
+        'access_level_name',
     ];
 
     /**
@@ -109,5 +111,29 @@ class User extends Authenticatable
         ];
 
         return $levels[$this->access_level] ?? 'Desconhecido';
+    }
+
+    /**
+     * Relacionamento com condomínio
+     */
+    public function condominium()
+    {
+        return $this->belongsTo(Condominium::class);
+    }
+
+    /**
+     * Relacionamento com dados de morador (proprietário)
+     */
+    public function residentAsOwner()
+    {
+        return $this->hasOne(Resident::class, 'owner_user_id');
+    }
+
+    /**
+     * Relacionamento com dados de morador (inquilino)
+     */
+    public function residentAsTenant()
+    {
+        return $this->hasOne(Resident::class, 'tenant_user_id');
     }
 }

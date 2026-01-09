@@ -32,10 +32,13 @@ const ReservationManagementPage = () => {
   const loadCondominiums = useCallback(async () => {
     try {
       const response = await api.get('/condominiums');
-      if (response.status === 'success') {
-        setCondominiums(response.data);
-        if (response.data.length > 0 && !selectedCondominium) {
-          setSelectedCondominium(response.data[0].id.toString());
+      console.log('📋 Resposta de condomínios:', response);
+      if (response.status === 'success' && response.data) {
+        const condos = response.data;
+        console.log('📋 Condomínios carregados:', condos);
+        setCondominiums(condos);
+        if (condos.length > 0 && !selectedCondominium) {
+          setSelectedCondominium(condos[0].id.toString());
         }
       }
     } catch (error) {
@@ -61,17 +64,20 @@ const ReservationManagementPage = () => {
 
   const loadReservableSpaces = useCallback(async () => {
     if (!selectedCondominium) return;
-    
-    console.log('🏢 ReservationManagementPage - Carregando espaços reserváveis para condomínio:', selectedCondominium);
+
+    console.log('🏢 ReservationManagementPage - Carregando TODOS os espaços do condomínio:', selectedCondominium);
     try {
-      const response = await reservationConfigService.getReservableSpaces(selectedCondominium);
+      // Usar a rota de espaços ao invés de reservableSpaces para incluir TODOS os espaços
+      const response = await api.get(`/condominiums/${selectedCondominium}/spaces`);
       console.log('🏢 ReservationManagementPage - Resposta da API:', response);
-      if (response.status === 'success') {
-        setReservableSpaces(response.data);
-        console.log('🏢 ReservationManagementPage - Espaços reserváveis carregados:', response.data);
+      if (response.status === 'success' && response.data) {
+        // Filtrar apenas espaços que podem ser reservados
+        const reservableOnly = response.data.filter(space => space.reservable === true);
+        setReservableSpaces(reservableOnly);
+        console.log('🏢 ReservationManagementPage - Espaços reserváveis carregados:', reservableOnly);
       }
     } catch (error) {
-      console.error('Erro ao carregar espaços reserváveis:', error);
+      console.error('Erro ao carregar espaços:', error);
     }
   }, [selectedCondominium]);
 

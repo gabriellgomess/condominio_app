@@ -11,6 +11,8 @@ import IncidentsScreen from '../screens/IncidentsScreen';
 import NewIncidentScreen from '../screens/NewIncidentScreen';
 import IncidentDetailScreen from '../screens/IncidentDetailScreen';
 import EventsScreen from '../screens/EventsScreen';
+import VisitorsScreen from '../screens/VisitorsScreen';
+import VisitorValidationScreen from '../screens/VisitorValidationScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +39,8 @@ export default function AppNavigator() {
             <Stack.Screen name="NewIncident" component={NewIncidentScreen} />
             <Stack.Screen name="IncidentDetail" component={IncidentDetailScreen} />
             <Stack.Screen name="Events" component={EventsScreen} />
+            <Stack.Screen name="Visitors" component={VisitorsScreen} />
+            <Stack.Screen name="VisitorValidation" component={VisitorValidationScreen} />
           </>
         )}
       </Stack.Navigator>

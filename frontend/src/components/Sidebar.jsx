@@ -117,7 +117,7 @@ const Sidebar = () => {
       path: '/portaria',
       submenu: [
         { title: 'Controle de Acesso', path: '/portaria/access-control' },
-        { title: 'Visitantes', path: '/portaria/visitantes' },
+        { title: 'Visitantes', path: '/admin/gate/visitors' },
         { title: 'Entregas', path: '/admin/gate/deliveries' },
         { title: 'Registro de Entrada', path: '/portaria/registro' },
         { title: 'Correspondências', path: '/portaria/mail' }

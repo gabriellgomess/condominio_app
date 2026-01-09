@@ -85,19 +85,9 @@ export const reservationService = {
     return api.get(`/spaces/${spaceId}/availability`, { date });
   },
 
-  // Obter espaços configurados para reserva (com configuração ativa)
-  getConfiguredSpaces: async (condominiumId) => {
-    console.log('🔧 reservationService.getConfiguredSpaces - condominiumId:', condominiumId);
-    try {
-      const response = await api.get(`/condominiums/${condominiumId}/reservation-configs`, { active_only: true });
-      console.log('🔧 reservationService.getConfiguredSpaces - resposta completa:', response);
-      console.log('🔧 reservationService.getConfiguredSpaces - data:', response?.data);
-      console.log('🔧 reservationService.getConfiguredSpaces - quantidade:', response?.data?.length || 0);
-      return response;
-    } catch (error) {
-      console.error('❌ reservationService.getConfiguredSpaces - Erro:', error);
-      throw error;
-    }
+  // Obter espaços configurados para reserva
+  getConfiguredSpaces: (condominiumId) => {
+    return api.get(`/condominiums/${condominiumId}/reservation-configs`, { active_only: true });
   },
 
   // Obter configuração de disponibilidade de um espaço

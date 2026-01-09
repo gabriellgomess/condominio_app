@@ -369,10 +369,22 @@ class ReservationController extends Controller
             $space = Space::with('activeReservationConfig')->findOrFail($space_id);
             $config = $space->activeReservationConfig;
 
+            \Log::info('CheckAvailability', [
+                'space_id' => $space_id,
+                'space' => $space->toArray(),
+                'config' => $config ? $config->toArray() : null
+            ]);
+
             if (!$config) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Este espaço não está configurado para reservas'
+                    'message' => 'Este espaço não está configurado para reservas',
+                    'debug' => [
+                        'space_id' => $space_id,
+                        'space_reservable' => $space->reservable,
+                        'has_any_config' => $space->reservationConfigs()->count(),
+                        'has_active_config' => $space->reservationConfigs()->where('active', true)->count()
+                    ]
                 ], 400);
             }
 

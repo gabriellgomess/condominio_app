@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,169 +6,68 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
-  RefreshControl,
 } from 'react-native';
-import { Bell, AlertTriangle, Info, Megaphone, ChevronRight } from 'lucide-react-native';
-import { useAuth } from '../context/AuthContext';
-import announcementService from '../services/announcementService';
+import { Bell } from 'lucide-react-native';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../utils/theme';
 
-// Cores por prioridade
-const priorityColors = {
-  urgent: { bg: colors.error.light, border: colors.error.main, icon: colors.error.main },
-  high: { bg: '#FED7AA', border: '#F97316', icon: '#F97316' },
-  normal: { bg: colors.secondary + '20', border: colors.secondary, icon: colors.secondary },
-  low: { bg: colors.gray[100], border: colors.gray[300], icon: colors.gray[500] },
-};
-
-// Ícones por prioridade
-const PriorityIcon = ({ priority, size = 20 }) => {
-  const color = priorityColors[priority]?.icon || colors.secondary;
-  
-  switch (priority) {
-    case 'urgent':
-      return <AlertTriangle size={size} color={color} />;
-    case 'high':
-      return <Megaphone size={size} color={color} />;
-    default:
-      return <Info size={size} color={color} />;
-  }
-};
-
 export default function NotificationsScreen() {
-  const { user, resident } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [selectedNotification, setSelectedNotification] = useState(null);
-
-  // Obter condominium_id do usuário ou resident
-  const condominiumId = resident?.condominium_id || user?.condominium_id;
-
-  const loadNotifications = useCallback(async () => {
-    if (!condominiumId) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await announcementService.getAnnouncements(condominiumId);
-      
-      if (response.success) {
-        // Ordenar por prioridade e data
-        const sorted = (response.data || []).sort((a, b) => {
-          const priorityOrder = { urgent: 0, high: 1, normal: 2, low: 3 };
-          if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
-            return priorityOrder[a.priority] - priorityOrder[b.priority];
-          }
-          return new Date(b.created_at) - new Date(a.created_at);
-        });
-        setNotifications(sorted);
-      } else {
-        setNotifications([]);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar notificações:', error);
-      setNotifications([]);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [condominiumId]);
 
   useEffect(() => {
     loadNotifications();
-  }, [loadNotifications]);
+  }, []);
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    loadNotifications();
+  const loadNotifications = async () => {
+    setLoading(true);
+    try {
+      // TODO: Buscar da API
+      // const response = await api.get('/notifications');
+      // setNotifications(response.data);
+      setNotifications([]);
+    } catch (error) {
+      console.error('Erro ao carregar notificações:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLearnMore = (notification) => {
+    // TODO: Navegar para detalhes
+    console.log('Ver detalhes:', notification);
   };
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
+    return date.toLocaleDateString('pt-BR');
   };
 
-  const isNew = (dateString) => {
-    if (!dateString) return false;
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-    return diffDays <= 3;
-  };
-
-  const handleNotificationPress = (notification) => {
-    setSelectedNotification(
-      selectedNotification?.id === notification.id ? null : notification
-    );
-  };
-
-  const renderNotification = ({ item }) => {
-    const priority = item.priority || 'normal';
-    const priorityStyle = priorityColors[priority] || priorityColors.normal;
-    const isExpanded = selectedNotification?.id === item.id;
-    const showNewBadge = isNew(item.published_at || item.created_at);
-
-    return (
-      <TouchableOpacity
-        style={[
-          styles.card,
-          { borderColor: priorityStyle.border },
-          isExpanded && styles.cardExpanded,
-        ]}
-        onPress={() => handleNotificationPress(item)}
-        activeOpacity={0.7}
-      >
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconContainer, { backgroundColor: priorityStyle.bg }]}>
-            <PriorityIcon priority={priority} />
-          </View>
-          
-          <View style={styles.cardContent}>
-            <View style={styles.titleRow}>
-              <Text style={styles.cardTitle} numberOfLines={isExpanded ? undefined : 1}>
-                {item.title}
-              </Text>
-              {showNewBadge && (
-                <View style={styles.newBadge}>
-                  <Text style={styles.newBadgeText}>Novo</Text>
-                </View>
-              )}
-            </View>
-            
-            <Text style={styles.cardDate}>
-              {formatDate(item.published_at || item.created_at)}
-            </Text>
-          </View>
-
-          <ChevronRight
-            size={20}
-            color={colors.gray[400]}
-            style={[styles.chevron, isExpanded && styles.chevronExpanded]}
-          />
-        </View>
-
-        {isExpanded && (
-          <View style={styles.expandedContent}>
-            <Text style={styles.cardDescription}>{item.content}</Text>
-            
-            {item.priority === 'urgent' && (
-              <View style={styles.urgentBanner}>
-                <AlertTriangle size={16} color={colors.error.main} />
-                <Text style={styles.urgentText}>Comunicado urgente</Text>
-              </View>
-            )}
+  const renderNotification = ({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <Text style={styles.cardTitle}>{item.title}</Text>
+        {item.isNew && (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>Novo</Text>
           </View>
         )}
-      </TouchableOpacity>
-    );
-  };
+      </View>
+      
+      <Text style={styles.cardDate}>{formatDate(item.date)}</Text>
+      
+      <Text style={styles.cardDescription}>{item.description}</Text>
+      
+      {item.showLearnMore && (
+        <TouchableOpacity
+          style={styles.learnMoreButton}
+          onPress={() => handleLearnMore(item)}
+        >
+          <Text style={styles.learnMoreText}>Saiba mais</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
 
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
@@ -179,7 +78,7 @@ export default function NotificationsScreen() {
       <Text style={styles.emptyText}>
         Você não tem notificações no momento. Quando houver novidades, elas aparecerão aqui.
       </Text>
-      <TouchableOpacity style={styles.emptyButton} onPress={onRefresh}>
+      <TouchableOpacity style={styles.emptyButton} onPress={loadNotifications}>
         <Text style={styles.emptyButtonText}>Atualizar</Text>
       </TouchableOpacity>
     </View>
@@ -189,7 +88,6 @@ export default function NotificationsScreen() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={colors.secondary} />
-        <Text style={styles.loadingText}>Carregando notificações...</Text>
       </View>
     );
   }
@@ -203,14 +101,8 @@ export default function NotificationsScreen() {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={renderEmpty}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={[colors.secondary]}
-            tintColor={colors.secondary}
-          />
-        }
+        refreshing={loading}
+        onRefresh={loadNotifications}
       />
     </View>
   );
@@ -227,12 +119,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.gray[100],
   },
-  loadingText: {
-    marginTop: spacing.md,
-    fontSize: fontSize.sm,
-    color: colors.gray[500],
-    fontFamily: 'Grift',
-  },
   listContent: {
     padding: spacing.md,
     flexGrow: 1,
@@ -246,83 +132,55 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     ...shadows.sm,
   },
-  cardExpanded: {
-    borderWidth: 2,
-  },
   cardHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.sm,
-  },
-  cardContent: {
-    flex: 1,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: spacing.xs,
   },
   cardTitle: {
-    fontSize: fontSize.base,
+    fontSize: fontSize.lg,
     color: colors.primary,
     fontFamily: 'GriftBold',
     flex: 1,
+    marginRight: spacing.sm,
   },
-  newBadge: {
+  badge: {
     backgroundColor: colors.secondary,
     paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
+    paddingVertical: spacing.xs,
     borderRadius: borderRadius.full,
-    marginLeft: spacing.sm,
   },
-  newBadgeText: {
+  badgeText: {
     fontSize: fontSize.xs,
     color: colors.white,
     fontFamily: 'GriftBold',
   },
   cardDate: {
-    fontSize: fontSize.xs,
+    fontSize: fontSize.sm,
     color: colors.gray[500],
     fontFamily: 'Grift',
-    marginTop: 2,
-  },
-  chevron: {
-    marginLeft: spacing.sm,
-  },
-  chevronExpanded: {
-    transform: [{ rotate: '90deg' }],
-  },
-  expandedContent: {
-    marginTop: spacing.md,
-    paddingTop: spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.gray[200],
+    marginBottom: spacing.sm,
   },
   cardDescription: {
     fontSize: fontSize.sm,
     color: colors.gray[600],
     fontFamily: 'Grift',
-    lineHeight: 22,
+    lineHeight: 20,
   },
-  urgentBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.error.light,
-    padding: spacing.sm,
+  learnMoreButton: {
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderColor: colors.gray[300],
     borderRadius: borderRadius.md,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
     marginTop: spacing.md,
   },
-  urgentText: {
+  learnMoreText: {
     fontSize: fontSize.sm,
-    color: colors.error.main,
-    fontFamily: 'GriftBold',
-    marginLeft: spacing.xs,
+    color: colors.primary,
+    fontFamily: 'Grift',
   },
   emptyContainer: {
     flex: 1,

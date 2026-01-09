@@ -12,7 +12,10 @@ import {
   ScrollView,
   Alert,
   Platform,
+  Pressable,
+  StatusBar,
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   Calendar,
   Clock,
@@ -27,11 +30,16 @@ import {
   AlertTriangle,
   Info,
   DollarSign,
+  ArrowLeft,
+  Settings,
+  LogOut,
 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import reservationService from '../services/reservationService';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../utils/theme';
+import BottomNavigation from '../components/BottomNavigation';
+import SettingsMenu from '../components/SettingsMenu';
 
 // Status das reservas
 const statusConfig = {
@@ -42,13 +50,14 @@ const statusConfig = {
 };
 
 export default function EventsScreen({ navigation }) {
-  const { user, resident } = useAuth();
+  const { user, resident, logout } = useAuth();
   const insets = useSafeAreaInsets();
   const [reservations, setReservations] = useState([]);
   const [spaces, setSpaces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const [selectedSpace, setSelectedSpace] = useState(null);
   const [availability, setAvailability] = useState(null);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
@@ -66,6 +75,12 @@ export default function EventsScreen({ navigation }) {
   });
   const [submitting, setSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState('upcoming');
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedStartTime, setSelectedStartTime] = useState(new Date());
+  const [selectedEndTime, setSelectedEndTime] = useState(new Date());
 
   const condominiumId = resident?.condominium_id || user?.condominium_id;
 
@@ -126,7 +141,14 @@ export default function EventsScreen({ navigation }) {
 
     try {
       const spaceId = selectedSpace.space_id || selectedSpace.id;
+      console.log('📅 Verificando disponibilidade para:', {
+        spaceId,
+        date: formData.reservation_date,
+        selectedSpace
+      });
+
       const result = await reservationService.checkAvailability(spaceId, formData.reservation_date);
+      console.log('📅 Resultado da verificação:', result);
 
       if (result.success && result.data) {
         setAvailability(result.data);
@@ -139,9 +161,14 @@ export default function EventsScreen({ navigation }) {
             end_time: '',
           }));
         }
+      } else if (result.error) {
+        // Exibir erro ao usuário
+        Alert.alert('Erro', result.error);
+        setAvailability(null);
       }
     } catch (error) {
-      console.error('Erro ao verificar disponibilidade:', error);
+      console.error('❌ Erro ao verificar disponibilidade:', error);
+      Alert.alert('Erro', 'Não foi possível verificar a disponibilidade. Tente novamente.');
       setAvailability(null);
     } finally {
       setCheckingAvailability(false);
@@ -209,6 +236,10 @@ export default function EventsScreen({ navigation }) {
     setSelectedSpace(null);
     setAvailability(null);
     setConflicts([]);
+    const today = new Date();
+    setSelectedDate(today);
+    setSelectedStartTime(today);
+    setSelectedEndTime(today);
     setFormData({
       reservation_date: '',
       start_time: '',
@@ -233,6 +264,7 @@ export default function EventsScreen({ navigation }) {
   const handleSelectSpace = (space) => {
     setSelectedSpace(space);
     setAvailability(null);
+    setConflicts([]);
     setFormData(prev => ({
       ...prev,
       start_time: '',
@@ -240,7 +272,82 @@ export default function EventsScreen({ navigation }) {
     }));
   };
 
+  const handleTimeChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // Limpar conflitos quando horário mudar
+    if (conflicts.length > 0) {
+      setConflicts([]);
+    }
+  };
+
+  const validateTimeFormat = (time) => {
+    // Aceita formatos: HH:MM ou HH:MM:SS
+    const timeRegex = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/;
+    return timeRegex.test(time);
+  };
+
+  const validateDateFormat = (date) => {
+    // Aceita formato: YYYY-MM-DD
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    return dateRegex.test(date);
+  };
+
+  const formatTimeToHHMM = (time) => {
+    // Remove segundos se existirem
+    if (!time) return '';
+    return time.substring(0, 5);
+  };
+
+  const formatDateToYYYYMMDD = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatTimeFromDate = (date) => {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
+  const handleDateChange = (event, date) => {
+    setShowDatePicker(false);
+    if (date) {
+      setSelectedDate(date);
+      const formattedDate = formatDateToYYYYMMDD(date);
+      setFormData(prev => ({ ...prev, reservation_date: formattedDate }));
+    }
+  };
+
+  const handleStartTimeChange = (event, time) => {
+    setShowStartTimePicker(false);
+    if (time) {
+      setSelectedStartTime(time);
+      const formattedTime = formatTimeFromDate(time);
+      setFormData(prev => ({ ...prev, start_time: formattedTime }));
+      // Limpar conflitos quando horário mudar
+      if (conflicts.length > 0) {
+        setConflicts([]);
+      }
+    }
+  };
+
+  const handleEndTimeChange = (event, time) => {
+    setShowEndTimePicker(false);
+    if (time) {
+      setSelectedEndTime(time);
+      const formattedTime = formatTimeFromDate(time);
+      setFormData(prev => ({ ...prev, end_time: formattedTime }));
+      // Limpar conflitos quando horário mudar
+      if (conflicts.length > 0) {
+        setConflicts([]);
+      }
+    }
+  };
+
   const handleSubmit = async () => {
+    // Validações básicas
     if (!selectedSpace) {
       Alert.alert('Erro', 'Selecione um espaço para reservar');
       return;
@@ -257,17 +364,28 @@ export default function EventsScreen({ navigation }) {
     }
 
     if (!formData.start_time || !formData.end_time) {
-      Alert.alert('Erro', 'Preencha os horários de início e término');
+      Alert.alert('Erro', 'Selecione os horários de início e término');
       return;
     }
 
-    if (!formData.contact_name || !formData.contact_phone) {
-      Alert.alert('Erro', 'Preencha o nome e telefone de contato');
+    if (!formData.contact_name?.trim()) {
+      Alert.alert('Erro', 'Preencha o nome do responsável');
       return;
     }
 
-    // Validar horários dentro do permitido
-    if (availability.config) {
+    if (!formData.contact_phone?.trim()) {
+      Alert.alert('Erro', 'Preencha o telefone de contato');
+      return;
+    }
+
+    // Validar se horário de término é depois do início
+    if (formData.start_time >= formData.end_time) {
+      Alert.alert('Erro', 'O horário de término deve ser posterior ao horário de início');
+      return;
+    }
+
+    // Validar horários dentro do permitido pela configuração
+    if (availability?.config) {
       const configStart = availability.config.start_time;
       const configEnd = availability.config.end_time;
 
@@ -285,11 +403,21 @@ export default function EventsScreen({ navigation }) {
         space_id: spaceId,
         condominium_id: condominiumId,
         unit_id: resident?.unit_id,
-        ...formData,
+        reservation_date: formData.reservation_date,
+        start_time: formatTimeToHHMM(formData.start_time),
+        end_time: formatTimeToHHMM(formData.end_time),
+        contact_name: formData.contact_name,
+        contact_phone: formData.contact_phone,
+        contact_email: formData.contact_email || null,
+        event_type: formData.event_type || null,
+        event_description: formData.event_description || null,
         expected_guests: parseInt(formData.expected_guests) || 0,
+        user_notes: formData.user_notes || null,
       };
 
+      console.log('📤 Enviando reserva:', reservationData);
       const result = await reservationService.createReservation(reservationData);
+      console.log('📥 Resultado:', result);
 
       if (result.success) {
         Alert.alert('Sucesso', result.message || 'Reserva criada com sucesso!');
@@ -297,14 +425,21 @@ export default function EventsScreen({ navigation }) {
         loadData();
       } else {
         // Verificar se é erro de conflito
-        if (result.conflicts) {
+        if (result.conflicts && result.conflicts.length > 0) {
+          console.log('⚠️ Conflitos detectados:', result.conflicts);
           setConflicts(result.conflicts);
+          Alert.alert(
+            'Conflito de Horário',
+            result.error || 'Já existe uma reserva neste horário. Verifique os conflitos abaixo e escolha outro horário.',
+            [{ text: 'OK' }]
+          );
+        } else {
+          Alert.alert('Erro', result.error || 'Erro ao criar reserva');
         }
-        Alert.alert('Erro', result.error || 'Erro ao criar reserva');
       }
     } catch (error) {
-      console.error('Erro ao criar reserva:', error);
-      Alert.alert('Erro', 'Erro ao processar reserva');
+      console.error('❌ Erro ao criar reserva:', error);
+      Alert.alert('Erro', 'Erro ao processar reserva. Tente novamente.');
     } finally {
       setSubmitting(false);
     }
@@ -403,6 +538,27 @@ export default function EventsScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+
+      {/* Header */}
+      <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
+        <View style={styles.headerTitleContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <ArrowLeft size={24} color={colors.white} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Eventos</Text>
+        </View>
+
+        <View style={styles.headerActions}>
+          <TouchableOpacity style={styles.headerButton} onPress={() => setSettingsVisible(true)}>
+            <Settings size={24} color={colors.secondary} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerButton} onPress={logout}>
+            <LogOut size={24} color={colors.secondary} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       {/* Tabs */}
       <View style={styles.tabsContainer}>
         <TouchableOpacity
@@ -466,38 +622,70 @@ export default function EventsScreen({ navigation }) {
             <ScrollView showsVerticalScrollIndicator={false}>
               {/* Seleção de Espaço */}
               <Text style={styles.inputLabel}>Espaço *</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.spacesScroll}>
-                {spaces.map((space) => {
-                  const isSelected = selectedSpace?.id === space.id || selectedSpace?.space_id === space.space_id;
-                  return (
-                    <TouchableOpacity
-                      key={space.id || space.space_id}
-                      style={[styles.spaceCard, isSelected && styles.spaceCardSelected]}
-                      onPress={() => handleSelectSpace(space)}
-                    >
-                      <Text style={[styles.spaceName, isSelected && styles.spaceNameSelected]}>
-                        {space.space?.name || space.name}
-                      </Text>
-                      <Text style={[styles.spaceCapacity, isSelected && styles.spaceCapacitySelected]}>
-                        Capacidade: {space.max_capacity || space.space?.capacity || '-'}
-                      </Text>
-                      {isSelected && (
-                        <CheckCircle size={16} color={colors.white} style={styles.spaceCheck} />
-                      )}
-                    </TouchableOpacity>
-                  );
-                })}
-              </ScrollView>
+              {spaces.length === 0 ? (
+                <View style={styles.noSpacesContainer}>
+                  <Text style={styles.noSpacesText}>Nenhum espaço disponível para reserva</Text>
+                </View>
+              ) : (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.spacesScroll}>
+                  {spaces.map((space) => {
+                    const isSelected = selectedSpace?.id === space.id;
+
+                    return (
+                      <TouchableOpacity
+                        key={space.id}
+                        style={[styles.spaceCard, isSelected && styles.spaceCardSelected]}
+                        onPress={() => handleSelectSpace(space)}
+                      >
+                        <View style={styles.spaceCardContent}>
+                          <Text style={[styles.spaceName, isSelected && styles.spaceNameSelected]}>
+                            {space.name}
+                          </Text>
+                          {space.number && (
+                            <Text style={[styles.spaceNumber, isSelected && styles.spaceNumberSelected]}>
+                              {space.number}
+                              {space.location ? ` • ${space.location}` : ''}
+                            </Text>
+                          )}
+                          {space.max_capacity > 0 && (
+                            <Text style={[styles.spaceCapacity, isSelected && styles.spaceCapacitySelected]}>
+                              Máx. {space.max_capacity} reservas/dia
+                            </Text>
+                          )}
+                        </View>
+                        {isSelected && (
+                          <CheckCircle size={18} color={colors.white} style={styles.spaceCheck} />
+                        )}
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              )}
 
               {/* Data */}
               <Text style={styles.inputLabel}>Data da Reserva *</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="AAAA-MM-DD (ex: 2025-01-15)"
-                placeholderTextColor={colors.gray[400]}
-                value={formData.reservation_date}
-                onChangeText={(text) => setFormData({ ...formData, reservation_date: text })}
-              />
+              <Pressable
+                style={styles.dateButton}
+                onPress={() => setShowDatePicker(true)}
+              >
+                <Calendar size={20} color={colors.secondary} />
+                <Text style={[styles.dateButtonText, !formData.reservation_date && styles.placeholderText]}>
+                  {formData.reservation_date
+                    ? new Date(formData.reservation_date + 'T12:00:00').toLocaleDateString('pt-BR')
+                    : 'Selecione a data'}
+                </Text>
+              </Pressable>
+
+              {showDatePicker && (
+                <DateTimePicker
+                  value={selectedDate}
+                  mode="date"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={handleDateChange}
+                  minimumDate={new Date()}
+                  locale="pt-BR"
+                />
+              )}
 
               {/* Verificação de Disponibilidade */}
               {checkingAvailability && (
@@ -558,15 +746,34 @@ export default function EventsScreen({ navigation }) {
                   {/* Reservas existentes */}
                   {availability.existing_reservations?.length > 0 && (
                     <View style={styles.existingReservations}>
-                      <Text style={styles.existingTitle}>Reservas nesta data:</Text>
+                      <Text style={styles.existingTitle}>
+                        Horários já reservados nesta data:
+                      </Text>
+                      <Text style={styles.existingHint}>
+                        Escolha um horário que não conflite com as reservas abaixo
+                      </Text>
                       {availability.existing_reservations.map((existing, index) => (
                         <View key={index} style={styles.existingItem}>
-                          <Text style={styles.existingTime}>
-                            {formatTime(existing.start_time)} - {formatTime(existing.end_time)}
-                          </Text>
-                          <Text style={styles.existingName}>{existing.contact_name}</Text>
+                          <Clock size={14} color={colors.warning.main} />
+                          <View style={styles.existingInfo}>
+                            <Text style={styles.existingTime}>
+                              {formatTime(existing.start_time)} - {formatTime(existing.end_time)}
+                            </Text>
+                            <Text style={styles.existingName}>
+                              {existing.contact_name}
+                            </Text>
+                          </View>
                         </View>
                       ))}
+                    </View>
+                  )}
+
+                  {availability.existing_reservations?.length === 0 && (
+                    <View style={styles.noReservationsNotice}>
+                      <CheckCircle size={16} color={colors.success.main} />
+                      <Text style={styles.noReservationsText}>
+                        Nenhuma reserva para esta data. Você pode escolher qualquer horário disponível!
+                      </Text>
                     </View>
                   )}
                 </View>
@@ -577,26 +784,53 @@ export default function EventsScreen({ navigation }) {
                 <>
                   <View style={styles.row}>
                     <View style={styles.halfInput}>
-                      <Text style={styles.inputLabel}>Início *</Text>
-                      <TextInput
-                        style={styles.input}
-                        placeholder="HH:MM"
-                        placeholderTextColor={colors.gray[400]}
-                        value={formData.start_time}
-                        onChangeText={(text) => setFormData({ ...formData, start_time: text })}
-                      />
+                      <Text style={styles.inputLabel}>Horário de Início *</Text>
+                      <Pressable
+                        style={styles.timeButton}
+                        onPress={() => setShowStartTimePicker(true)}
+                      >
+                        <Clock size={18} color={colors.secondary} />
+                        <Text style={[styles.timeButtonText, !formData.start_time && styles.placeholderText]}>
+                          {formData.start_time || 'Selecionar'}
+                        </Text>
+                      </Pressable>
                     </View>
+
                     <View style={styles.halfInput}>
-                      <Text style={styles.inputLabel}>Término *</Text>
-                      <TextInput
-                        style={styles.input}
-                        placeholder="HH:MM"
-                        placeholderTextColor={colors.gray[400]}
-                        value={formData.end_time}
-                        onChangeText={(text) => setFormData({ ...formData, end_time: text })}
-                      />
+                      <Text style={styles.inputLabel}>Horário de Término *</Text>
+                      <Pressable
+                        style={styles.timeButton}
+                        onPress={() => setShowEndTimePicker(true)}
+                      >
+                        <Clock size={18} color={colors.secondary} />
+                        <Text style={[styles.timeButtonText, !formData.end_time && styles.placeholderText]}>
+                          {formData.end_time || 'Selecionar'}
+                        </Text>
+                      </Pressable>
                     </View>
                   </View>
+
+                  {showStartTimePicker && (
+                    <DateTimePicker
+                      value={selectedStartTime}
+                      mode="time"
+                      is24Hour={true}
+                      display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                      onChange={handleStartTimeChange}
+                      locale="pt-BR"
+                    />
+                  )}
+
+                  {showEndTimePicker && (
+                    <DateTimePicker
+                      value={selectedEndTime}
+                      mode="time"
+                      is24Hour={true}
+                      display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                      onChange={handleEndTimeChange}
+                      locale="pt-BR"
+                    />
+                  )}
 
                   {/* Custo estimado */}
                   {estimatedCost !== null && estimatedCost > 0 && (
@@ -697,6 +931,29 @@ export default function EventsScreen({ navigation }) {
           </View>
         </View>
       </Modal>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation
+        activeTab="home"
+        onTabPress={(tab) => {
+          if (tab === 'home') {
+            navigation.goBack();
+          }
+          // As outras tabs (documents, contacts, notifications) são gerenciadas pelo MainTabScreen
+          // então não fazemos nada aqui, o usuário volta para home e navega de lá
+        }}
+      />
+
+      {/* Settings Menu */}
+      <SettingsMenu
+        visible={settingsVisible}
+        onClose={() => setSettingsVisible(false)}
+        user={user}
+        onNavigate={(key) => {
+          // Navegação do menu de configurações
+          setSettingsVisible(false);
+        }}
+      />
     </View>
   );
 }
@@ -705,6 +962,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.gray[100],
+  },
+  header: {
+    backgroundColor: colors.primary,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.md,
+  },
+  headerTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButton: {
+    marginRight: spacing.sm,
+  },
+  headerTitle: {
+    fontSize: fontSize.xl,
+    color: colors.white,
+    fontFamily: 'GriftBold',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  headerButton: {
+    padding: spacing.xs,
   },
   loadingContainer: {
     flex: 1,
@@ -800,7 +1085,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: spacing.md,
-    bottom: 20,
+    bottom: 85,
     width: 56,
     height: 56,
     borderRadius: 28,
@@ -907,35 +1192,48 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.md,
     padding: spacing.md,
     marginRight: spacing.sm,
-    minWidth: 160,
+    minWidth: 180,
     borderWidth: 2,
     borderColor: 'transparent',
+    position: 'relative',
   },
   spaceCardSelected: {
     backgroundColor: colors.secondary,
     borderColor: colors.secondary,
   },
+  spaceCardContent: {
+    paddingRight: spacing.lg,
+  },
   spaceName: {
     fontSize: fontSize.base,
     color: colors.primary,
     fontFamily: 'GriftBold',
+    marginBottom: spacing.xs,
   },
   spaceNameSelected: {
     color: colors.white,
+  },
+  spaceNumber: {
+    fontSize: fontSize.xs,
+    color: colors.gray[600],
+    fontFamily: 'Grift',
+    marginBottom: spacing.xs,
+  },
+  spaceNumberSelected: {
+    color: 'rgba(255,255,255,0.9)',
   },
   spaceCapacity: {
     fontSize: fontSize.xs,
     color: colors.gray[500],
     fontFamily: 'Grift',
-    marginTop: 2,
   },
   spaceCapacitySelected: {
     color: 'rgba(255,255,255,0.8)',
   },
   spaceCheck: {
     position: 'absolute',
-    top: 8,
-    right: 8,
+    top: spacing.sm,
+    right: spacing.sm,
   },
   availabilityChecking: {
     flexDirection: 'row',
@@ -1009,27 +1307,54 @@ const styles = StyleSheet.create({
     borderTopColor: 'rgba(0,0,0,0.1)',
   },
   existingTitle: {
-    fontSize: fontSize.xs,
-    color: colors.gray[600],
+    fontSize: fontSize.sm,
+    color: colors.warning.main,
     fontFamily: 'GriftBold',
     marginBottom: spacing.xs,
   },
+  existingHint: {
+    fontSize: fontSize.xs,
+    color: colors.gray[500],
+    fontFamily: 'Grift',
+    marginBottom: spacing.sm,
+    fontStyle: 'italic',
+  },
   existingItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    padding: spacing.xs,
+    alignItems: 'center',
+    backgroundColor: colors.warning.light,
+    padding: spacing.sm,
     borderRadius: borderRadius.sm,
-    marginBottom: 4,
+    marginBottom: spacing.xs,
+    gap: spacing.sm,
+  },
+  existingInfo: {
+    flex: 1,
   },
   existingTime: {
-    fontSize: fontSize.xs,
-    color: colors.primary,
+    fontSize: fontSize.sm,
+    color: colors.warning.main,
     fontFamily: 'GriftBold',
+    marginBottom: 2,
   },
   existingName: {
     fontSize: fontSize.xs,
     color: colors.gray[600],
+    fontFamily: 'Grift',
+  },
+  noReservationsNotice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.success.light,
+    padding: spacing.sm,
+    borderRadius: borderRadius.md,
+    marginTop: spacing.sm,
+    gap: spacing.sm,
+  },
+  noReservationsText: {
+    flex: 1,
+    fontSize: fontSize.xs,
+    color: colors.success.main,
     fontFamily: 'Grift',
   },
   estimatedCost: {
@@ -1100,7 +1425,46 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: 'GriftBold',
   },
+  dateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.gray[300],
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    marginTop: spacing.xs,
+  },
+  dateButtonText: {
+    fontSize: fontSize.base,
+    fontFamily: 'Grift',
+    color: colors.primary,
+    marginLeft: spacing.sm,
+    flex: 1,
+  },
+  timeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.gray[300],
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    marginTop: spacing.xs,
+  },
+  timeButtonText: {
+    fontSize: fontSize.base,
+    fontFamily: 'Grift',
+    color: colors.primary,
+    marginLeft: spacing.sm,
+    flex: 1,
+  },
+  placeholderText: {
+    color: colors.gray[400],
+  },
 });
+
+
 
 
 

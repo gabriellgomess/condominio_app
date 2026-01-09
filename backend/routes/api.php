@@ -80,6 +80,7 @@ use App\Http\Controllers\Announcement\AnnouncementController;
 use App\Http\Controllers\Incident\IncidentController;
 use App\Http\Controllers\Api\CepController;
 use App\Http\Controllers\Gate\DeliveryController;
+use App\Http\Controllers\Mobile\MobileResidentController;
 
 
 // Rotas públicas - não precisam de autenticação
@@ -138,6 +139,10 @@ Route::group([
     Route::apiResource('parking-spaces', ParkingSpaceController::class)->only(['show', 'update', 'destroy']);
     Route::get('condominiums/{condominium_id}/parking-spaces/stats', [ParkingSpaceController::class, 'stats']);
 
+    // Espaços Comuns (Depósitos, Adegas, Salões, etc.)
+    Route::apiResource('condominiums.spaces', SpaceController::class)->except(['show', 'update', 'destroy']);
+    Route::apiResource('spaces', SpaceController::class)->only(['show', 'update', 'destroy']);
+
     // Configurações de Reserva
     Route::apiResource('condominiums.reservation-configs', ReservationConfigController::class)->except(['show', 'update', 'destroy']);
     Route::apiResource('reservation-configs', ReservationConfigController::class)->only(['show', 'update', 'destroy']);
@@ -149,6 +154,13 @@ Route::group([
     Route::get('spaces/{space_id}/availability', [ReservationController::class, 'checkAvailability']);
     Route::get('spaces/{space_id}/availability-config', [ReservationController::class, 'getAvailabilityConfig']);
     Route::put('reservations/{id}/confirm', [ReservationController::class, 'confirm']);
+
+    // Visitantes
+    Route::apiResource('condominiums.visitors', \App\Http\Controllers\Visitor\VisitorController::class)->except(['show', 'update', 'destroy']);
+    Route::apiResource('visitors', \App\Http\Controllers\Visitor\VisitorController::class)->only(['show', 'update', 'destroy']);
+    Route::post('visitors/{id}/validate', [\App\Http\Controllers\Visitor\VisitorController::class, 'validate']);
+    Route::post('visitors/{id}/check-in', [\App\Http\Controllers\Visitor\VisitorController::class, 'checkIn']);
+    Route::post('visitors/{id}/check-out', [\App\Http\Controllers\Visitor\VisitorController::class, 'checkOut']);
 
     // Moradores (Proprietários + Inquilinos)
     Route::apiResource('residents', ResidentController::class);
@@ -197,4 +209,12 @@ Route::group([
 
     // Troca de senha
     Route::post('change-password', [ApiController::class, 'changePassword']);
+
+    // Mobile App - Rotas para Moradores
+    Route::prefix('mobile')->group(function () {
+        Route::get('profile', [MobileResidentController::class, 'getProfile']);
+        Route::get('announcements', [MobileResidentController::class, 'getAnnouncements']);
+        Route::get('incidents', [MobileResidentController::class, 'getIncidents']);
+        Route::post('incidents', [MobileResidentController::class, 'createIncident']);
+    });
 });

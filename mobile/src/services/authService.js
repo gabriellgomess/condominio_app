@@ -1,6 +1,5 @@
 import api from './api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import condominiumService from './condominiumService';
 
 export const authService = {
   // Login
@@ -18,46 +17,16 @@ export const authService = {
 
       const { token, data, resident_data } = response.data;
 
-      console.log('👤 Dados do usuário:', data);
-      console.log('🏠 Dados do morador:', resident_data);
-      console.log('🔑 Access level:', data?.access_level);
-
       // Salvar token e dados do usuário
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('user', JSON.stringify(data));
 
       // Salvar dados do morador se existir
-      let finalResidentData = resident_data;
-
       if (resident_data) {
-        console.log('✅ Resident data encontrado, condominium_id:', resident_data.condominium_id);
         await AsyncStorage.setItem('resident', JSON.stringify(resident_data));
-      } else {
-        console.log('⚠️ Sem resident_data - usuário não é morador, buscando condomínios...');
-
-        // Para administradores/síndicos, buscar o primeiro condomínio disponível
-        if (data?.access_level === 'administrador' || data?.access_level === 'sindico') {
-          try {
-            const condResponse = await condominiumService.getCondominiums();
-            console.log('🏢 Condomínios encontrados:', condResponse.data?.length || 0);
-
-            if (condResponse.success && condResponse.data?.length > 0) {
-              const firstCondominium = condResponse.data[0];
-              finalResidentData = {
-                condominium_id: firstCondominium.id,
-                condominium_name: firstCondominium.name,
-                is_admin: true,
-              };
-              console.log('✅ Usando primeiro condomínio:', firstCondominium.name);
-              await AsyncStorage.setItem('resident', JSON.stringify(finalResidentData));
-            }
-          } catch (condError) {
-            console.error('Erro ao buscar condomínios:', condError);
-          }
-        }
       }
 
-      return { success: true, user: data, resident: finalResidentData, token };
+      return { success: true, user: data, resident: resident_data, token };
     } catch (error) {
       console.error('Erro no login:', error);
       console.error('Resposta do erro:', error.response?.data);

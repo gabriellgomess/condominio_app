@@ -239,14 +239,30 @@ const ReservationConfigModal = ({
               <option value="">Selecione um espaço</option>
               {console.log('🔧 Modal - Renderizando options com reservableSpaces:', reservableSpaces)}
               {reservableSpaces && reservableSpaces.length > 0 ? (
-                reservableSpaces.map(space => (
-                  <option key={space.id} value={space.id}>
-                    {space.number} - {space.space_type === 'party_hall' ? 'Salão de Festas' : 
-                     space.space_type === 'gym' ? 'Academia' : 
-                     space.space_type === 'meeting_room' ? 'Sala de Reuniões' : 
-                     space.space_type === 'storage' ? 'Depósito' : space.space_type}
-                  </option>
-                ))
+                reservableSpaces.map(space => {
+                  // Mapear tipos de espaço para nomes em português
+                  const typeNames = {
+                    'storage': 'Depósito',
+                    'box': 'Box',
+                    'cellar': 'Adega',
+                    'attic': 'Sótão',
+                    'gas_depot': 'Depósito de Gás',
+                    'trash_depot': 'Depósito de Lixo',
+                    'gym': 'Academia',
+                    'party_hall': 'Salão de Festas',
+                    'meeting_room': 'Sala de Reuniões',
+                    'laundry': 'Lavanderia',
+                    'other': 'Outros'
+                  };
+                  const typeName = typeNames[space.space_type] || space.space_type;
+
+                  return (
+                    <option key={space.id} value={space.id}>
+                      {space.number} - {typeName}
+                      {space.location ? ` (${space.location})` : ''}
+                    </option>
+                  );
+                })
               ) : (
                 <option value="" disabled>Nenhum espaço disponível</option>
               )}
